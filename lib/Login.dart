@@ -428,7 +428,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                 ),
                 child: Column(
                   children: <Widget>[
-                    _subLogo(),
+                    // _subLogo(),
                     _expandedBottomView(),
                   ],
                 ))

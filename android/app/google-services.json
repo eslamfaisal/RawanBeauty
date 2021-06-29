@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "365058967814",
-    "firebase_url": "https://eshop-2210d.firebaseio.com",
-    "project_id": "eshop-2210d",
-    "storage_bucket": "eshop-2210d.appspot.com"
+    "project_number": "65827511555",
+    "project_id": "rawanbeauty3",
+    "storage_bucket": "rawanbeauty3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:365058967814:android:aaa2c8582fb6a9269a7687",
+        "mobilesdk_app_id": "1:65827511555:android:c68ef70240c3dca7075d36",
         "android_client_info": {
-          "package_name": "com.wrteam.eshop"
+          "package_name": "com.rawan.beauty"
         }
       },
       "oauth_client": [
         {
-          "client_id": "365058967814-d7obt28vb93aka20tlds8grg79v88uqa.apps.googleusercontent.com",
+          "client_id": "65827511555-85ep7rflpr467bml04m66rf7a2fkfc2r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyASvoiAu2X2-C-uMSKChK2UD7LDuXh5aEs"
+          "current_key": "AIzaSyDcaoW6Vxyv3LIO2sEqkPCBf7cGt7achIA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "365058967814-d7obt28vb93aka20tlds8grg79v88uqa.apps.googleusercontent.com",
+              "client_id": "65827511555-85ep7rflpr467bml04m66rf7a2fkfc2r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
