@@ -14,7 +14,6 @@ import 'Helper/PaymentRadio.dart';
 import 'Helper/Session.dart';
 import 'Helper/SimBtn.dart';
 import 'Helper/String.dart';
-import 'Helper/Stripe_Service.dart';
 import 'Model/Model.dart';
 
 class Payment extends StatefulWidget {
@@ -31,7 +30,7 @@ class Payment extends StatefulWidget {
 
 List<Model> timeSlotList = [];
 String allowDay;
-bool codAllowed=true;
+bool codAllowed = true;
 
 class StatePayment extends State<Payment> with TickerProviderStateMixin {
   bool _isLoading = true;
@@ -54,13 +53,6 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   List<String> paymentMethodList = [];
   List<String> paymentIconList = [
     'assets/images/cod.svg',
-    'assets/images/paypal.svg',
-    'assets/images/payu.svg',
-    'assets/images/rozerpay.svg',
-    'assets/images/paystack.svg',
-    'assets/images/flutterwave.svg',
-    'assets/images/stripe.svg',
-    'assets/images/paytm.svg',
   ];
 
   Animation buttonSqueezeanimation;
@@ -77,13 +69,6 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     new Future.delayed(Duration.zero, () {
       paymentMethodList = [
         getTranslated(context, 'COD_LBL'),
-        getTranslated(context, 'PAYPAL_LBL'),
-        getTranslated(context, 'PAYUMONEY_LBL'),
-        getTranslated(context, 'RAZORPAY_LBL'),
-        getTranslated(context, 'PAYSTACK_LBL'),
-        getTranslated(context, 'FLUTTERWAVE_LBL'),
-        getTranslated(context, 'STRIPE_LBL'),
-        getTranslated(context, 'PAYTM_LBL'),
       ];
     });
     if (widget.msg != '')
@@ -163,90 +148,91 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Card(
-                                elevation: 0,
-                                child: CUR_BALANCE != "0" &&
-                                        CUR_BALANCE != null &&
-                                        CUR_BALANCE.isNotEmpty &&
-                                        CUR_BALANCE != ""
-                                    ? Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: CheckboxListTile(
-                                          dense: true,
-                                          contentPadding: EdgeInsets.all(0),
-                                          value: isUseWallet,
-                                          onChanged: (bool value) {
-                                            if (mounted)
-                                              setState(() {
-                                                isUseWallet = value;
-                                                if (value) {
-                                                  if (totalPrice <=
-                                                      double.parse(
-                                                          CUR_BALANCE)) {
-                                                    remWalBal = (double.parse(
-                                                            CUR_BALANCE) -
-                                                        totalPrice);
-                                                    usedBal = totalPrice;
-                                                    payMethod = "Wallet";
-
-                                                    isPayLayShow = false;
-                                                  } else {
-                                                    remWalBal = 0;
-                                                    usedBal = double.parse(
-                                                        CUR_BALANCE);
-                                                    isPayLayShow = true;
-                                                  }
-
-                                                  totalPrice =
-                                                      totalPrice - usedBal;
-                                                } else {
-                                                  totalPrice =
-                                                      totalPrice + usedBal;
-                                                  remWalBal =
-                                                      double.parse(CUR_BALANCE);
-                                                  payMethod = null;
-                                                  usedBal = 0;
-                                                  isPayLayShow = true;
-                                                }
-
-                                                widget.update();
-                                              });
-                                          },
-                                          title: Text(
-                                            getTranslated(
-                                                context, 'USE_WALLET'),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1,
-                                          ),
-                                          subtitle: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: Text(
-                                              isUseWallet
-                                                  ? getTranslated(context,
-                                                          'REMAIN_BAL') +
-                                                      " : " +
-                                                      CUR_CURRENCY +
-                                                      " " +
-                                                      remWalBal
-                                                          .toStringAsFixed(2)
-                                                  : getTranslated(context,
-                                                          'TOTAL_BAL') +
-                                                      " : " +
-                                                      CUR_CURRENCY +
-                                                      " " +
-                                                      double.parse(CUR_BALANCE).toStringAsFixed(2),
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: colors.black),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                              ),
+                              // Card(
+                              //   elevation: 0,
+                              //   child: CUR_BALANCE != "0" &&
+                              //           CUR_BALANCE != null &&
+                              //           CUR_BALANCE.isNotEmpty &&
+                              //           CUR_BALANCE != ""
+                              //       ? Padding(
+                              //           padding: const EdgeInsets.symmetric(
+                              //               horizontal: 8.0),
+                              //           child: CheckboxListTile(
+                              //             dense: true,
+                              //             contentPadding: EdgeInsets.all(0),
+                              //             value: isUseWallet,
+                              //             onChanged: (bool value) {
+                              //               if (mounted)
+                              //                 setState(() {
+                              //                   isUseWallet = value;
+                              //                   if (value) {
+                              //                     if (totalPrice <=
+                              //                         double.parse(
+                              //                             CUR_BALANCE)) {
+                              //                       remWalBal = (double.parse(
+                              //                               CUR_BALANCE) -
+                              //                           totalPrice);
+                              //                       usedBal = totalPrice;
+                              //                       payMethod = "Wallet";
+                              //
+                              //                       isPayLayShow = false;
+                              //                     } else {
+                              //                       remWalBal = 0;
+                              //                       usedBal = double.parse(
+                              //                           CUR_BALANCE);
+                              //                       isPayLayShow = true;
+                              //                     }
+                              //
+                              //                     totalPrice =
+                              //                         totalPrice - usedBal;
+                              //                   } else {
+                              //                     totalPrice =
+                              //                         totalPrice + usedBal;
+                              //                     remWalBal =
+                              //                         double.parse(CUR_BALANCE);
+                              //                     payMethod = null;
+                              //                     usedBal = 0;
+                              //                     isPayLayShow = true;
+                              //                   }
+                              //
+                              //                   widget.update();
+                              //                 });
+                              //             },
+                              //             title: Text(
+                              //               getTranslated(
+                              //                   context, 'USE_WALLET'),
+                              //               style: Theme.of(context)
+                              //                   .textTheme
+                              //                   .subtitle1,
+                              //             ),
+                              //             subtitle: Padding(
+                              //               padding: const EdgeInsets.symmetric(
+                              //                   vertical: 8.0),
+                              //               child: Text(
+                              //                 isUseWallet
+                              //                     ? getTranslated(context,
+                              //                             'REMAIN_BAL') +
+                              //                         " : " +
+                              //                         CUR_CURRENCY +
+                              //                         " " +
+                              //                         remWalBal
+                              //                             .toStringAsFixed(2)
+                              //                     : getTranslated(context,
+                              //                             'TOTAL_BAL') +
+                              //                         " : " +
+                              //                         CUR_CURRENCY +
+                              //                         " " +
+                              //                         double.parse(CUR_BALANCE)
+                              //                             .toStringAsFixed(2),
+                              //                 style: TextStyle(
+                              //                     fontSize: 15,
+                              //                     color: colors.black),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         )
+                              //       : Container(),
+                              // ),
                               isTimeSlot
                                   ? Card(
                                       elevation: 0,
@@ -318,25 +304,28 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                               itemCount:
                                                   paymentMethodList.length,
                                               itemBuilder: (context, index) {
-                                                if (index == 0 && cod)
-                                                  return paymentItem(index);
-                                                else if (index == 1 && paypal)
-                                                  return paymentItem(index);
-                                                else if (index == 2 && paumoney)
-                                                  return paymentItem(index);
-                                                else if (index == 3 && razorpay)
-                                                  return paymentItem(index);
-                                                else if (index == 4 && paystack)
-                                                  return paymentItem(index);
-                                                else if (index == 5 &&
-                                                    flutterwave)
-                                                  return paymentItem(index);
-                                                else if (index == 6 && stripe)
-                                                  return paymentItem(index);
-                                                else if (index == 7 && paytm)
-                                                  return paymentItem(index);
-                                                else
-                                                  return Container();
+                                                return InkWell(
+                                                  onTap: () {
+                                                    if (mounted)
+                                                      setState(() {
+                                                        selectedMethod = 0;
+                                                        payMethod =
+                                                            getTranslated(
+                                                                context,
+                                                                'COD_LBL');
+                                                        payIcon =
+                                                            'assets/images/cod.svg';
+                                                        payModel.forEach(
+                                                            (element) => element
+                                                                    .isSelected =
+                                                                false);
+                                                        payModel[index]
+                                                            .isSelected = true;
+                                                      });
+                                                  },
+                                                  child: new RadioItem(
+                                                      payModel[index]),
+                                                );
                                               }),
                                         ],
                                       ),
@@ -462,15 +451,12 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
     if (_isNetworkAvail) {
       timeSlotList.clear();
       try {
-        var parameter = {
-          TYPE: PAYMENT_METHOD,
-          USER_ID:CUR_USERID
-        };
+        var parameter = {TYPE: PAYMENT_METHOD, USER_ID: CUR_USERID};
         Response response =
             await post(getSettingApi, body: parameter, headers: headers)
                 .timeout(Duration(seconds: timeOut));
 
-         if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
@@ -482,7 +468,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
             isTimeSlot =
                 time_slot["is_time_slots_enabled"] == "1" ? true : false;
             startingDate = time_slot["starting_date"];
-            codAllowed=data["is_cod_allowed"]==1?true:false;
+            codAllowed = data["is_cod_allowed"] == 1 ? true : false;
 
             var timeSlots = data["time_slots"];
             timeSlotList = (timeSlots as List)
@@ -533,9 +519,11 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
             var payment = data["payment_method"];
 
-
-
-            cod = codAllowed?payment["cod_method"] == "1" ? true : false:false;
+            cod = codAllowed
+                ? payment["cod_method"] == "1"
+                    ? true
+                    : false
+                : false;
             paypal = payment["paypal_payment_method"] == "1" ? true : false;
             paumoney =
                 payment["payumoney_payment_method"] == "1" ? true : false;
@@ -552,14 +540,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
               plugin.initialize(publicKey: paystackId);
             }
-            if (stripe) {
-              stripeId = payment['stripe_publishable_key'];
-              stripeSecret = payment['stripe_secret_key'];
-              stripeCurCode = payment['stripe_currency_code'];
-              stripeMode = payment['stripe_mode'] ?? 'test';
-              StripeService.secret = stripeSecret;
-              StripeService.init(stripeId, stripeMode);
-            }
+
             if (paytm) {
               paytmMerId = payment['paytm_merchant_id'];
               paytmMerKey = payment['paytm_merchant_key'];
@@ -612,9 +593,9 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       onTap: () {
         if (mounted)
           setState(() {
-            selectedMethod = index;
-            payMethod = paymentMethodList[selectedMethod];
-            payIcon = paymentIconList[selectedMethod];
+            selectedMethod = 0;
+            payMethod = getTranslated(context, 'COD_LBL');
+            payIcon = 'assets/images/cod.svg';
             payModel.forEach((element) => element.isSelected = false);
             payModel[index].isSelected = true;
           });

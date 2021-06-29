@@ -18,7 +18,6 @@ import 'Helper/AppBtn.dart';
 import 'Helper/Color.dart';
 import 'Helper/SimBtn.dart';
 import 'Helper/String.dart';
-import 'Helper/Stripe_Service.dart';
 import 'Home.dart';
 import 'Manage_Address.dart';
 import 'Model/Section_Model.dart';
@@ -2075,10 +2074,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                       flutterwavePayment();
                                                     else if (payMethod ==
                                                         getTranslated(context,
-                                                            'STRIPE_LBL'))
-                                                      stripePayment();
-                                                    else if (payMethod ==
-                                                        getTranslated(context,
                                                             'PAYTM_LBL'))
                                                       paytmPayment();
                                                     else
@@ -2566,32 +2561,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     }
 
     return 'ChargedFrom${platform}_${DateTime.now().millisecondsSinceEpoch}';
-  }
-
-  stripePayment() async {
-    if (mounted)
-      setState(() {
-        _isProgress = true;
-      });
-    checkoutState(() {});
-    var response = await StripeService.payWithNewCard(
-        amount: (totalPrice.toInt() * 100).toString(),
-        currency: stripeCurCode,
-        from: "order");
-
-    if (response.message == "Transaction successful") {
-      placeOrder(response.status);
-    } else if (response.status == 'pending' || response.status == "captured") {
-      placeOrder(response.status);
-    } else {
-      if (mounted)
-        setState(() {
-          _isProgress = false;
-          _placeOrder = true;
-        });
-      checkoutState(() {});
-    }
-    setSnackbar(response.message, _checkscaffoldKey);
   }
 
   address() {

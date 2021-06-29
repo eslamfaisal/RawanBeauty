@@ -40,9 +40,7 @@ class _SplashScreen extends State<Splash> {
                         height: double.infinity,
                         decoration: back(),
                         child: Center(
-                            child: SvgPicture.asset(
-                                'assets/images/splashlogo.svg',
-                            ),
+                            child: Text('Rawan Beauty',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 36,color: Colors.white),),
                         ),
                     ),
                     Image.asset(

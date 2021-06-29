@@ -18,7 +18,6 @@ import 'Helper/PaymentRadio.dart';
 import 'Helper/Session.dart';
 import 'Helper/SimBtn.dart';
 import 'Helper/String.dart';
-import 'Helper/Stripe_Service.dart';
 import 'Model/Transaction_Model.dart';
 
 class MyWallet extends StatefulWidget {
@@ -351,10 +350,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                             payWarn = true;
                           });
                         } else {
-                          if (payMethod.trim() ==
-                              getTranslated(context, 'STRIPE_LBL').trim()) {
-                            stripePayment(int.parse(amtC.text));
-                          } else if (payMethod.trim() ==
+                           if (payMethod.trim() ==
                               getTranslated(context, 'RAZORPAY_LBL').trim())
                             razorpayPayment(double.parse(amtC.text));
                           else if (payMethod.trim() ==
@@ -529,24 +525,6 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
     } catch (e) {
       print(e);
     }
-  }
-
-  stripePayment(int price) async {
-    if (mounted)
-      setState(() {
-        _isProgress = true;
-      });
-
-    var response = await StripeService.payWithNewCard(
-        amount: (price * 100).toString(),
-        currency: stripeCurCode,
-        from: "wallet");
-
-    if (mounted)
-      setState(() {
-        _isProgress = false;
-      });
-    setSnackbar(response.message);
   }
 
   paystackPayment(BuildContext context, int price) async {
@@ -942,14 +920,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
 
               paystackPlugin.initialize(publicKey: paystackId);
             }
-            if (stripe) {
-              stripeId = payment['stripe_publishable_key'];
-              stripeSecret = payment['stripe_secret_key'];
-              stripeCurCode = payment['stripe_currency_code'];
-              stripeMode = payment['stripe_mode'] ?? 'test';
-              StripeService.secret = stripeSecret;
-              StripeService.init(stripeId, stripeMode);
-            }
+
             if (paytm) {
               paytmMerId = payment['paytm_merchant_id'];
               paytmMerKey = payment['paytm_merchant_key'];

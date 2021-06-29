@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-  flutterVersionCode = '1'
+  flutterVersionCode = '2.1'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-  flutterVersionName = '1.0'
+  flutterVersionName = '2.1'
 }
 
 apply plugin: 'com.android.application'
@@ -26,6 +26,14 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
 
 android {
+  signingConfigs {
+    release {
+      storeFile file('C:\\Users\\eslam\\Desktop\\eslam\\Projects\\flutter\\RawanBeauty\\key_store.jks')
+      storePassword '123456789'
+      keyAlias 'upload'
+      keyPassword '123456789'
+    }
+  }
   compileSdkVersion 29
 
   lintOptions {
@@ -40,17 +48,18 @@ android {
     applicationId "com.rawan.beauty"
     minSdkVersion 21
     targetSdkVersion 29
-    versionCode flutterVersionCode.toInteger()
-    versionName flutterVersionName
+    versionCode 4
+    versionName "4"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     multiDexEnabled true
+    signingConfig signingConfigs.release
   }
 
   buildTypes {
     release {
       // TODO: Add your own signing config for the release build.
       // Signing with the debug keys for now, so `flutter run --release` works.
-      signingConfig signingConfigs.debug
+      signingConfig signingConfigs.release
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
     }

@@ -91,7 +91,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
     mobileC = new TextEditingController();
     nameC = new TextEditingController();
     altMobC = new TextEditingController();
-    pincodeC = new TextEditingController();
+    pincodeC = new TextEditingController(text: "111111");
     addressC = new TextEditingController();
     stateC = new TextEditingController();
     countryC = new TextEditingController();
@@ -933,7 +933,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
                                   // setLandmark(),
                                   setCities(),
                                   setArea(),
-                                  setPincode(),
+                                  // setPincode(),
                                   setStateField(),
                                   setCountry(),
                                   typeOfAddress(),

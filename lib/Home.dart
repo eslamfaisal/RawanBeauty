@@ -143,12 +143,11 @@ class StateHome extends State<Home> {
         : getTranslated(context, 'NOTIFICATION');
 
     return AppBar(
-      title: curSelected == 0
-          ? SvgPicture.asset('assets/images/titleicon.svg')
-          : Text(
-              title,
+      title: Text(
+              'Rawan Beauty',
               style: TextStyle(
                 color: colors.fontColor,
+                fontWeight: FontWeight.bold
               ),
             ),
       iconTheme: new IconThemeData(color: colors.primary),
