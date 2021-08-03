@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>365058967814-6nrkjtfh0u9b3dgqvep9k70q1ncennak.apps.googleusercontent.com</string>
+	<string>65827511555-l0g0s0n9itio0cd50dbbph752cododr9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.365058967814-6nrkjtfh0u9b3dgqvep9k70q1ncennak</string>
+	<string>com.googleusercontent.apps.65827511555-l0g0s0n9itio0cd50dbbph752cododr9</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>365058967814-vqn7r83bvkd6e8tvh45g7ink8739gqao.apps.googleusercontent.com</string>
+	<string>65827511555-4h7r77snjmho99e1ktqtkf54mnpkvqd4.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAL5fpg6ptmwGRWlGTC9kI6_dqxuKqChZc</string>
+	<string>AIzaSyDH_uFOZukkrR2bjPacJ5g7eaCzJJPwv4k</string>
 	<key>GCM_SENDER_ID</key>
-	<string>365058967814</string>
+	<string>65827511555</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.wrteam.eshop</string>
+	<string>com.rawan.beauty</string>
 	<key>PROJECT_ID</key>
-	<string>eshop-2210d</string>
+	<string>rawanbeauty3</string>
 	<key>STORAGE_BUCKET</key>
-	<string>eshop-2210d.appspot.com</string>
+	<string>rawanbeauty3.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:365058967814:ios:3cbab6f4955b17d69a7687</string>
-	<key>DATABASE_URL</key>
-	<string>https://eshop-2210d.firebaseio.com</string>
+	<string>1:65827511555:ios:c0359e35453feeac075d36</string>
 </dict>
 </plist>
