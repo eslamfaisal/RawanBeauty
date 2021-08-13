@@ -138,19 +138,6 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                   .copyWith(color: colors.fontColor),
                             )
                           : Container(),
-                      CUR_BALANCE != null &&
-                              CUR_BALANCE != "" &&
-                              CUR_BALANCE != "0" &&
-                              CUR_BALANCE.isNotEmpty
-                          ? Text(
-                              CUR_CURRENCY +
-                                  " " +
-                                  "${double.parse(CUR_BALANCE).toStringAsFixed(2)}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2
-                                  .copyWith(color: colors.fontColor))
-                          : Container(),
                       CUR_USERNAME == "" || CUR_USERNAME == null
                           ? Padding(
                               padding: const EdgeInsetsDirectional.only(top: 7),
@@ -177,58 +164,11 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                               padding: const EdgeInsetsDirectional.only(
                                 top: 7,
                               ),
-                              child: InkWell(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                        getTranslated(
-                                            context, 'EDIT_PROFILE_LBL'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption
-                                            .copyWith(color: colors.primary)),
-                                    Icon(
-                                      Icons.arrow_right_outlined,
-                                      color: colors.primary,
-                                      size: 20,
-                                    ),
-                                  ],
-                                ),
-                                onTap: () async {
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Profile(),
-                                      ));
-
-                                  getUserDetails();
-                                },
-                              ))
+                              child: Container())
                     ],
                   )),
               Spacer(),
-              Container(
-                margin: EdgeInsetsDirectional.only(end: 20),
-                height: 64,
-                width: 64,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 1.0, color: colors.white)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100.0),
-                  child: profile != null
-                      ? new FadeInImage(
-                          fadeInDuration: Duration(milliseconds: 150),
-                          image: NetworkImage(profile),
-                          height: 64.0,
-                          width: 64.0,
-                          fit: BoxFit.cover,
-                          placeholder: placeHolder(64),
-                        )
-                      : imagePlaceHolder(62),
-                ),
-              ),
+
             ],
           ),
         ));
@@ -559,22 +499,9 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
         children: <Widget>[
           _getDrawerItem(getTranslated(context, 'MY_ORDERS_LBL'),
               'assets/images/pro_myorder.svg'),
-          _getDivider(),
-          _getDrawerItem(getTranslated(context, 'MANAGE_ADD_LBL'),
-              'assets/images/pro_address.svg'),
-          _getDivider(),
-          CUR_USERID == "" || CUR_USERID == null
-              ? Container()
-              : _getDrawerItem(getTranslated(context, 'MYWALLET'),
-                  'assets/images/pro_wh.svg'),
-          CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
-          CUR_USERID == "" || CUR_USERID == null
-              ? Container()
-              : _getDrawerItem(getTranslated(context, 'MYTRANSACTION'),
-                  'assets/images/pro_th.svg'),
-          CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
-          _getDrawerItem(getTranslated(context, 'CHANGE_THEME_LBL'),
-              'assets/images/pro_theme.svg'),
+
+
+
           _getDivider(),
           _getDrawerItem(getTranslated(context, 'CHANGE_LANGUAGE_LBL'),
               'assets/images/pro_language.svg'),
@@ -605,33 +532,33 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         children: <Widget>[
-          CUR_USERID == "" || CUR_USERID == null
-              ? Container()
-              : _getDrawerItem(getTranslated(context, 'REFEREARN'),
-                  'assets/images/pro_referral.svg'),
+          // CUR_USERID == "" || CUR_USERID == null
+          //     ? Container()
+          //     : _getDrawerItem(getTranslated(context, 'REFEREARN'),
+          //         'assets/images/pro_referral.svg'),
 
           // CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
           //   _getDrawerItem(getTranslated(context, 'CUSTOMER_SUPPORT'),
           //     'assets/images/pro_customersupport.svg'),
-           _getDivider(),
-
-          _getDrawerItem(getTranslated(context, 'ABOUT_LBL'),
-              'assets/images/pro_aboutus.svg'),
-          _getDivider(),
-          _getDrawerItem(getTranslated(context, 'CONTACT_LBL'),
-              'assets/images/pro_customersupport.svg'),
-          _getDivider(),
-          _getDrawerItem(
-              getTranslated(context, 'FAQS'), 'assets/images/pro_faq.svg'),
-          _getDivider(),
-          _getDrawerItem(
-              getTranslated(context, 'PRIVACY'), 'assets/images/pro_pp.svg'),
-          _getDivider(),
-          _getDrawerItem(
-              getTranslated(context, 'TERM'), 'assets/images/pro_tc.svg'),
-          _getDivider(),
-          _getDrawerItem(getTranslated(context, 'RATE_US'),
-              'assets/images/pro_rateus.svg'),
+          //  _getDivider(),
+          //
+          // _getDrawerItem(getTranslated(context, 'ABOUT_LBL'),
+          //     'assets/images/pro_aboutus.svg'),
+          // _getDivider(),
+          // _getDrawerItem(getTranslated(context, 'CONTACT_LBL'),
+          //     'assets/images/pro_customersupport.svg'),
+          // _getDivider(),
+          // _getDrawerItem(
+          //     getTranslated(context, 'FAQS'), 'assets/images/pro_faq.svg'),
+          // _getDivider(),
+          // _getDrawerItem(
+          //     getTranslated(context, 'PRIVACY'), 'assets/images/pro_pp.svg'),
+          // _getDivider(),
+          // _getDrawerItem(
+          //     getTranslated(context, 'TERM'), 'assets/images/pro_tc.svg'),
+          // _getDivider(),
+          // _getDrawerItem(getTranslated(context, 'RATE_US'),
+          //     'assets/images/pro_rateus.svg'),
           _getDivider(),
           _getDrawerItem(getTranslated(context, 'SHARE_APP'),
               'assets/images/pro_share.svg'),

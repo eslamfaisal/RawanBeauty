@@ -378,25 +378,6 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                          child: Card(
-                              elevation: 0,
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Icon(
-                                        Icons.share_outlined,
-                                        color: colors.primary,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      createDynamicLink();
-                                    }),
-                              ))),
-                      Container(
                           //  decoration: shadow(),
                           child: Card(
                               elevation: 0,
@@ -1376,7 +1357,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                       _specification(),
                       Divider(),
 //if you want to remove discount and coupon then just double slash below line
-                      _discountCoupon(),
+//                       _discountCoupon(),
                       if (widget.model.tagList != null &&
                           widget.model.tagList.isNotEmpty)
                         Divider(),

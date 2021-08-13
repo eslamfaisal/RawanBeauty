@@ -298,19 +298,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                       color: colors.primary,
                     ),
                   )
-                : IconButton(
-                    icon: Icon(
-                      Icons.mic,
-                      color: colors.primary,
-                    ),
-                    onPressed: () {
-                      lastWords = '';
-                      if (!_hasSpeech)
-                        initSpeechState();
-                      else
-                        showSpeechDialog();
-                    },
-                  )
+                : Container()
           ],
         ),
         body: _isNetworkAvail

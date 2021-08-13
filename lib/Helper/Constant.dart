@@ -4,7 +4,7 @@ final String packageName = 'com.rawan.beauty';
 final String androidLink = 'https://play.google.com/store/apps/details?id=';
 
 final String iosPackage = 'com.wrteam.eshop';
-final String iosLink = 'your ios link here';
+final String iosLink = 'rawanbeauty.me';
 final String appStoreId = '123456789';
 
 final String deepLinkUrlPrefix = 'https://eshopwrteamin.page.link';

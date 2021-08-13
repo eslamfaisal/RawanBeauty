@@ -276,18 +276,19 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                         title: Text('Add to Cart'),
                                       ),
                                     ),
-                                    PopupMenuItem(
-                                      value: 2,
-                                      child: ListTile(
-                                        dense: true,
-                                        contentPadding:
-                                            EdgeInsetsDirectional.only(
-                                                start: 0.0, end: 0.0),
-                                        leading: Icon(Icons.share_outlined,
-                                            color: colors.fontColor, size: 20),
-                                        title: Text('Share'),
-                                      ),
-                                    ),
+
+                                    // PopupMenuItem(
+                                    //   value: 2,
+                                    //   child: ListTile(
+                                    //     dense: true,
+                                    //     contentPadding:
+                                    //         EdgeInsetsDirectional.only(
+                                    //             start: 0.0, end: 0.0),
+                                    //     leading: Icon(Icons.share_outlined,
+                                    //         color: colors.fontColor, size: 20),
+                                    //     title: Text('Share'),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
