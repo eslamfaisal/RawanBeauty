@@ -193,7 +193,7 @@ class _MobileOTPState extends State<VerifyOtp> with TickerProviderStateMixin {
     };
 
     await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: "+${widget.countryCode}${widget.mobileNumber}",
+        phoneNumber: "+2${widget.mobileNumber}",
         timeout: const Duration(seconds: 60),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,

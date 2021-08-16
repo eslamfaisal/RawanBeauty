@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Privacy_Policy.dart';
 import 'package:eshop/Verify_Otp.dart';
@@ -32,7 +31,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
   final mobileController = TextEditingController();
   final ccodeController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String mobile, id, countrycode, countryName, mobileno;
+  String mobile, id, countrycode ="2", countryName = "EG", mobileno;
   bool _isNetworkAvail = true;
   Animation buttonSqueezeanimation;
   AnimationController buttonController;
@@ -248,46 +247,13 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: setCountryCode(),
-                ),
+
                 Expanded(
                   flex: 4,
                   child: setMono(),
                 )
               ],
             )));
-  }
-
-  setCountryCode() {
-    double width = deviceWidth;
-    double height = deviceHeight * 0.9;
-    return CountryCodePicker(
-        showCountryOnly: false,
-        flagWidth: 20,
-
-        boxDecoration: BoxDecoration(
-          color: colors.lightWhite,
-        ),
-        searchDecoration: InputDecoration(
-          hintText: getTranslated(context, 'COUNTRY_CODE_LBL'),
-          hintStyle: TextStyle(color: colors.fontColor),
-          fillColor: colors.fontColor,
-        ),
-        showOnlyCountryWhenClosed: false,
-        initialSelection: 'IN',
-        dialogSize: Size(width, height),
-        alignLeft: true,
-        textStyle:
-        TextStyle(color: colors.fontColor, fontWeight: FontWeight.bold),
-        onChanged: (CountryCode countryCode) {
-          countrycode = countryCode.toString().replaceFirst("+", "");
-          countryName = countryCode.name;
-        },
-        onInit: (code) {
-          countrycode = code.toString().replaceFirst("+", "");
-        });
   }
 
   setMono() {

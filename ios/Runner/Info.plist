@@ -23,13 +23,17 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleIdentifier</key>
+			<string></string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string></string>
 			<key>CFBundleURLName</key>
-			<string>Bundle id</string>
+			<string>com.rawan.beauty</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.wrteam.eshop</string>
+				<string>com.googleusercontent.apps.65827511555-l0g0s0n9itio0cd50dbbph752cododr9</string>
 			</array>
 		</dict>
 	</array>

@@ -1,4 +1,3 @@
-import 'package:country_code_picker/country_localizations.dart';
 import 'package:eshop/Helper/Color.dart';
 import 'package:eshop/Helper/Constant.dart';
 import 'package:eshop/Splash.dart';
@@ -121,7 +120,6 @@ class _MyAppState extends State<MyApp> {
           Locale("de", "DE")
         ],
         localizationsDelegates: [
-          CountryLocalizations.delegate,
           DemoLocalization.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
