@@ -26,10 +26,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
     return Padding(
       padding: EdgeInsetsDirectional.only(top: 30.0),
       child: new Text(
-        getTranslated(context, 'WELCOME_ESHOP'),
+        getTranslated(context, 'WELCOME_ESHOP')!,
         style: Theme.of(context)
             .textTheme
-            .subtitle1
+            .subtitle1!
             .copyWith(color: colors.fontColor, fontWeight: FontWeight.bold),
       ),
     );
@@ -41,10 +41,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
         top: 5.0,
       ),
       child: new Text(
-        getTranslated(context, 'ECOMMERCE_APP_FOR_ALL_BUSINESS'),
+        getTranslated(context, 'ECOMMERCE_APP_FOR_ALL_BUSINESS')!,
         style: Theme.of(context)
             .textTheme
-            .subtitle2
+            .subtitle2!
             .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
       ),
     );
@@ -54,10 +54,10 @@ class _SignInUpAccState extends State<SignInUpAcc> {
     return Padding(
       padding: EdgeInsetsDirectional.only(top: 80.0, bottom: 40),
       child: new Text(
-        getTranslated(context, 'SIGNIN_ACC_LBL'),
+        getTranslated(context, 'SIGNIN_ACC_LBL')!,
         style: Theme.of(context)
             .textTheme
-            .subtitle1
+            .subtitle1!
             .copyWith(color: colors.fontColor, fontWeight: FontWeight.bold),
       ),
     );
@@ -66,7 +66,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   signInBtn() {
     return CupertinoButton(
       child: Container(
-          width: deviceWidth * 0.8,
+          width: deviceWidth! * 0.8,
           height: 45,
           alignment: FractionalOffset.center,
           decoration: new BoxDecoration(
@@ -77,11 +77,11 @@ class _SignInUpAccState extends State<SignInUpAcc> {
                 stops: [0, 1]),
             borderRadius: new BorderRadius.all(const Radius.circular(10.0)),
           ),
-          child: Text(getTranslated(context, 'SIGNIN_LBL'),
+          child: Text(getTranslated(context, 'SIGNIN_LBL')!,
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(color: colors.white, fontWeight: FontWeight.normal))),
       onPressed: () {
         Navigator.push(context,
@@ -93,7 +93,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   createAccBtn() {
     return CupertinoButton(
       child: Container(
-          width: deviceWidth * 0.8,
+          width: deviceWidth! * 0.8,
           height: 45,
           alignment: FractionalOffset.center,
           decoration: new BoxDecoration(
@@ -104,11 +104,11 @@ class _SignInUpAccState extends State<SignInUpAcc> {
                 stops: [0, 1]),
             borderRadius: new BorderRadius.all(const Radius.circular(10.0)),
           ),
-          child: Text(getTranslated(context, 'CREATE_ACC_LBL'),
+          child: Text(getTranslated(context, 'CREATE_ACC_LBL')!,
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(color: colors.white, fontWeight: FontWeight.normal))),
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
@@ -123,7 +123,7 @@ class _SignInUpAccState extends State<SignInUpAcc> {
   skipSignInBtn() {
     return CupertinoButton(
       child: Container(
-          width: deviceWidth * 0.8,
+          width: deviceWidth! * 0.8,
           height: 45,
           alignment: FractionalOffset.center,
           decoration: new BoxDecoration(
@@ -134,11 +134,11 @@ class _SignInUpAccState extends State<SignInUpAcc> {
                 stops: [0, 1]),
             borderRadius: new BorderRadius.all(const Radius.circular(10.0)),
           ),
-          child: Text(getTranslated(context, 'SKIP_SIGNIN_LBL'),
+          child: Text(getTranslated(context, 'SKIP_SIGNIN_LBL')!,
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(color: colors.white, fontWeight: FontWeight.normal))),
       onPressed: () {
         Navigator.pushNamedAndRemoveUntil(context, "/home", (r) => false);

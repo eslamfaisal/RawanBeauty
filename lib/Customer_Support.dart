@@ -17,12 +17,12 @@ class CustomerSupport extends StatefulWidget {
 
 class _CustomerSupportState extends State<CustomerSupport> {
   bool _isLoading = true, _isProgress = false;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  late AnimationController buttonController;
   bool _isNetworkAvail = true;
   List<Model> typeList = [];
-  String type, email, title, desc;
-  FocusNode nameFocus, emailFocus, descFocus;
+  String? type, email, title, desc;
+  FocusNode? nameFocus, emailFocus, descFocus;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final descController = TextEditingController();
@@ -47,7 +47,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(getTranslated(context, 'CUSTOMER_SUPPORT'), context),
+      appBar: getAppBar(getTranslated(context, 'CUSTOMER_SUPPORT')!, context),
       body: _isLoading
           ? shimmer()
           : SingleChildScrollView(
@@ -85,10 +85,10 @@ class _CustomerSupportState extends State<CustomerSupport> {
       iconEnabledColor: colors.fontColor,
       isDense: true,
       hint: new Text(
-        getTranslated(context, 'SELECT_TYPE'),
+        getTranslated(context, 'SELECT_TYPE')!,
         style: Theme.of(this.context)
             .textTheme
-            .subtitle2
+            .subtitle2!
             .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
       ),
       decoration: InputDecoration(
@@ -108,9 +108,9 @@ class _CustomerSupportState extends State<CustomerSupport> {
       value: type,
       style: Theme.of(context)
           .textTheme
-          .subtitle2
+          .subtitle2!
           .copyWith(color: colors.fontColor),
-      onChanged: (String newValue) {
+      onChanged: (String? newValue) {
         if (mounted)
           setState(() {
             type = newValue;
@@ -120,7 +120,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
         return DropdownMenuItem<String>(
           value: user.id,
           child: Text(
-            user.title,
+            user.title!,
           ),
         );
       }).toList(),
@@ -157,7 +157,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
   }
 
   bool validateAndSave() {
-    final form = _formkey.currentState;
+    final form = _formkey.currentState!;
     form.save();
     if (form.validate()) {
       return true;
@@ -178,20 +178,20 @@ class _CustomerSupportState extends State<CustomerSupport> {
         style:
             TextStyle(color: colors.fontColor, fontWeight: FontWeight.normal),
         validator: (val) => validateEmail(
-            val,
+            val!,
             getTranslated(context, 'EMAIL_REQUIRED'),
             getTranslated(context, 'VALID_EMAIL')),
-        onSaved: (String value) {
+        onSaved: (String? value) {
           email = value;
         },
         onFieldSubmitted: (v) {
-          _fieldFocusChange(context, emailFocus, nameFocus);
+          _fieldFocusChange(context, emailFocus!, nameFocus);
         },
         decoration: InputDecoration(
           hintText: getTranslated(context, 'EMAILHINT_LBL'),
           hintStyle: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           filled: true,
           fillColor: colors.lightWhite,
@@ -221,18 +221,18 @@ class _CustomerSupportState extends State<CustomerSupport> {
         style:
             TextStyle(color: colors.fontColor, fontWeight: FontWeight.normal),
         validator: (val) =>
-            validateField(val, getTranslated(context, 'FIELD_REQUIRED')),
-        onSaved: (String value) {
+            validateField(val!, getTranslated(context, 'FIELD_REQUIRED')),
+        onSaved: (String? value) {
           title = value;
         },
         onFieldSubmitted: (v) {
-          _fieldFocusChange(context, emailFocus, nameFocus);
+          _fieldFocusChange(context, emailFocus!, nameFocus);
         },
         decoration: InputDecoration(
           hintText: getTranslated(context, 'TITLE'),
           hintStyle: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           filled: true,
           fillColor: colors.lightWhite,
@@ -262,18 +262,18 @@ class _CustomerSupportState extends State<CustomerSupport> {
         style:
             TextStyle(color: colors.fontColor, fontWeight: FontWeight.normal),
         validator: (val) =>
-            validateField(val, getTranslated(context, 'FIELD_REQUIRED')),
-        onSaved: (String value) {
+            validateField(val!, getTranslated(context, 'FIELD_REQUIRED')),
+        onSaved: (String? value) {
           desc = value;
         },
         onFieldSubmitted: (v) {
-          _fieldFocusChange(context, emailFocus, nameFocus);
+          _fieldFocusChange(context, emailFocus!, nameFocus);
         },
         decoration: InputDecoration(
           hintText: getTranslated(context, 'DESCRIPTION'),
           hintStyle: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           filled: true,
           fillColor: colors.lightWhite,
@@ -292,7 +292,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
   }
 
   _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+      BuildContext context, FocusNode currentFocus, FocusNode? nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
@@ -306,7 +306,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
 
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
 
           var data = getdata["data"];
@@ -315,14 +315,14 @@ class _CustomerSupportState extends State<CustomerSupport> {
               .map((data) => new Model.fromSupport(data))
               .toList();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
         if (mounted)
           setState(() {
             _isLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -377,7 +377,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
       if (response.statusCode == 200) {
         var getdata = json.decode(response.body);
 
-        bool error = getdata["error"];
+        bool? error = getdata["error"];
         String msg = getdata["message"];
 
       
@@ -397,7 +397,7 @@ class _CustomerSupportState extends State<CustomerSupport> {
         setSnackbar(msg);
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
     }
   }
 }

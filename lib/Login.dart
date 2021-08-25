@@ -22,12 +22,12 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final mobileController = TextEditingController();
   final passwordController = TextEditingController();
-  String countryName;
-  FocusNode passFocus, monoFocus = FocusNode();
+  String? countryName;
+  FocusNode? passFocus, monoFocus = FocusNode();
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool visible = false;
-  String password,
+  String? password,
       mobile,
       username,
       email,
@@ -41,9 +41,9 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       longitude,
       image;
   bool _isNetworkAvail = true;
-  Animation buttonSqueezeanimation;
+  Animation? buttonSqueezeanimation;
 
-  AnimationController buttonController;
+  AnimationController? buttonController;
 
   @override
   void initState() {
@@ -52,10 +52,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -65,13 +65,13 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -88,7 +88,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       getLoginUser();
     } else {
       Future.delayed(Duration(seconds: 2)).then((_) async {
-        await buttonController.reverse();
+        await buttonController!.reverse();
         if (mounted)
           setState(() {
             _isNetworkAvail = false;
@@ -98,7 +98,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
   }
 
   bool validateAndSave() {
-    final form = _formkey.currentState;
+    final form = _formkey.currentState!;
     form.save();
     if (form.validate()) {
       return true;
@@ -141,7 +141,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -163,10 +163,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
 
     bool error = getdata["error"];
-    String msg = getdata["message"];
-    await buttonController.reverse();
+    String? msg = getdata["message"];
+    await buttonController!.reverse();
     if (!error) {
-      setSnackbar(msg);
+      setSnackbar(msg!);
       var i = getdata["data"][0];
       id = i[ID];
       username = i[USERNAME];
@@ -183,12 +183,12 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       CUR_USERID = id;
       CUR_USERNAME = username;
 
-      saveUserDetail(id, username, email, mobile, city, area, address, pincode,
+      saveUserDetail(id!, username, email, mobile, city, area, address, pincode,
           latitude, longitude, image);
 
       Navigator.pushNamedAndRemoveUntil(context, "/home", (r) => false);
     } else {
-      setSnackbar(msg);
+      setSnackbar(msg!);
     }
   }
 
@@ -211,10 +211,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         child: Align(
           alignment: Alignment.center,
           child: new Text(
-            getTranslated(context, 'SIGNIN_LBL'),
+            getTranslated(context, 'SIGNIN_LBL')!,
             style: Theme.of(context)
                 .textTheme
-                .subtitle1
+                .subtitle1!
                 .copyWith(color: colors.fontColor, fontWeight: FontWeight.bold),
           ),
         ));
@@ -222,7 +222,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
   setMobileNo() {
     return Container(
-      width: deviceWidth * 0.7,
+      width: deviceWidth! * 0.7,
       padding: EdgeInsetsDirectional.only(
         top: 30.0,
       ),
@@ -238,10 +238,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
         textInputAction: TextInputAction.next,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         validator: (val) => validateMob(
-            val,
+            val!,
             getTranslated(context, 'MOB_REQUIRED'),
             getTranslated(context, 'VALID_MOB')),
-        onSaved: (String value) {
+        onSaved: (String? value) {
           mobile = value;
         },
         decoration: InputDecoration(
@@ -253,7 +253,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           hintText: getTranslated(context, 'MOBILEHINT_LBL'),
           hintStyle: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           filled: true,
           fillColor: colors.lightWhite,
@@ -274,7 +274,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
 
   setPass() {
     return Container(
-        width: deviceWidth * 0.7,
+        width: deviceWidth! * 0.7,
         padding: EdgeInsetsDirectional.only(top: 20.0),
         child: TextFormField(
           keyboardType: TextInputType.text,
@@ -283,10 +283,10 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           style: TextStyle(color: colors.fontColor),
           controller: passwordController,
           validator: (val) => validatePass(
-              val,
+              val!,
               getTranslated(context, 'PWD_REQUIRED'),
               getTranslated(context, 'PWD_LENGTH')),
-          onSaved: (String value) {
+          onSaved: (String? value) {
             password = value;
           },
           decoration: InputDecoration(
@@ -296,7 +296,7 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
               size: 17,
             ),
             hintText: getTranslated(context, 'PASSHINT_LBL'),
-            hintStyle: Theme.of(this.context).textTheme.subtitle2.copyWith(
+            hintStyle: Theme.of(this.context).textTheme.subtitle2!.copyWith(
                 color: colors.fontColor, fontWeight: FontWeight.normal),
             filled: true,
             fillColor: colors.lightWhite,
@@ -322,8 +322,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
           children: <Widget>[
             InkWell(
               onTap: () {
-                setPrefrence(ID, id);
-                setPrefrence(MOBILE, mobile);
+                setPrefrence(ID, id!);
+                setPrefrence(MOBILE, mobile!);
 
                 Navigator.push(
                     context,
@@ -333,8 +333,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                                   getTranslated(context, 'FORGOT_PASS_TITLE'),
                             )));
               },
-              child: Text(getTranslated(context, 'FORGOT_PASSWORD_LBL'),
-                  style: Theme.of(context).textTheme.subtitle2.copyWith(
+              child: Text(getTranslated(context, 'FORGOT_PASSWORD_LBL')!,
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
                       color: colors.fontColor, fontWeight: FontWeight.normal)),
             ),
           ],
@@ -348,8 +348,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(getTranslated(context, 'DONT_HAVE_AN_ACC'),
-              style: Theme.of(context).textTheme.caption.copyWith(
+          Text(getTranslated(context, 'DONT_HAVE_AN_ACC')!,
+              style: Theme.of(context).textTheme.caption!.copyWith(
                   color: colors.fontColor, fontWeight: FontWeight.normal)),
           InkWell(
               onTap: () {
@@ -360,8 +360,8 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
                 ));
               },
               child: Text(
-                getTranslated(context, 'SIGN_UP_LBL'),
-                style: Theme.of(context).textTheme.caption.copyWith(
+                getTranslated(context, 'SIGN_UP_LBL')!,
+                style: Theme.of(context).textTheme.caption!.copyWith(
                     color: colors.fontColor,
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.normal),

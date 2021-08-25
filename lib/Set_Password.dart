@@ -18,8 +18,8 @@ class SetPass extends StatefulWidget {
   final String mobileNumber;
 
   SetPass({
-    Key key,
-    @required this.mobileNumber,
+    Key? key,
+    required this.mobileNumber,
   })  : assert(mobileNumber != null),  
         super(key: key);
 
@@ -32,11 +32,11 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
   final confirmpassController = TextEditingController();
   final passwordController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String password, comfirmpass;
+  String? password, comfirmpass;
   bool _isNetworkAvail = true;
-  Animation buttonSqueezeanimation;
+  Animation? buttonSqueezeanimation;
 
-  AnimationController buttonController;
+  AnimationController? buttonController;
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
@@ -55,13 +55,13 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
           setState(() {
             _isNetworkAvail = false;
           });
-        await buttonController.reverse();
+        await buttonController!.reverse();
       });
     }
   }
 
   bool validateAndSave() {
-    final form = _formkey.currentState;
+    final form = _formkey.currentState!;
     form.save();
     if (form.validate()) {
       return true;
@@ -104,7 +104,7 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -125,23 +125,23 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
       if (response.statusCode == 200) {
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
-        await buttonController.reverse();
+        String? msg = getdata["message"];
+        await buttonController!.reverse();
         if (!error) {
-          setSnackbar(getTranslated(context, 'PASS_SUCCESS_MSG'));
+          setSnackbar(getTranslated(context, 'PASS_SUCCESS_MSG')!);
           Future.delayed(Duration(seconds: 1)).then((_) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (BuildContext context) => Login(),
             ));
           });
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
       if (mounted) setState(() {});
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
-      await buttonController.reverse();
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
+      await buttonController!.reverse();
     }
   }
 
@@ -160,10 +160,10 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
         padding: EdgeInsetsDirectional.only(top: 30.0),
         child: Center(
           child: new Text(
-            getTranslated(context, 'FORGOT_PASSWORDTITILE'),
+            getTranslated(context, 'FORGOT_PASSWORDTITILE')!,
             style: Theme.of(context)
                 .textTheme
-                .subtitle1
+                .subtitle1!
                 .copyWith(color: colors.fontColor, fontWeight: FontWeight.bold),
           ),
         ));
@@ -171,7 +171,7 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
@@ -183,14 +183,14 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
           obscureText: true,
           style: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           controller: passwordController,
           validator: (val) => validatePass(
-              val,
+              val!,
               getTranslated(context, 'PWD_REQUIRED'),
               getTranslated(context, 'PWD_LENGTH')),
-          onSaved: (String value) {
+          onSaved: (String? value) {
             password = value;
           },
           decoration: InputDecoration(
@@ -225,11 +225,11 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
           obscureText: true,
           style: Theme.of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           controller: confirmpassController,
           validator: (value) {
-            if (value.length == 0)
+            if (value!.length == 0)
               return getTranslated(context, 'CON_PASS_REQUIRED_MSG');
             if (value != password) {
               return getTranslated(context, 'CON_PASS_NOT_MATCH_MSG');
@@ -237,7 +237,7 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
               return null;
             }
           },
-          onSaved: (String value) {
+          onSaved: (String? value) {
             comfirmpass = value;
           },
           decoration: InputDecoration(
@@ -289,10 +289,10 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -302,7 +302,7 @@ class _LoginPageState extends State<SetPass> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 

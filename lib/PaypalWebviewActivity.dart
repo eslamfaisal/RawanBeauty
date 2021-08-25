@@ -15,10 +15,10 @@ import 'Model/Section_Model.dart';
 import 'Order_Success.dart';
 
 class PaypalWebview extends StatefulWidget {
-  final String url, from, msg, amt, orderId;
+  final String? url, from, msg, amt, orderId;
 
   const PaypalWebview(
-      {Key key, this.url, this.from, this.msg, this.amt, this.orderId})
+      {Key? key, this.url, this.from, this.msg, this.amt, this.orderId})
       : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-  DateTime currentBackPressTime;
+  DateTime? currentBackPressTime;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +54,11 @@ class StatePayPalWebview extends State<PaypalWebview> {
                   onTap: () {
                     DateTime now = DateTime.now();
                     if (currentBackPressTime == null ||
-                        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+                        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
                       currentBackPressTime = now;
-                      setSnackbar("Don't press back while doing payment!\n "+getTranslated(context, 'EXIT_WR'));
+                      setSnackbar("Don't press back while doing payment!\n "+getTranslated(context, 'EXIT_WR')!);
 
-                      return Future.value(false);
+                      return ;
                     }
                     if (widget.from == "order" &&
                         widget.orderId != null) deleteOrdesr();
@@ -204,9 +204,9 @@ class StatePayPalWebview extends State<PaypalWebview> {
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
       currentBackPressTime = now;
-      setSnackbar("Don't press back while doing payment!\n "+getTranslated(context, 'EXIT_WR'));
+      setSnackbar("Don't press back while doing payment!\n "+getTranslated(context, 'EXIT_WR')!);
 
       return Future.value(false);
     }
@@ -224,7 +224,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
         AMOUNT: widget.amt,
         TRANS_TYPE: WALLET,
         TYPE: CREDIT,
-        MSG: (widget.msg == '' || widget.msg.isEmpty)
+        MSG: (widget.msg == '' || widget.msg!.isEmpty)
             ? "Added through wallet"
             : widget.msg,
         TXNID: txnId,
@@ -252,7 +252,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
       //setSnackbar(msg);
       Navigator.of(context).pop();
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
 
       setState(() {
         isloading = false;
@@ -281,7 +281,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
 
       Navigator.of(context).pop();
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
 
       setState(() {
         isloading = false;
@@ -318,12 +318,12 @@ class StatePayPalWebview extends State<PaypalWebview> {
       isloading = true;
     });
 
-    String mob = await getPrefrence(MOBILE);
-    String varientId, quantity;
+    String? mob = await getPrefrence(MOBILE);
+    String? varientId, quantity;
     for (SectionModel sec in cartList) {
       varientId =
-          varientId != null ? varientId + "," + sec.varientId : sec.varientId;
-      quantity = quantity != null ? quantity + "," + sec.qty : sec.qty;
+          varientId != null ? varientId + "," + sec.varientId! : sec.varientId;
+      quantity = quantity != null ? quantity + "," + sec.qty! : sec.qty;
     }
     String payVia;
 
@@ -362,13 +362,13 @@ class StatePayPalWebview extends State<PaypalWebview> {
       if (response.statusCode == 200) {
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           String orderId = getdata["order_id"].toString();
 
           AddTransaction(tranId, orderId, SUCCESS, msg, true);
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
         if (mounted)
           setState(() {
@@ -384,7 +384,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
   }
 
   Future<void> AddTransaction(String tranId, String orderID, String status,
-      String msg, bool redirect) async {
+      String? msg, bool redirect) async {
     try {
       var parameter = {
         USER_ID: CUR_USERID,
@@ -405,7 +405,7 @@ class StatePayPalWebview extends State<PaypalWebview> {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg1 = getdata["message"];
+      String? msg1 = getdata["message"];
       if (!error) {
         if (redirect) {
           CUR_CART_COUNT = "0";
@@ -430,10 +430,10 @@ class StatePayPalWebview extends State<PaypalWebview> {
               ModalRoute.withName('/home'));
         }
       } else {
-        setSnackbar(msg1);
+        setSnackbar(msg1!);
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
     }
   }
 }

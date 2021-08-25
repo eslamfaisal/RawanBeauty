@@ -11,10 +11,10 @@ import 'Helper/Session.dart';
 import 'Profile.dart';
 
 class Map extends StatefulWidget {
-  final double latitude, longitude;
-  final String from;
+  final double? latitude, longitude;
+  final String? from;
 
-  const Map({Key key, this.latitude, this.longitude, this.from})
+  const Map({Key? key, this.latitude, this.longitude, this.from})
       : super(key: key);
 
   @override
@@ -22,23 +22,23 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> {
-  LatLng latlong = null;
-  CameraPosition _cameraPosition;
-  GoogleMapController _controller;
+  LatLng? latlong = null;
+  late CameraPosition _cameraPosition;
+  GoogleMapController? _controller;
   TextEditingController locationController = TextEditingController();
   Set<Marker> _markers = Set();
 
 
   Future getCurrentLocation() async {
 
-    List<Placemark> placemark = await placemarkFromCoordinates(widget.latitude, widget.longitude);
+    List<Placemark> placemark = await placemarkFromCoordinates(widget.latitude!, widget.longitude!);
 
      if (mounted) setState(() {
-      latlong = new LatLng(widget.latitude, widget.longitude);
+      latlong = new LatLng(widget.latitude!, widget.longitude!);
 
-      _cameraPosition = CameraPosition(target: latlong, zoom: 15.0, bearing: 0);
+      _cameraPosition = CameraPosition(target: latlong!, zoom: 15.0, bearing: 0);
       if (_controller != null)
-        _controller
+        _controller!
             .animateCamera(CameraUpdate.newCameraPosition(_cameraPosition));
 
       var address;
@@ -52,7 +52,7 @@ class _MapState extends State<Map> {
       locationController.text = address;
       _markers.add(Marker(
         markerId: MarkerId("Marker"),
-        position: LatLng(widget.latitude, widget.longitude),
+        position: LatLng(widget.latitude!, widget.longitude!),
       ));
     });
   }
@@ -68,7 +68,7 @@ class _MapState extends State<Map> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: getAppBar(getTranslated(context, 'CHOOSE_LOCATION'), context),
+        appBar: getAppBar(getTranslated(context, 'CHOOSE_LOCATION')!, context),
         body: SafeArea(
             child: Column(
               children: <Widget>[
@@ -79,7 +79,7 @@ class _MapState extends State<Map> {
                         initialCameraPosition: _cameraPosition,
                         onMapCreated: (GoogleMapController controller) {
                           _controller = (controller);
-                          _controller.animateCamera(
+                          _controller!.animateCamera(
                               CameraUpdate.newCameraPosition(_cameraPosition));
                         },
                         markers: this.myMarker(),
@@ -118,11 +118,11 @@ class _MapState extends State<Map> {
 
                     if(widget.from==getTranslated(context,'ADDADDRESS'))
                     {
-                      latitude=latlong.latitude.toString();
-                      longitude=latlong.longitude.toString();
+                      latitude=latlong!.latitude.toString();
+                      longitude=latlong!.longitude.toString();
                     }else if(widget.from==getTranslated(context, 'EDIT_PROFILE_LBL')){
-                      lat=latlong.latitude.toString();
-                      long=latlong.longitude.toString();
+                      lat=latlong!.latitude.toString();
+                      long=latlong!.longitude.toString();
                     }
 
                     Navigator.pop(context);
@@ -139,7 +139,7 @@ class _MapState extends State<Map> {
 
     _markers.add(Marker(
       markerId: MarkerId(Random().nextInt(10000).toString()),
-      position: LatLng(latlong.latitude, latlong.longitude),
+      position: LatLng(latlong!.latitude, latlong!.longitude),
     ));
 
     getLocation();
@@ -149,7 +149,7 @@ class _MapState extends State<Map> {
 
   Future<void> getLocation() async {
     List<Placemark> placemark =
-    await placemarkFromCoordinates(latlong.latitude, latlong.longitude);
+    await placemarkFromCoordinates(latlong!.latitude, latlong!.longitude);
 
     var address;
     address = placemark[0].name;

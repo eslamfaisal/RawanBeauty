@@ -2,7 +2,7 @@ import 'package:eshop/Helper/String.dart';
 import 'package:intl/intl.dart';
 
 class OrderModel {
-  String id,
+  String? id,
       name,
       mobile,
       delCharge,
@@ -28,9 +28,9 @@ class OrderModel {
       deliveryBoyId,invoice, delDate,
       delTime;
 
-  List<OrderItem> itemList;
-  List<String> listStatus = [];
-  List<String> listDate = [];
+  List<OrderItem>? itemList;
+  List<String?>? listStatus = [];
+  List<String?>? listDate = [];
 
   OrderModel(
       {this.id,
@@ -63,16 +63,16 @@ class OrderModel {
 
   factory OrderModel.fromJson(Map<String, dynamic> parsedJson) {
     List<OrderItem> itemList=[];
-    var order=(parsedJson[ORDER_ITEMS] as List);
-    if (order == null || order.isEmpty) return null;
+    var order=(parsedJson[ORDER_ITEMS] as List?);
+    if (order == null || order.isEmpty) return OrderModel();
     else
       itemList = order
           .map((data) => new OrderItem.fromJson(data))
           .toList();
     String date = parsedJson[DATE_ADDED];
     date = DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
-    List<String> lStatus = [];
-    List<String> lDate = [];
+    List<String?> lStatus = [];
+    List<String?> lDate = [];
 
     var allSttus = parsedJson[STATUS];
     for (var curStatus in allSttus) {
@@ -114,7 +114,7 @@ class OrderModel {
 }
 
 class OrderItem {
-  String id,
+  String? id,
       name,
       qty,
       price,
@@ -131,8 +131,8 @@ class OrderItem {
       attr_name,
       productId;
 
-  List<String> listStatus = [];
-  List<String> listDate = [];
+  List<String?>? listStatus = [];
+  List<String?>? listDate = [];
 
   OrderItem(
       {this.qty,
@@ -155,8 +155,8 @@ class OrderItem {
         this.varient_values});
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
-    List<String> lStatus = [];
-    List<String> lDate = [];
+    List<String?> lStatus = [];
+    List<String?> lDate = [];
 
     var allSttus = json[STATUS];
     for (var curStatus in allSttus) {

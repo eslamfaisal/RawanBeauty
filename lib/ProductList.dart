@@ -22,10 +22,10 @@ import 'Search.dart';
 
 
 class ProductList extends StatefulWidget {
-  final String name, id;
-  final Function updateHome;
-  final bool tag;
-  const ProductList({Key key, this.id, this.name, this.updateHome, this.tag})
+  final String? name, id;
+  final Function? updateHome;
+  final bool? tag;
+  const ProductList({Key? key, this.id, this.name, this.updateHome, this.tag})
       : super(key: key);
 
   @override
@@ -40,22 +40,22 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   String sortBy = 'p.id', orderBy = "DESC";
   int offset = 0;
   int total = 0;
-  String totalProduct;
+  String? totalProduct;
   bool isLoadingmore = true;
   ScrollController controller = new ScrollController();
   var filterList;
-  List<String> attnameList;
-  List<String> attsubList;
-  List<String> attListId;
+  List<String>? attnameList;
+  List<String>? attsubList;
+  List<String>? attListId;
   bool _isNetworkAvail = true;
   List<String> selectedId = [];
   bool _isFirstLoad = true;
-  String filter = "";
+  String? filter = "";
   String selId = "";
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool listType = true;
   List<TextEditingController> _controller = [];
 
@@ -69,10 +69,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -82,7 +82,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     controller.removeListener(() {});
     for (int i = 0; i < _controller.length; i++) _controller[i].dispose();
     super.dispose();
@@ -90,7 +90,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -133,7 +133,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                   total = 0;
                   getProduct("0");
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -145,7 +145,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   }
 
   noIntBtn(BuildContext context) {
-    double width = deviceWidth;
+    double width = deviceWidth!;
     return Container(
         padding: EdgeInsetsDirectional.only(bottom: 10.0, top: 50.0),
         child: Center(
@@ -165,9 +165,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             child: Container(
               constraints: BoxConstraints(maxWidth: width / 1.2, minHeight: 45),
               alignment: Alignment.center,
-              child: Text(getTranslated(context, 'TRY_AGAIN_INT_LBL'),
+              child: Text(getTranslated(context, 'TRY_AGAIN_INT_LBL')!,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
                       color: colors.white, fontWeight: FontWeight.normal)),
             ),
           ),
@@ -182,18 +182,18 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       if (_controller.length < index + 1)
         _controller.add(new TextEditingController());
 
-      _controller[index].text = model.prVarientList[model.selVarient].cartCount;
+      _controller[index].text = model.prVarientList![model.selVarient!].cartCount!;
 
-      List att, val;
-      if (model.prVarientList[model.selVarient].attr_name != null) {
-        att = model.prVarientList[model.selVarient].attr_name.split(',');
-        val = model.prVarientList[model.selVarient].varient_value.split(',');
+      List att =[], val =[];
+      if (model.prVarientList![model.selVarient!].attr_name != null) {
+        att = model.prVarientList![model.selVarient!].attr_name!.split(',');
+        val = model.prVarientList![model.selVarient!].varient_value!.split(',');
       }
 
       double price =
-          double.parse(model.prVarientList[model.selVarient].disPrice);
+          double.parse(model.prVarientList![model.selVarient!].disPrice!);
       if (price == 0) {
-        price = double.parse(model.prVarientList[model.selVarient].price);
+        price = double.parse(model.prVarientList![model.selVarient!].price!);
       }
       return Card(
         elevation: 0,
@@ -210,7 +210,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(7.0),
                         child: FadeInImage(
-                          image: NetworkImage(model.image),
+                          image: NetworkImage(model.image!),
                           height: 80.0,
                           width: 80.0,
                           fit: BoxFit.cover,
@@ -224,46 +224,46 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            model.name,
+                            model.name!,
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle2
+                                .subtitle2!
                                 .copyWith(color: colors.lightBlack),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Row(
                             children: <Widget>[
-                              Text(CUR_CURRENCY + " " + price.toString() + " ",
+                              Text(CUR_CURRENCY! + " " + price.toString() + " ",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(
                                           color: colors.fontColor,
                                           fontWeight: FontWeight.bold)),
                               Text(
                                 double.parse(model
-                                            .prVarientList[model.selVarient]
-                                            .disPrice) !=
+                                            .prVarientList![model.selVarient!]
+                                            .disPrice!) !=
                                         0
-                                    ? CUR_CURRENCY +
+                                    ? CUR_CURRENCY! +
                                         "" +
-                                        model.prVarientList[model.selVarient]
-                                            .price
+                                        model.prVarientList![model.selVarient!]
+                                            .price!
                                     : "",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .overline
+                                    .overline!
                                     .copyWith(
                                         decoration: TextDecoration.lineThrough,
                                         letterSpacing: 0),
                               ),
                             ],
                           ),
-                          model.prVarientList[model.selVarient].attr_name !=
+                          model.prVarientList![model.selVarient!].attr_name !=
                                       null &&
-                                  model.prVarientList[model.selVarient]
-                                      .attr_name.isNotEmpty
+                                  model.prVarientList![model.selVarient!]
+                                      .attr_name!.isNotEmpty
                               ? ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
@@ -276,7 +276,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           overflow: TextOverflow.ellipsis,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2
+                                              .subtitle2!
                                               .copyWith(
                                                   color: colors.lightBlack),
                                         ),
@@ -288,7 +288,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           val[index],
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2
+                                              .subtitle2!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight: FontWeight.bold),
@@ -307,11 +307,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                     size: 12,
                                   ),
                                   Text(
-                                    " " + model.rating,
+                                    " " + model.rating!,
                                     style: Theme.of(context).textTheme.overline,
                                   ),
                                   Text(
-                                    " (" + model.noOfRating + ")",
+                                    " (" + model.noOfRating! + ")",
                                     style: Theme.of(context).textTheme.overline,
                                   )
                                 ],
@@ -347,9 +347,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                     if (_isProgress == false &&
                                                         (int.parse(productList[
                                                                     index]
-                                                                .prVarientList[model
-                                                                    .selVarient]
-                                                                .cartCount)) >
+                                                                .prVarientList![model
+                                                                    .selVarient!]
+                                                                .cartCount!)) >
                                                             0)
                                                       removeFromCart(index);
                                                   },
@@ -414,7 +414,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                             (BuildContext
                                                                 context) {
                                                           return model
-                                                              .itemsCounter
+                                                              .itemsCounter!
                                                               .map<
                                                                   PopupMenuItem<
                                                                       String>>((String
@@ -453,12 +453,12 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                       addToCart(
                                                           index,
                                                           (int.parse(model
-                                                                      .prVarientList[
+                                                                      .prVarientList![
                                                                           model
-                                                                              .selVarient]
-                                                                      .cartCount) +
+                                                                              .selVarient!]
+                                                                      .cartCount!) +
                                                                   int.parse(model
-                                                                      .qtyStepSize))
+                                                                      .qtyStepSize!))
                                                               .toString());
                                                   },
                                                 )
@@ -477,8 +477,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               ),
             ),
             model.availability == "0"
-                ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL'),
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(
+                ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL')!,
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
                         color: Colors.red, fontWeight: FontWeight.bold))
                 : Container(),
           ]),
@@ -516,17 +516,17 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           int qty;
 
           qty = (int.parse(productList[index]
-                  .prVarientList[productList[index].selVarient]
-                  .cartCount) -
-              int.parse(productList[index].qtyStepSize));
+                  .prVarientList![productList[index].selVarient!]
+                  .cartCount!) -
+              int.parse(productList[index].qtyStepSize!));
 
-          if (qty < productList[index].minOrderQuntity) {
+          if (qty < productList[index].minOrderQuntity!) {
             qty = 0;
           }
 
           var parameter = {
             PRODUCT_VARIENT_ID: productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .id,
             USER_ID: CUR_USERID,
             QTY: qty.toString()
@@ -538,26 +538,26 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
-            String qty = data['total_quantity'];
+            String? qty = data['total_quantity'];
             CUR_CART_COUNT = data['cart_count'];
 
             productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .cartCount = qty.toString();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
-          if (widget.updateHome != null) widget.updateHome();
+          if (widget.updateHome != null) widget.updateHome!();
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'));
+          setSnackbar(getTranslated(context, 'somethingMSg')!);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -596,8 +596,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         if (selId != null && selId != "") {
           parameter[ATTRIBUTE_VALUE_ID] = selId;
         }
-        if (widget.tag) parameter[TAG] = widget.name;
-        if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
+        if (widget.tag!) parameter[TAG] = widget.name!;
+        if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
 
         print("param***$parameter");
 
@@ -608,7 +608,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
         if (response.statusCode == 200) {
           var getdata = json.decode(response.body);
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             total = int.parse(getdata["total"]);
 
@@ -629,7 +629,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               offset = offset + perPage;
             }
           } else {
-            if (msg != "Products Not Found !") setSnackbar(msg);
+            if (msg != "Products Not Found !") setSnackbar(msg!);
             isLoadingmore = false;
           }
           if (mounted)
@@ -638,7 +638,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
             });
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             _isLoading = false;
@@ -658,8 +658,8 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
   void getAvailVarient() {
     for (int j = 0; j < tempList.length; j++) {
       if (tempList[j].stockType == "2") {
-        for (int i = 0; i < tempList[j].prVarientList.length; i++) {
-          if (tempList[j].prVarientList[i].availability == "1") {
+        for (int i = 0; i < tempList[j].prVarientList!.length; i++) {
+          if (tempList[j].prVarientList![i].availability == "1") {
             tempList[j].selVarient = i;
 
             break;
@@ -687,7 +687,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       titleSpacing: 0,
       iconTheme: IconThemeData(color: colors.primary),
       title: Text(
-        widget.name,
+        widget.name!,
         style: TextStyle(
           color: colors.fontColor,
         ),
@@ -792,7 +792,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                   ),
                 ),
                 (CUR_CART_COUNT != null &&
-                        CUR_CART_COUNT.isNotEmpty &&
+                        CUR_CART_COUNT!.isNotEmpty &&
                         CUR_CART_COUNT != "0")
                     ? new Positioned(
                         top: 0.0,
@@ -806,7 +806,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               child: Padding(
                                 padding: EdgeInsets.all(3),
                                 child: new Text(
-                                  CUR_CART_COUNT,
+                                  CUR_CART_COUNT!,
                                   style: TextStyle(
                                       fontSize: 7, fontWeight: FontWeight.bold),
                                 ),
@@ -828,7 +828,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     color: Colors.transparent,
                     child: PopupMenuButton(
                       padding: EdgeInsets.zero,
-                      onSelected: (value) {
+                      onSelected: (dynamic value) {
                         switch (value) {
                           case 0:
                             return filterDialog();
@@ -875,21 +875,21 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
       Product model = productList[index];
 
       double price =
-          double.parse(model.prVarientList[model.selVarient].disPrice);
+          double.parse(model.prVarientList![model.selVarient!].disPrice!);
       if (price == 0) {
-        price = double.parse(model.prVarientList[model.selVarient].price);
+        price = double.parse(model.prVarientList![model.selVarient!].price!);
       }
       if (_controller.length < index + 1)
         _controller.add(new TextEditingController());
 
-      _controller[index].text = model.prVarientList[model.selVarient].cartCount;
+      _controller[index].text = model.prVarientList![model.selVarient!].cartCount!;
 
-      List att, val;
-      if (model.prVarientList[model.selVarient].attr_name != null) {
-        att = model.prVarientList[model.selVarient].attr_name.split(',');
-        val = model.prVarientList[model.selVarient].varient_value.split(',');
+      List att=[], val=[];
+      if (model.prVarientList![model.selVarient!].attr_name != null) {
+        att = model.prVarientList![model.selVarient!].attr_name!.split(',');
+        val = model.prVarientList![model.selVarient!].varient_value!.split(',');
       }
-      double width = deviceWidth * 0.5;
+      double width = deviceWidth! * 0.5;
 
       return Card(
         elevation: 0.2,
@@ -911,7 +911,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                           tag: "$index${model.id}",
                           child: FadeInImage(
                             fadeInDuration: Duration(milliseconds: 150),
-                            image: NetworkImage(model.image),
+                            image: NetworkImage(model.image!),
                             height: double.maxFinite,
                             width: double.maxFinite,
                             fit: extendImg ? BoxFit.fill : BoxFit.contain,
@@ -921,10 +921,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       child: model.availability == "0"
-                          ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL'),
+                          ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL')!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold))
@@ -942,10 +942,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               size: 10,
                             ),
                             Text(
-                              model.rating,
+                              model.rating!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .overline
+                                  .overline!
                                   .copyWith(letterSpacing: 0.2),
                             ),
                           ],
@@ -959,10 +959,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 padding: const EdgeInsetsDirectional.only(
                     start: 5.0, top: 5, bottom: 5),
                 child: Text(
-                  model.name,
+                  model.name!,
                   style: Theme.of(context)
                       .textTheme
-                      .subtitle2
+                      .subtitle2!
                       .copyWith(color: colors.lightBlack),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -970,12 +970,12 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               ),
               Row(
                 children: [
-                  Text(" " + CUR_CURRENCY + " " + price.toString() + " ",
+                  Text(" " + CUR_CURRENCY! + " " + price.toString() + " ",
                       style: TextStyle(
                           color: colors.fontColor,
                           fontWeight: FontWeight.bold)),
                   double.parse(
-                              model.prVarientList[model.selVarient].disPrice) !=
+                              model.prVarientList![model.selVarient!].disPrice!) !=
                           0
                       ? Flexible(
                           child: Row(
@@ -983,19 +983,19 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                               Flexible(
                                 child: Text(
                                   double.parse(model
-                                              .prVarientList[model.selVarient]
-                                              .disPrice) !=
+                                              .prVarientList![model.selVarient!]
+                                              .disPrice!) !=
                                           0
-                                      ? CUR_CURRENCY +
+                                      ? CUR_CURRENCY! +
                                           "" +
-                                          model.prVarientList[model.selVarient]
-                                              .price
+                                          model.prVarientList![model.selVarient!]
+                                              .price!
                                       : "",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .overline
+                                      .overline!
                                       .copyWith(
                                           decoration:
                                               TextDecoration.lineThrough,
@@ -1013,9 +1013,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 child: Row(
                   children: [
                     Expanded(
-                      child: model.prVarientList[model.selVarient].attr_name !=
+                      child: model.prVarientList![model.selVarient!].attr_name !=
                                   null &&
-                              model.prVarientList[model.selVarient].attr_name
+                              model.prVarientList![model.selVarient!].attr_name!
                                   .isNotEmpty
                           ? ListView.builder(
                               padding: const EdgeInsets.only(bottom: 5.0),
@@ -1031,7 +1031,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .caption
+                                          .caption!
                                           .copyWith(color: colors.lightBlack),
                                     ),
                                   ),
@@ -1045,7 +1045,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                         overflow: TextOverflow.visible,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .caption
+                                            .caption!
                                             .copyWith(
                                                 color: colors.lightBlack,
                                                 fontWeight: FontWeight.bold),
@@ -1082,9 +1082,9 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                       onTap: () {
                                         if (_isProgress == false &&
                                             (int.parse(productList[index]
-                                                    .prVarientList[
-                                                        model.selVarient]
-                                                    .cartCount)) >
+                                                    .prVarientList![
+                                                        model.selVarient!]
+                                                    .cartCount!)) >
                                                 0) removeFromCart(index);
                                       },
                                     ),
@@ -1131,7 +1131,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                             },
                                             itemBuilder:
                                                 (BuildContext context) {
-                                              return model.itemsCounter
+                                              return model.itemsCounter!
                                                   .map<PopupMenuItem<String>>(
                                                       (String value) {
                                                 return new PopupMenuItem(
@@ -1163,11 +1163,11 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                           addToCart(
                                               index,
                                               (int.parse(model
-                                                          .prVarientList[
-                                                              model.selVarient]
-                                                          .cartCount) +
+                                                          .prVarientList![
+                                                              model.selVarient!]
+                                                          .cartCount!) +
                                                       int.parse(
-                                                          model.qtyStepSize))
+                                                          model.qtyStepSize!))
                                                   .toString());
                                       },
                                     )
@@ -1221,15 +1221,15 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         padding:
                             EdgeInsetsDirectional.only(top: 19.0, bottom: 16.0),
                         child: Text(
-                          getTranslated(context, 'SORT_BY'),
+                          getTranslated(context, 'SORT_BY')!,
                           style: Theme.of(context).textTheme.headline6,
                         )),
                     Divider(color: colors.lightBlack),
                     TextButton(
-                        child: Text(getTranslated(context, 'TOP_RATED'),
+                        child: Text(getTranslated(context, 'TOP_RATED')!,
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle1
+                                .subtitle1!
                                 .copyWith(color: colors.lightBlack)),
                         onPressed: () {
                           sortBy = '';
@@ -1246,10 +1246,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         }),
                     Divider(color: colors.lightBlack),
                     TextButton(
-                        child: Text(getTranslated(context, 'F_NEWEST'),
+                        child: Text(getTranslated(context, 'F_NEWEST')!,
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle1
+                                .subtitle1!
                                 .copyWith(color: colors.lightBlack)),
                         onPressed: () {
                           sortBy = 'p.date_added';
@@ -1267,10 +1267,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     Divider(color: colors.lightBlack),
                     TextButton(
                         child: Text(
-                          getTranslated(context, 'F_OLDEST'),
+                          getTranslated(context, 'F_OLDEST')!,
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1
+                              .subtitle1!
                               .copyWith(color: colors.lightBlack),
                         ),
                         onPressed: () {
@@ -1289,10 +1289,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                     Divider(color: colors.lightBlack),
                     TextButton(
                         child: new Text(
-                          getTranslated(context, 'F_LOW'),
+                          getTranslated(context, 'F_LOW')!,
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1
+                              .subtitle1!
                               .copyWith(color: colors.lightBlack),
                         ),
                         onPressed: () {
@@ -1313,10 +1313,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                         padding: EdgeInsetsDirectional.only(bottom: 5.0),
                         child: TextButton(
                             child: new Text(
-                              getTranslated(context, 'F_HIGH'),
+                              getTranslated(context, 'F_HIGH')!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .subtitle1!
                                   .copyWith(color: colors.lightBlack),
                             ),
                             onPressed: () {
@@ -1362,7 +1362,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
               _isProgress = true;
             });
 
-          if (int.parse(qty) < productList[index].minOrderQuntity) {
+          if (int.parse(qty) < productList[index].minOrderQuntity!) {
             qty = productList[index].minOrderQuntity.toString();
             setSnackbar('Minimum order quantity is $qty');
           }
@@ -1370,7 +1370,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           var parameter = {
             USER_ID: CUR_USERID,
             PRODUCT_VARIENT_ID: productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .id,
             QTY: qty
           };
@@ -1381,26 +1381,26 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
-            String qty = data['total_quantity'];
+            String? qty = data['total_quantity'];
             CUR_CART_COUNT = data['cart_count'];
 
             productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .cartCount = qty.toString();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
-          widget.updateHome();
+          widget.updateHome!();
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'));
+          setSnackbar(getTranslated(context, 'somethingMSg')!);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -1483,7 +1483,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                 padding: const EdgeInsetsDirectional.only(top: 30.0),
                 child: AppBar(
                   title: Text(
-                    getTranslated(context, 'FILTER'),
+                    getTranslated(context, 'FILTER')!,
                     style: TextStyle(
                       color: colors.fontColor,
                     ),
@@ -1513,10 +1513,10 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                       alignment: Alignment.center,
                       child: InkWell(
                           child: Text(
-                              getTranslated(context, 'FILTER_CLEAR_LBL'),
+                              getTranslated(context, 'FILTER_CLEAR_LBL')!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                       fontWeight: FontWeight.normal,
                                       color: colors.fontColor)),
@@ -1590,7 +1590,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                               filterList[index]['name'],
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle1
+                                                  .subtitle1!
                                                   .copyWith(
                                                       color: filter ==
                                                               filterList[index]
@@ -1627,14 +1627,14 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                               shrinkWrap: true,
                                               physics:
                                                   NeverScrollableScrollPhysics(),
-                                              itemCount: attListId.length,
+                                              itemCount: attListId!.length,
                                               itemBuilder: (context, i) {
                                                 return CheckboxListTile(
                                                   dense: true,
-                                                  title: Text(attsubList[i],
+                                                  title: Text(attsubList![i],
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .subtitle1
+                                                          .subtitle1!
                                                           .copyWith(
                                                               color: colors
                                                                   .lightBlack,
@@ -1642,20 +1642,20 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                                                                   FontWeight
                                                                       .normal)),
                                                   value: selectedId
-                                                      .contains(attListId[i]),
+                                                      .contains(attListId![i]),
                                                   activeColor: colors.primary,
                                                   controlAffinity:
                                                       ListTileControlAffinity
                                                           .leading,
-                                                  onChanged: (bool val) {
+                                                  onChanged: (bool? val) {
                                                     if (mounted)
                                                       setState(() {
                                                         if (val == true) {
                                                           selectedId.add(
-                                                              attListId[i]);
+                                                              attListId![i]);
                                                         } else {
                                                           selectedId.remove(
-                                                              attListId[i]);
+                                                              attListId![i]);
                                                         }
                                                       });
                                                   },
@@ -1675,7 +1675,7 @@ class StateProduct extends State<ProductList> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(total.toString()),
-                        Text(getTranslated(context, 'PRODUCTS_FOUND_LBL')),
+                        Text(getTranslated(context, 'PRODUCTS_FOUND_LBL')!),
                       ],
                     )),
                 Spacer(),

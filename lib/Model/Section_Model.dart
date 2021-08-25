@@ -4,7 +4,7 @@ import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Model/User.dart';
 
 class SectionModel {
-  String id,
+  String? id,
       title,
       varientId,
       qty,
@@ -12,10 +12,10 @@ class SectionModel {
       perItemTotal,
       perItemPrice,
       style;
-  List<Product> productList;
-  List<Filter> filterList;
-  List<String> selectedId = [];
-  int offset, totalItem;
+  List<Product>? productList;
+  List<Filter>? filterList;
+  List<String>? selectedId = [];
+  int? offset, totalItem;
 
   SectionModel(
       {this.id,
@@ -37,7 +37,7 @@ class SectionModel {
         .map((data) => new Product.fromJson(data))
         .toList();
 
-    var flist = (parsedJson[FILTERS] as List);
+    var flist = (parsedJson[FILTERS] as List?);
     List<Filter> filterList = [];
     if (flist == null || flist.isEmpty)
       filterList = [];
@@ -82,7 +82,7 @@ class SectionModel {
 }
 
 class Product {
-  String id,
+  String? id,
       name,
       desc,
       image,
@@ -95,14 +95,14 @@ class Product {
       categoryId,
       shortDescription,
       qtyStepSize;
-  List<String> itemsCounter;
-  List<String> otherImage;
-  List<Product_Varient> prVarientList;
-  List<Attribute> attributeList;
-  List<String> selectedId = [];
-  List<String> tagList = [];
-  int minOrderQuntity;
-  String isFav,
+  List<String>? itemsCounter;
+  List<String>? otherImage;
+  List<Product_Varient>? prVarientList;
+  List<Attribute>? attributeList;
+  List<String>? selectedId = [];
+  List<String>? tagList = [];
+  int? minOrderQuntity;
+  String? isFav,
       isReturnable,
       isCancelable,
       isPurchased,
@@ -119,15 +119,15 @@ class Product {
       warranty,
       gurantee;
 
-  String totalImg;
-  List<ReviewImg> reviewList;
+  String? totalImg;
+  List<ReviewImg>? reviewList;
 
-  bool isFavLoading = false, isFromProd = false;
-  int offset, totalItem, selVarient;
+  bool? isFavLoading = false, isFromProd = false;
+  int? offset, totalItem, selVarient;
 
-  List<Product> subList;
-  List<Filter> filterList;
-  bool history = false;
+  List<Product>? subList;
+  List<Filter>? filterList;
+  bool? history = false;
   // String historyList;
 
   Product(
@@ -187,7 +187,7 @@ class Product {
         .map((data) => new Attribute.fromJson(data))
         .toList();
 
-    var flist = (json[FILTERS] as List);
+    var flist = (json[FILTERS] as List?);
     List<Filter> filterList = [];
     if (flist == null || flist.isEmpty)
       filterList = [];
@@ -204,7 +204,7 @@ class Product {
       return ((i + 1) * int.parse(json[QTYSTEP])).toString();
     });
 
-    var reviewImg = (json[REV_IMG] as List);
+    var reviewImg = (json[REV_IMG] as List?);
     List<ReviewImg> reviewList = [];
     if (reviewImg == null || reviewImg.isEmpty)
       reviewList = [];
@@ -281,7 +281,7 @@ class Product {
     );
   }
 
-  static List<Product> createSubList(List parsedJson) {
+  static List<Product>? createSubList(List? parsedJson) {
     if (parsedJson == null || parsedJson.isEmpty) return null;
 
     return parsedJson.map((data) => new Product.fromCat(data)).toList();
@@ -289,7 +289,7 @@ class Product {
 }
 
 class Product_Varient {
-  String id,
+  String? id,
       productId,
       attribute_value_ids,
       price,
@@ -299,7 +299,7 @@ class Product_Varient {
       varient_value,
       availability,
       cartCount;
-  List<String> images;
+  List<String>? images;
 
   Product_Varient(
       {this.id,
@@ -331,7 +331,7 @@ class Product_Varient {
 }
 
 class Attribute {
-  String id, value, name;
+  String? id, value, name;
 
   Attribute({this.id, this.value, this.name});
 
@@ -345,7 +345,7 @@ class Attribute {
 }
 
 class Filter {
-  String attributeValues, attributeValId, name;
+  String? attributeValues, attributeValId, name;
 
   Filter({this.attributeValues, this.attributeValId, this.name});
 
@@ -359,13 +359,13 @@ class Filter {
 }
 
 class ReviewImg {
-  String totalImg;
-  List<User> productRating;
+  String? totalImg;
+  List<User>? productRating;
 
   ReviewImg({this.totalImg, this.productRating});
 
   factory ReviewImg.fromJson(Map<String, dynamic> json) {
-    var reviewImg = (json[PRODUCTRATING] as List);
+    var reviewImg = (json[PRODUCTRATING] as List?);
     List<User> reviewList = [];
     if (reviewImg == null || reviewImg.isEmpty)
       reviewList = [];

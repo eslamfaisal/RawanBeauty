@@ -24,8 +24,8 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 class PushNotificationService {
-  final BuildContext context;
-  final Function updateHome;
+  final BuildContext? context;
+  final Function? updateHome;
 
   PushNotificationService({this.context, this.updateHome});
 
@@ -52,7 +52,7 @@ class PushNotificationService {
         onSelectNotification: onSelectNotification);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      var data = message.notification;
+      var data = message.notification!;
       var title = data.title.toString();
       var body = data.body.toString();
       var image = message.data['image'] ?? '';
@@ -68,7 +68,7 @@ class PushNotificationService {
       }
     });
 
-    messaging.getInitialMessage().then((RemoteMessage message) async {
+    messaging.getInitialMessage().then((RemoteMessage? message) async {
       bool back = await getPrefrenceBool(ISFROMBACK);
 
       if (message != null && back) {
@@ -79,17 +79,17 @@ class PushNotificationService {
         if (type == "products") {
           getProduct(id, 0, 0, true);
         } else if (type == "categories") {
-          Navigator.push(context,
+          Navigator.push(context!,
               (MaterialPageRoute(builder: (context) => AllCategory())));
         } else if (type == "wallet") {
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => MyWallet())));
+              context!, (MaterialPageRoute(builder: (context) => MyWallet())));
         } else if (type == 'order') {
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => MyOrder())));
+              context!, (MaterialPageRoute(builder: (context) => MyOrder())));
         } else {
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => Splash())));
+              context!, (MaterialPageRoute(builder: (context) => Splash())));
         }
         setPrefrenceBool(ISFROMBACK, false);
       }
@@ -108,18 +108,18 @@ class PushNotificationService {
           getProduct(id, 0, 0, true);
         } else if (type == "categories") {
           Navigator.push(
-            context,
+            context!,
             MaterialPageRoute(builder: (context) => AllCategory()),
           );
         } else if (type == "wallet") {
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => MyWallet())));
+              context!, (MaterialPageRoute(builder: (context) => MyWallet())));
         } else if (type == 'order') {
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => MyOrder())));
+              context!, (MaterialPageRoute(builder: (context) => MyOrder())));
         } else {
           Navigator.push(
-            context,
+            context!,
             MaterialPageRoute(builder: (context) => MyApp()),
           );
         }
@@ -136,7 +136,7 @@ class PushNotificationService {
     );
   }
 
-  void _registerToken(String token) async {
+  void _registerToken(String? token) async {
     var parameter = {USER_ID: CUR_USERID, FCM_ID: token};
 
     Response response =
@@ -146,33 +146,35 @@ class PushNotificationService {
     var getdata = json.decode(response.body);
   }
 
-  Future onSelectNotification(String payload) {
+  Future<bool> onSelectNotification(String? payload) {
     if (payload != null) {
       List<String> pay = payload.split(",");
       if (pay[0] == "products") {
         getProduct(pay[1], 0, 0, true);
       } else if (pay[0] == "categories") {
         Navigator.push(
-          context,
+          context!,
           MaterialPageRoute(builder: (context) => AllCategory()),
         );
       } else if (pay[0] == "wallet") {
         Navigator.push(
-            context, (MaterialPageRoute(builder: (context) => MyWallet())));
+            context!, (MaterialPageRoute(builder: (context) => MyWallet())));
       } else if (pay[0] == 'order') {
         Navigator.push(
-            context, (MaterialPageRoute(builder: (context) => MyOrder())));
+            context!, (MaterialPageRoute(builder: (context) => MyOrder())));
       } else {
         Navigator.push(
-          context,
+          context!,
           MaterialPageRoute(builder: (context) => Splash()),
         );
       }
+      return Future.value(true);
     } else {
       Navigator.push(
-        context,
+        context!,
         MaterialPageRoute(builder: (context) => MyApp()),
       );
+      return  Future.value(false);
     }
   }
 
@@ -188,7 +190,7 @@ class PushNotificationService {
               .timeout(Duration(seconds: timeOut));
       var getdata = json.decode(response.body);
       bool error = getdata["error"];
-      String msg = getdata["message"];
+      String? msg = getdata["message"];
       if (!error) {
         var data = getdata["data"];
 
@@ -197,7 +199,7 @@ class PushNotificationService {
         items =
             (data as List).map((data) => new Product.fromJson(data)).toList();
 
-        Navigator.of(context).push(MaterialPageRoute(
+        Navigator.of(context!).push(MaterialPageRoute(
             builder: (context) => ProductDetail(
                   index: int.parse(id),
                   updateHome: updateHome,

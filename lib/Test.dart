@@ -8,7 +8,7 @@ class SearchDemo extends StatefulWidget {
 class _SearchDemoState extends State<SearchDemo> {
   final _SearchDemoSearchDelegate _delegate = _SearchDemoSearchDelegate();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _lastIntegerSelected;
+  int? _lastIntegerSelected;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _SearchDemoState extends State<SearchDemo> {
             progress: _delegate.transitionAnimation,
           ),
           onPressed: () {
-            _scaffoldKey.currentState.openDrawer();
+            _scaffoldKey.currentState!.openDrawer();
           },
         ),
         title: const Text('Numbers'),
@@ -31,7 +31,7 @@ class _SearchDemoState extends State<SearchDemo> {
             tooltip: 'Search',
             icon: const Icon(Icons.search),
             onPressed: () async {
-              final int selected = await showSearch<int>(
+              final int? selected = await showSearch<int?>(
                 context: context,
                 delegate: _delegate,
               );
@@ -122,7 +122,7 @@ class _SearchDemoState extends State<SearchDemo> {
     );
   }
 }
-class _SearchDemoSearchDelegate extends SearchDelegate<int> {
+class _SearchDemoSearchDelegate extends SearchDelegate<int?> {
   final List<int> _data =
       List<int>.generate(100001, (int i) => i).reversed.toList();
   final List<int> _history = <int>[42607, 85604, 66374, 44, 174];
@@ -156,7 +156,7 @@ class _SearchDemoSearchDelegate extends SearchDelegate<int> {
   @override
   Widget buildResults(BuildContext context) {
       final ThemeData theme = Theme.of(context);
-    final int searched = int.tryParse(query);
+    final int? searched = int.tryParse(query);
     if (searched == null || !_data.contains(searched)) {
       return Center(
         child: Text(
@@ -209,25 +209,25 @@ class _SearchDemoSearchDelegate extends SearchDelegate<int> {
 }
 class _ResultCard extends StatelessWidget {
   const _ResultCard({this.integer, this.title, this.searchDelegate});
-  final int integer;
-  final String title;
-  final SearchDelegate<int> searchDelegate;
+  final int? integer;
+  final String? title;
+  final SearchDelegate<int?>? searchDelegate;
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        searchDelegate.close(context, integer);
+        searchDelegate!.close(context, integer);
       },
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Text(title),
+              Text(title!),
               Text(
                 '$integer',
-                style: theme.textTheme.headline.copyWith(fontSize: 72.0),
+                style: theme.textTheme.headline!.copyWith(fontSize: 72.0),
               ),
             ],
           ),
@@ -238,33 +238,33 @@ class _ResultCard extends StatelessWidget {
 }
 class _SuggestionList extends StatelessWidget {
   const _SuggestionList({this.suggestions, this.query, this.onSelected});
-  final List<String> suggestions;
-  final String query;
-  final ValueChanged<String> onSelected;
+  final List<String>? suggestions;
+  final String? query;
+  final ValueChanged<String>? onSelected;
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return ListView.builder(
-      itemCount: suggestions.length,
+      itemCount: suggestions!.length,
       itemBuilder: (BuildContext context, int i) {
-        final String suggestion = suggestions[i];
+        final String suggestion = suggestions![i];
         return ListTile(
-          leading: query.isEmpty ? const Icon(Icons.history) : const Icon(null),
+          leading: query!.isEmpty ? const Icon(Icons.history) : const Icon(null),
           title: RichText(
             text: TextSpan(
-              text: suggestion.substring(0, query.length),
+              text: suggestion.substring(0, query!.length),
               style:
-                  theme.textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
+                  theme.textTheme.subhead!.copyWith(fontWeight: FontWeight.bold),
               children: <TextSpan>[
                 TextSpan(
-                  text: suggestion.substring(query.length),
+                  text: suggestion.substring(query!.length),
                   style: theme.textTheme.subhead,
                 ),
               ],
             ),
           ),
           onTap: () {
-            onSelected(suggestion);
+            onSelected!(suggestion);
           },
         );
       },

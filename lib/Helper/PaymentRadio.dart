@@ -19,11 +19,11 @@ class RadioItem extends StatelessWidget {
                         height: 20.0,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: _item.isSelected ? colors.primary : colors.white,
+                            color: _item.isSelected! ? colors.primary : colors.white,
                             border: Border.all(color: colors.grad2Color)),
                         child: Padding(
                             padding: const EdgeInsets.all(2.0),
-                            child: _item.isSelected
+                            child: _item.isSelected!
                                 ? Icon(
                                 Icons.check,
                                 size: 15.0,
@@ -38,10 +38,10 @@ class RadioItem extends StatelessWidget {
                     ),
                     Padding(
                         padding: const EdgeInsetsDirectional.only(start:15.0),
-                        child: new Text(_item.name),
+                        child: new Text(_item.name!),
                     ),
                     Spacer(),
-                    _item.img != "" ? SvgPicture.asset(_item.img) : Container()
+                    _item.img != "" ? SvgPicture.asset(_item.img!) : Container()
                 ],
             ),
         );
@@ -49,9 +49,9 @@ class RadioItem extends StatelessWidget {
 }
 
 class RadioModel {
-    bool isSelected;
-    final String img;
-    final String name;
+    bool? isSelected;
+    final String? img;
+    final String? name;
 
     RadioModel({this.isSelected, this.name, this.img});
 }

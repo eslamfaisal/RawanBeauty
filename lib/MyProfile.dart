@@ -39,19 +39,19 @@ class MyProfile extends StatefulWidget {
 }
 
 class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
-  String profile, email;
+  String? profile, email;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   final InAppReview _inAppReview = InAppReview.instance;
   var isDarkTheme;
   bool isDark = false;
-  ThemeNotifier themeNotifier;
+  late ThemeNotifier themeNotifier;
   List<String> langCode = ["en", "zh", "es", "hi", "ar", "ru", "ja", "de"];
-  List<String> themeList = [];
-  List<String> languageList = [];
+  List<String?> themeList = [];
+  List<String?> languageList = [];
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  int selectLan, curTheme;
-  TextEditingController curPassC, newPassC, confPassC;
-  String curPass, newPass, confPass, mobile;
+  int? selectLan, curTheme;
+  TextEditingController? curPassC, newPassC, confPassC;
+  String? curPass, newPass, confPass, mobile;
   bool _showPassword = false, _showNPassword = false, _showCPassword = false;
 
   @override
@@ -122,19 +122,19 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                     children: [
                       Text(
                         CUR_USERNAME == "" || CUR_USERNAME == null
-                            ? getTranslated(context, 'GUEST')
-                            : CUR_USERNAME,
+                            ? getTranslated(context, 'GUEST')!
+                            : CUR_USERNAME!,
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1
+                            .subtitle1!
                             .copyWith(color: colors.fontColor),
                       ),
                       email != null
                           ? Text(
-                              email,
+                              email!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(color: colors.fontColor),
                             )
                           : Container(),
@@ -144,10 +144,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                               child: InkWell(
                                 child: Text(
                                     getTranslated(
-                                        context, 'LOGIN_REGISTER_LBL'),
+                                        context, 'LOGIN_REGISTER_LBL')!,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .caption
+                                        .caption!
                                         .copyWith(
                                           color: colors.primary,
                                           decoration: TextDecoration.underline,
@@ -222,10 +222,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                 start: 15.0,
                               ),
                               child: Text(
-                                languageList[index],
+                                languageList[index]!,
                                 style: Theme.of(this.context)
                                     .textTheme
-                                    .subtitle1
+                                    .subtitle1!
                                     .copyWith(color: colors.lightBlack),
                               ))
                         ],
@@ -273,10 +273,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                         Padding(
                             padding: EdgeInsets.fromLTRB(20.0, 20.0, 0, 2.0),
                             child: Text(
-                              getTranslated(context, 'CHANGE_PASS_LBL'),
+                              getTranslated(context, 'CHANGE_PASS_LBL')!,
                               style: Theme.of(this.context)
                                   .textTheme
-                                  .subtitle1
+                                  .subtitle1!
                                   .copyWith(color: colors.fontColor),
                             )),
                         Divider(color: colors.lightBlack),
@@ -290,7 +290,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (val) => validatePass(
-                                          val,
+                                          val!,
                                           getTranslated(
                                               context, 'PWD_REQUIRED'),
                                           getTranslated(context, 'PWD_LENGTH')),
@@ -301,7 +301,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                               context, 'CUR_PASS_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -330,7 +330,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (val) => validatePass(
-                                          val,
+                                          val!,
                                           getTranslated(
                                               context, 'PWD_REQUIRED'),
                                           getTranslated(context, 'PWD_LENGTH')),
@@ -341,7 +341,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                               context, 'NEW_PASS_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -371,7 +371,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (value) {
-                                        if (value.length == 0)
+                                        if (value!.length == 0)
                                           return getTranslated(
                                               context, 'CON_PASS_REQUIRED_MSG');
                                         if (value != newPass) {
@@ -388,7 +388,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                               context, 'CONFIRMPASSHINT_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -418,10 +418,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
               actions: <Widget>[
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'CANCEL'),
+                      getTranslated(context, 'CANCEL')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.lightBlack,
                               fontWeight: FontWeight.bold),
@@ -431,16 +431,16 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                     }),
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'SAVE_LBL'),
+                      getTranslated(context, 'SAVE_LBL')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
-                      final form = _formkey.currentState;
+                      final form = _formkey.currentState!;
                       if (form.validate()) {
                         form.save();
                         if (mounted)
@@ -466,12 +466,12 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg = getdata["message"];
+      String? msg = getdata["message"];
 
       if (!error) {
-        setSnackbar(getTranslated(context, 'USER_UPDATE_MSG'));
+        setSnackbar(getTranslated(context, 'USER_UPDATE_MSG')!);
       } else {
-        setSnackbar(msg);
+        setSnackbar(msg!);
       }
     }
   }
@@ -497,18 +497,18 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         children: <Widget>[
-          _getDrawerItem(getTranslated(context, 'MY_ORDERS_LBL'),
+          _getDrawerItem(getTranslated(context, 'MY_ORDERS_LBL')!,
               'assets/images/pro_myorder.svg'),
 
 
 
           _getDivider(),
-          _getDrawerItem(getTranslated(context, 'CHANGE_LANGUAGE_LBL'),
+          _getDrawerItem(getTranslated(context, 'CHANGE_LANGUAGE_LBL')!,
               'assets/images/pro_language.svg'),
           CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
           CUR_USERID == "" || CUR_USERID == null
               ? Container()
-              : _getDrawerItem(getTranslated(context, 'CHANGE_PASS_LBL'),
+              : _getDrawerItem(getTranslated(context, 'CHANGE_PASS_LBL')!,
                   'assets/images/pro_pass.svg'),
         ],
       ),
@@ -560,12 +560,12 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
           // _getDrawerItem(getTranslated(context, 'RATE_US'),
           //     'assets/images/pro_rateus.svg'),
           _getDivider(),
-          _getDrawerItem(getTranslated(context, 'SHARE_APP'),
+          _getDrawerItem(getTranslated(context, 'SHARE_APP')!,
               'assets/images/pro_share.svg'),
           CUR_USERID == "" || CUR_USERID == null ? Container() : _getDivider(),
           CUR_USERID == "" || CUR_USERID == null
               ? Container()
-              : _getDrawerItem(getTranslated(context, 'LOGOUT'),
+              : _getDrawerItem(getTranslated(context, 'LOGOUT')!,
                   'assets/images/pro_logout.svg'),
         ],
       ),
@@ -732,10 +732,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                   Padding(
                       padding: EdgeInsets.fromLTRB(20.0, 20.0, 0, 2.0),
                       child: Text(
-                        getTranslated(context, 'CHOOSE_LANGUAGE_LBL'),
+                        getTranslated(context, 'CHOOSE_LANGUAGE_LBL')!,
                         style: Theme.of(this.context)
                             .textTheme
-                            .subtitle1
+                            .subtitle1!
                             .copyWith(color: colors.fontColor),
                       )),
                   Divider(color: colors.lightBlack),
@@ -772,10 +772,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                   Padding(
                       padding: EdgeInsets.fromLTRB(20.0, 20.0, 0, 2.0),
                       child: Text(
-                        getTranslated(context, 'CHOOSE_THEME_LBL'),
+                        getTranslated(context, 'CHOOSE_THEME_LBL')!,
                         style: Theme.of(this.context)
                             .textTheme
-                            .subtitle1
+                            .subtitle1!
                             .copyWith(color: colors.fontColor),
                       )),
                   Divider(color: colors.lightBlack),
@@ -836,10 +836,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                                 start: 15.0,
                               ),
                               child: Text(
-                                themeList[index],
+                                themeList[index]!,
                                 style: Theme.of(this.context)
                                     .textTheme
-                                    .subtitle1
+                                    .subtitle1!
                                     .copyWith(color: colors.lightBlack),
                               ))
                         ],
@@ -864,7 +864,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
 
   _updateState(int position) {
     curTheme = position;
-    onThemeChanged(themeList[position]);
+    onThemeChanged(themeList[position]!);
   }
 
   void onThemeChanged(
@@ -872,7 +872,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
   ) async {
     if (value == getTranslated(context, 'SYSTEM_DEFAULT')) {
       themeNotifier.setThemeMode(ThemeMode.system);
-      var brightness = SchedulerBinding.instance.window.platformBrightness;
+      var brightness = SchedulerBinding.instance!.window.platformBrightness;
       if (mounted)
         setState(() {
           isDark = brightness == Brightness.dark;
@@ -916,19 +916,19 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               content: Text(
-                getTranslated(context, 'LOGOUTTXT'),
+                getTranslated(context, 'LOGOUTTXT')!,
                 style: Theme.of(this.context)
                     .textTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(color: colors.fontColor),
               ),
               actions: <Widget>[
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'NO'),
+                      getTranslated(context, 'NO')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.lightBlack,
                               fontWeight: FontWeight.bold),
@@ -938,10 +938,10 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
                     }),
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'YES'),
+                      getTranslated(context, 'YES')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),

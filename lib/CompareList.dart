@@ -14,7 +14,7 @@ class CompareList extends StatefulWidget {
   _CompareListState createState() => _CompareListState();
 }
 
-List<Product> compareList = [];
+List<Product?> compareList = [];
 
 class _CompareListState extends State<CompareList> {
   int maxLength = 0;
@@ -23,8 +23,8 @@ class _CompareListState extends State<CompareList> {
   void initState() {
     List val = [];
     for (int i = 0; i < compareList.length; i++) {
-      if (compareList[i].prVarientList[0].attr_name != null)
-        val.add(compareList[i].prVarientList[0].attr_name.split(',').length);
+      if (compareList[i]!.prVarientList![0].attr_name != null)
+        val.add(compareList[i]!.prVarientList![0].attr_name!.split(',').length);
     }
     if (val.length > 0) {
       maxLength = val.reduce((curr, next) => curr > next ? curr : next);
@@ -36,7 +36,7 @@ class _CompareListState extends State<CompareList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: getAppBar(getTranslated(context, 'COMPARE_PRO'), context),
+        appBar: getAppBar(getTranslated(context, 'COMPARE_PRO')!, context),
         body: compareList.length == 0
             ? getNoItem(context)
             : ScrollConfiguration(
@@ -52,21 +52,21 @@ class _CompareListState extends State<CompareList> {
   }
 
   Widget listItem(int index) {
-    Product model = compareList[index];
+    Product model = compareList[index]!;
 
-    double price = double.parse(model.prVarientList[model.selVarient].disPrice);
+    double price = double.parse(model.prVarientList![model.selVarient!].disPrice!);
     if (price == 0)
-      price = double.parse(model.prVarientList[model.selVarient].price);
-    List att, val;
-    if (model.prVarientList[model.selVarient].attr_name != null) {
-      att = model.prVarientList[model.selVarient].attr_name.split(',');
-      val = model.prVarientList[model.selVarient].varient_value.split(',');
+      price = double.parse(model.prVarientList![model.selVarient!].price!);
+    List att =[], val =[];
+    if (model.prVarientList![model.selVarient!].attr_name != null) {
+      att = model.prVarientList![model.selVarient!].attr_name!.split(',');
+      val = model.prVarientList![model.selVarient!].varient_value!.split(',');
     }
     return SingleChildScrollView(
       child: Card(
         elevation: 0,
         child: Container(
-          width: deviceWidth * 0.5,
+          width: deviceWidth! * 0.5,
           child: InkWell(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,13 +76,13 @@ class _CompareListState extends State<CompareList> {
                     onPressed: () {
                       setState(() {
                         compareList.removeWhere(
-                            (item) => item.id == compareList[index].id);
+                            (item) => item!.id == compareList[index]!.id);
                         List val = [];
                         for (int i = 0; i < compareList.length; i++) {
-                          if (compareList[i].prVarientList[0].attr_name != null)
-                            val.add(compareList[i]
-                                .prVarientList[0]
-                                .attr_name
+                          if (compareList[i]!.prVarientList![0].attr_name != null)
+                            val.add(compareList[i]!
+                                .prVarientList![0]
+                                .attr_name!
                                 .split(',')
                                 .length);
                         }
@@ -101,23 +101,23 @@ class _CompareListState extends State<CompareList> {
                           topLeft: Radius.circular(5),
                           topRight: Radius.circular(5)),
                       child: FadeInImage(
-                        image: NetworkImage(model.image),
-                        height: deviceWidth * 0.5,
-                        width: deviceWidth * 0.5,
+                        image: NetworkImage(model.image!),
+                        height: deviceWidth! * 0.5,
+                        width: deviceWidth! * 0.5,
                         fadeInDuration: Duration(milliseconds: 150),
                         fit: extendImg ? BoxFit.fill : BoxFit.contain,
 
                         //errorWidget:(context, url,e) => placeHolder(width) ,
-                        placeholder: placeHolder(deviceWidth * 0.5),
+                        placeholder: placeHolder(deviceWidth! * 0.5),
                       ),
                     ),
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       child: model.availability == "0"
-                          ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL'),
+                          ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL')!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold))
@@ -128,7 +128,7 @@ class _CompareListState extends State<CompareList> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: RatingBarIndicator(
-                    rating: double.parse(model.rating),
+                    rating: double.parse(model.rating!),
                     itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: colors.primary,
@@ -141,7 +141,7 @@ class _CompareListState extends State<CompareList> {
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
-                    model.name + "\n",
+                    model.name! + "\n",
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -154,18 +154,18 @@ class _CompareListState extends State<CompareList> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        double.parse(model.prVarientList[model.selVarient]
-                                    .disPrice) !=
+                        double.parse(model.prVarientList![model.selVarient!]
+                                    .disPrice!) !=
                                 0
-                            ? CUR_CURRENCY +
+                            ? CUR_CURRENCY! +
                                 "" +
-                                model.prVarientList[model.selVarient].price
+                                model.prVarientList![model.selVarient!].price!
                             : "",
-                        style: Theme.of(context).textTheme.overline.copyWith(
+                        style: Theme.of(context).textTheme.overline!.copyWith(
                             decoration: TextDecoration.lineThrough,
                             letterSpacing: 1),
                       ),
-                      Text(" " + CUR_CURRENCY + " " + price.toString(),
+                      Text(" " + CUR_CURRENCY! + " " + price.toString(),
                           style: TextStyle(color: colors.primary)),
                     ],
                   ),
@@ -181,11 +181,11 @@ class _CompareListState extends State<CompareList> {
                               shrinkWrap: true,
                               itemCount: maxLength,
                               itemBuilder: (context, index) {
-                                if (model.prVarientList[model.selVarient]
+                                if (model.prVarientList![model.selVarient!]
                                             .attr_name !=
                                         null &&
-                                    model.prVarientList[model.selVarient]
-                                        .attr_name.isNotEmpty &&
+                                    model.prVarientList![model.selVarient!]
+                                        .attr_name!.isNotEmpty &&
                                     index < att.length) {
 
                                   return Row(
@@ -225,7 +225,7 @@ class _CompareListState extends State<CompareList> {
               ],
             ),
             onTap: () {
-              Product model = compareList[index];
+              Product? model = compareList[index];
               Navigator.push(
                 context,
                 PageRouteBuilder(
@@ -250,30 +250,30 @@ class _CompareListState extends State<CompareList> {
 
 
   _gaurantee(int index) {
-    String gaurantee = compareList[index].gurantee;
+    String? gaurantee = compareList[index]!.gurantee;
 
     return ListTile(
       trailing:
           Text(gaurantee != null && gaurantee.isNotEmpty ? gaurantee : "-"),
       dense: true,
       title: Text(
-     getTranslated(context, 'GAURANTEE'),
+     getTranslated(context, 'GAURANTEE')!,
         style: Theme.of(context).textTheme.subtitle2,
       ),
     );
   }
 
   _returnable(int pos) {
-    String returnable = compareList[pos].isReturnable;
+    String? returnable = compareList[pos]!.isReturnable;
     if (returnable == "1")
-      returnable = RETURN_DAYS + " Days";
+      returnable = RETURN_DAYS! + " Days";
     else
       returnable = "No";
     return ListTile(
       trailing: Text(returnable),
       dense: true,
       title: Text(
-               getTranslated(context, 'RETURNABLE'),
+               getTranslated(context, 'RETURNABLE')!,
     
         style: Theme.of(context).textTheme.subtitle2,
       ),
@@ -281,42 +281,42 @@ class _CompareListState extends State<CompareList> {
   }
 
   _cancleable(int pos) {
-    String cancleable = compareList[pos].isCancelable;
+    String? cancleable = compareList[pos]!.isCancelable;
     if (cancleable == "1")
-      cancleable = "Till " + compareList[pos].cancleTill;
+      cancleable = "Till " + compareList[pos]!.cancleTill!;
     else
       cancleable = "No";
     return ListTile(
       trailing: Text(cancleable),
       dense: true,
       title: Text(
-         getTranslated(context, 'CANCELLABLE') ,
+         getTranslated(context, 'CANCELLABLE')! ,
         style: Theme.of(context).textTheme.subtitle2,
       ),
     );
   }
 
   _warrenty(int index) {
-    String warranty = compareList[index].warranty;
+    String? warranty = compareList[index]!.warranty;
 
     return ListTile(
       trailing: Text(warranty != null && warranty.isNotEmpty ? warranty : "-"),
       dense: true,
       title: Text(
-         getTranslated(context, 'WARRENTY') ,
+         getTranslated(context, 'WARRENTY')! ,
         style: Theme.of(context).textTheme.subtitle2,
       ),
     );
   }
 
   _madeIn(int index) {
-    String madeIn = compareList[index].madein;
+    String? madeIn = compareList[index]!.madein;
 
     return ListTile(
       trailing: Text(madeIn != null && madeIn.isNotEmpty ? madeIn : "-"),
       dense: true,
       title: Text(
-              getTranslated(context, 'MADE_IN'),
+              getTranslated(context, 'MADE_IN')!,
         style: Theme.of(context).textTheme.subtitle2,
       ),
     );

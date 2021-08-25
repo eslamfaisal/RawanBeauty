@@ -19,16 +19,16 @@ class Setting extends StatefulWidget {
 }
 
 class StateSetting extends State<Setting> with TickerProviderStateMixin {
-  TextEditingController curPassC, newPassC, confPassC;
-  String curPass, newPass, confPass, mobile;
+  TextEditingController? curPassC, newPassC, confPassC;
+  String? curPass, newPass, confPass, mobile;
   bool _showPassword = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _isNetworkAvail = true;
 
-  Animation buttonSqueezeanimation;
+  Animation? buttonSqueezeanimation;
 
-  AnimationController buttonController;
+  AnimationController? buttonController;
 
   @override
   void initState() {
@@ -38,10 +38,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -51,13 +51,13 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
@@ -83,12 +83,12 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg = getdata["message"];
-      await buttonController.reverse();
+      String? msg = getdata["message"];
+      await buttonController!.reverse();
       if (!error) {
-        setSnackbar(getTranslated(context, 'USER_UPDATE_MSG'));
+        setSnackbar(getTranslated(context, 'USER_UPDATE_MSG')!);
       } else {
-        setSnackbar(msg);
+        setSnackbar(msg!);
       }
     }
   }
@@ -116,7 +116,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -141,10 +141,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                   Padding(
                       padding: EdgeInsets.all(12.0),
                       child: Text(
-                        getTranslated(context, 'CHANGE_PASS_LBL'),
+                        getTranslated(context, 'CHANGE_PASS_LBL')!,
                         style: Theme.of(this.context)
                             .textTheme
-                            .subtitle2
+                            .subtitle2!
                             .copyWith(
                                 color: colors.lightBlack,
                                 fontWeight: FontWeight.bold),
@@ -178,10 +178,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                     Padding(
                         padding: EdgeInsets.all(12.0),
                         child: Text(
-                          getTranslated(context, 'CHANGE_LANGUAGE_LBL'),
+                          getTranslated(context, 'CHANGE_LANGUAGE_LBL')!,
                           style: Theme.of(this.context)
                               .textTheme
-                              .subtitle2
+                              .subtitle2!
                               .copyWith(
                                   color: colors.lightBlack,
                                   fontWeight: FontWeight.bold),
@@ -214,10 +214,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                     Padding(
                         padding: EdgeInsets.all(12.0),
                         child: Text(
-                          getTranslated(context, 'CHANGE_THEME_LBL'),
+                          getTranslated(context, 'CHANGE_THEME_LBL')!,
                           style: Theme.of(this.context)
                               .textTheme
-                              .subtitle2
+                              .subtitle2!
                               .copyWith(
                                   color: colors.lightBlack,
                                   fontWeight: FontWeight.bold),
@@ -249,10 +249,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                 children: [
                   Padding(
                       padding: EdgeInsets.all(12.0),
-                      child: Text(getTranslated(context, 'PRIVACY'),
+                      child: Text(getTranslated(context, 'PRIVACY')!,
                           style: Theme.of(this.context)
                               .textTheme
-                              .subtitle2
+                              .subtitle2!
                               .copyWith(
                                   color: colors.lightBlack,
                                   fontWeight: FontWeight.bold))),
@@ -290,10 +290,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                 children: [
                   Padding(
                       padding: EdgeInsets.all(12.0),
-                      child: Text(getTranslated(context, 'TERM'),
+                      child: Text(getTranslated(context, 'TERM')!,
                           style: Theme.of(this.context)
                               .textTheme
-                              .subtitle2
+                              .subtitle2!
                               .copyWith(
                                   color: colors.lightBlack,
                                   fontWeight: FontWeight.bold))),
@@ -337,10 +337,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                         Padding(
                             padding: EdgeInsets.fromLTRB(20.0, 20.0, 0, 2.0),
                             child: Text(
-                              getTranslated(context, 'CHANGE_PASS_LBL'),
+                              getTranslated(context, 'CHANGE_PASS_LBL')!,
                               style: Theme.of(this.context)
                                   .textTheme
-                                  .subtitle1
+                                  .subtitle1!
                                   .copyWith(color: colors.fontColor),
                             )),
                         Divider(color: colors.lightBlack),
@@ -354,7 +354,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (val) => validatePass(
-                                          val,
+                                          val!,
                                           getTranslated(
                                               context, 'PWD_REQUIRED'),
                                           getTranslated(context, 'PWD_LENGTH')),
@@ -365,7 +365,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                               context, 'CUR_PASS_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -394,7 +394,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (val) => validatePass(
-                                          val,
+                                          val!,
                                           getTranslated(
                                               context, 'PWD_REQUIRED'),
                                           getTranslated(context, 'PWD_LENGTH')),
@@ -405,7 +405,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                               context, 'NEW_PASS_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -434,7 +434,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                     child: TextFormField(
                                       keyboardType: TextInputType.text,
                                       validator: (value) {
-                                        if (value.length == 0)
+                                        if (value!.length == 0)
                                           return getTranslated(
                                               context, 'CON_PASS_REQUIRED_MSG');
                                         if (value != newPass) {
@@ -451,7 +451,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                                               context, 'CONFIRMPASSHINT_LBL'),
                                           hintStyle: Theme.of(this.context)
                                               .textTheme
-                                              .subtitle1
+                                              .subtitle1!
                                               .copyWith(
                                                   color: colors.lightBlack,
                                                   fontWeight:
@@ -480,10 +480,10 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
               actions: <Widget>[
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'CANCEL'),
+                      getTranslated(context, 'CANCEL')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.lightBlack,
                               fontWeight: FontWeight.bold),
@@ -493,16 +493,16 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
                     }),
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'SAVE_LBL'),
+                      getTranslated(context, 'SAVE_LBL')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
-                      final form = _formkey.currentState;
+                      final form = _formkey.currentState!;
                       if (form.validate()) {
                         form.save();
                         if (mounted)
@@ -523,7 +523,7 @@ class StateSetting extends State<Setting> with TickerProviderStateMixin {
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: getAppBar(getTranslated(context, 'SETTING'), context),
+      appBar: getAppBar(getTranslated(context, 'SETTING')!, context),
       body: _isNetworkAvail
           ? SingleChildScrollView(
               child: Column(

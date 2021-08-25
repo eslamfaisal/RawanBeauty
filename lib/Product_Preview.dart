@@ -11,12 +11,12 @@ import 'Helper/Session.dart';
 import 'Home.dart';
 
 class ProductPreview extends StatefulWidget {
-  final int pos, secPos, index;
-  final bool list, from;
-  final String id, video, videoType;
-  final List<String> imgList;
+  final int? pos, secPos, index;
+  final bool? list, from;
+  final String? id, video, videoType;
+  final List<String?>? imgList;
 
-  const ProductPreview({Key key,
+  const ProductPreview({Key? key,
     this.pos,
     this.secPos,
     this.index,
@@ -33,18 +33,18 @@ class ProductPreview extends StatefulWidget {
 }
 
 class StatePreview extends State<ProductPreview> {
-  int curPos;
-  YoutubePlayerController _controller;
-  VideoPlayerController _videoController;
+  int? curPos;
+  YoutubePlayerController? _controller;
+  VideoPlayerController? _videoController;
 
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.from && widget.videoType == "youtube") {
+    if (widget.from! && widget.videoType == "youtube") {
       _controller = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(widget.video),
+        initialVideoId: YoutubePlayer.convertUrlToId(widget.video!)!,
         flags: YoutubePlayerFlags(
             autoPlay: true,
             mute: false,
@@ -53,20 +53,20 @@ class StatePreview extends State<ProductPreview> {
 
             disableDragSeek: true),
       );
-    } else if (widget.from && widget.videoType == "self_hosted" &&
+    } else if (widget.from! && widget.videoType == "self_hosted" &&
         widget.video != "") {
       _videoController = VideoPlayerController.network(
-        widget.video,
+        widget.video!,
         videoPlayerOptions: VideoPlayerOptions(
           mixWithOthers: true,
         ),
       );
 
-      _videoController.addListener(() {
+      _videoController!.addListener(() {
         setState(() {});
       });
-      _videoController.setLooping(false);
-      _videoController.initialize();
+      _videoController!.setLooping(false);
+      _videoController!.initialize();
     }
     curPos = widget.pos;
   }
@@ -75,16 +75,16 @@ class StatePreview extends State<ProductPreview> {
   void dispose() {
     super.dispose();
     if (_controller != null)
-      _controller.dispose();
+      _controller!.dispose();
     if (_videoController != null)
-      _videoController.dispose();
+      _videoController!.dispose();
   }
 
   @override
   void deactivate() {
     // Pauses video while navigating to next page.
     if (_controller != null)
-      _controller.pause();
+      _controller!.pause();
     super.deactivate();
   }
 
@@ -92,9 +92,9 @@ class StatePreview extends State<ProductPreview> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Hero(
-          tag: widget.list
+          tag: widget.list!
               ? "${widget.id}"
-              : "${sectionList[widget.secPos].productList[widget.index]
+              : "${sectionList[widget.secPos!].productList![widget.index!]
               .id}${widget.secPos}${widget.index}",
           child: Stack(
             children: <Widget>[
@@ -107,11 +107,11 @@ class StatePreview extends State<ProductPreview> {
 
                            initialScale: PhotoViewComputedScale.contained * 0.9,
                            minScale: PhotoViewComputedScale.contained * 0.9,
-                           imageProvider: NetworkImage(widget.imgList[index])
+                           imageProvider: NetworkImage(widget.imgList![index]!)
 
                        );
                      },
-                     itemCount: widget.imgList.length,
+                     itemCount: widget.imgList!.length,
                      loadingBuilder: (context, event) =>
                          Center(
                            child: Container(
@@ -121,13 +121,13 @@ class StatePreview extends State<ProductPreview> {
                                value: event == null
                                    ? 0
                                    : event.cumulativeBytesLoaded / event
-                                   .expectedTotalBytes,
+                                   .expectedTotalBytes!,
                              ),
                            ),
                          ),
                      backgroundDecoration: BoxDecoration(
                          color: colors.white),
-                     pageController: PageController(initialPage: curPos),
+                     pageController: PageController(initialPage: curPos!),
                      onPageChanged: (index) {
                        if (mounted)
                          setState(() {
@@ -138,8 +138,8 @@ class StatePreview extends State<ProductPreview> {
                )
              :
               PageView.builder(
-                  itemCount: widget.imgList.length,
-                  controller: PageController(initialPage: curPos),
+                  itemCount: widget.imgList!.length,
+                  controller: PageController(initialPage: curPos!),
                   onPageChanged: (index) {
                     if (mounted)
                       setState(() {
@@ -148,21 +148,21 @@ class StatePreview extends State<ProductPreview> {
                   },
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 1 &&
-                        widget.from &&
+                        widget.from! &&
                         widget.videoType != null &&
                         widget.video != "") {
                       if (widget.videoType == "youtube") {
-                        _controller.reset();
+                        _controller!.reset();
                         return SafeArea(
                           child: YoutubePlayer(
-                            controller: _controller,
+                            controller: _controller!,
                             showVideoProgressIndicator: true,
                             progressIndicatorColor: colors.fontColor,
                             liveUIColor: colors.primary,
                           ),
                         );
                       } else if (widget.videoType == "vimeo") {
-                        List<String> id = widget.video.split(
+                        List<String> id = widget.video!.split(
                             "https://vimeo.com/");
 
                         return SafeArea(
@@ -178,15 +178,15 @@ class StatePreview extends State<ProductPreview> {
                               ),
                             ));
                       } else {
-                        return _videoController.value.initialized
+                        return _videoController!.value.isInitialized
                             ? AspectRatio(
-                          aspectRatio: _videoController.value.aspectRatio,
+                          aspectRatio: _videoController!.value.aspectRatio,
                           child: Stack(
                             alignment: Alignment.bottomCenter,
                             children: <Widget>[
-                              VideoPlayer(_videoController,),
+                              VideoPlayer(_videoController!,),
                               _ControlsOverlay(controller: _videoController),
-                              VideoProgressIndicator(_videoController,
+                              VideoProgressIndicator(_videoController!,
                                   allowScrubbing: true),
                             ],
                           ),
@@ -202,7 +202,7 @@ class StatePreview extends State<ProductPreview> {
                         minScale: PhotoViewComputedScale.contained * 0.9,
                         gaplessPlayback: false,
                         customSize: MediaQuery.of(context).size,
-                        imageProvider: NetworkImage(widget.imgList[index]));
+                        imageProvider: NetworkImage(widget.imgList![index]!));
                   }),
               Positioned(
                 top: 34.0,
@@ -232,7 +232,7 @@ class StatePreview extends State<ProductPreview> {
                   left: 25.0,
                   right: 25.0,
                   child: SelectedPhoto(
-                    numberOfDots: widget.imgList.length,
+                    numberOfDots: widget.imgList!.length,
                     photoIndex: curPos,
                   )),
             ],
@@ -242,7 +242,7 @@ class StatePreview extends State<ProductPreview> {
 }
 
 class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({Key key, this.controller}) : super(key: key);
+  const _ControlsOverlay({Key? key, this.controller}) : super(key: key);
 
   static const _examplePlaybackRates = [
     0.25,
@@ -255,7 +255,7 @@ class _ControlsOverlay extends StatelessWidget {
     10.0,
   ];
 
-  final VideoPlayerController controller;
+  final VideoPlayerController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +264,7 @@ class _ControlsOverlay extends StatelessWidget {
         AnimatedSwitcher(
           duration: Duration(milliseconds: 50),
           reverseDuration: Duration(milliseconds: 200),
-          child: controller.value.isPlaying
+          child: controller!.value.isPlaying
               ? SizedBox.shrink()
               : Container(
             color: Colors.black26,
@@ -280,16 +280,16 @@ class _ControlsOverlay extends StatelessWidget {
         GestureDetector(
 
           onTap: () {
-            controller.value.isPlaying ? controller.pause() : controller.play();
+            controller!.value.isPlaying ? controller!.pause() : controller!.play();
           },
         ),
         Align(
           alignment: Alignment.topRight,
           child: PopupMenuButton<double>(
-            initialValue: controller.value.playbackSpeed,
+            initialValue: controller!.value.playbackSpeed,
             tooltip: 'Playback speed',
             onSelected: (speed) {
-              controller.setPlaybackSpeed(speed);
+              controller!.setPlaybackSpeed(speed);
             },
             itemBuilder: (context) {
               return [
@@ -308,7 +308,7 @@ class _ControlsOverlay extends StatelessWidget {
                 vertical: 12,
                 horizontal: 16,
               ),
-              child: Text('${controller.value.playbackSpeed}x'),
+              child: Text('${controller!.value.playbackSpeed}x'),
             ),
           ),
         ),
@@ -318,8 +318,8 @@ class _ControlsOverlay extends StatelessWidget {
 }
 
 class SelectedPhoto extends StatelessWidget {
-  final int numberOfDots;
-  final int photoIndex;
+  final int? numberOfDots;
+  final int? photoIndex;
 
   SelectedPhoto({this.numberOfDots, this.photoIndex});
 
@@ -359,7 +359,7 @@ class SelectedPhoto extends StatelessWidget {
 
   List<Widget> _buildDots() {
     List<Widget> dots = [];
-    for (int i = 0; i < numberOfDots; i++) {
+    for (int i = 0; i < numberOfDots!; i++) {
       dots.add(i == photoIndex ? _activePhoto() : _inactivePhoto());
     }
     return dots;

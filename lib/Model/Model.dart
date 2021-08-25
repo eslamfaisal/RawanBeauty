@@ -2,9 +2,9 @@ import '../Helper/String.dart';
 import 'Section_Model.dart';
 
 class Model {
-  String id, type, typeId, image, fromTime, lastTime,title;
+  String? id, type, typeId, image, fromTime, lastTime,title;
   var list;
-  String name, banner;
+  String? name, banner;
 
   Model(
       {this.id,

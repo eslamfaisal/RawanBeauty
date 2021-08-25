@@ -2,7 +2,7 @@ import 'package:eshop/Helper/String.dart';
 import 'package:intl/intl.dart';
 
 class NotificationModel {
-  String id, title, desc, img, typeId, date;
+  String? id, title, desc, img, typeId, date;
 
   NotificationModel(
       {this.id, this.title, this.desc, this.img, this.typeId, this.date});

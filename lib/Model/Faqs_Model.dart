@@ -1,7 +1,7 @@
 import 'package:eshop/Helper/String.dart';
 
 class FaqsModel {
-  String id, question,answer,status;
+  String? id, question,answer,status;
 
   FaqsModel(
       {this.id, this.question, this.answer, this.status});

@@ -24,8 +24,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
   bool isLoadingmore = true;
   bool _isLoading = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
  ScrollController controller = new ScrollController();
   List<TransactionModel> tempList = [];
 
@@ -40,7 +40,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: getAppBar(getTranslated(context, 'MYTRANSACTION'), context),
+        appBar: getAppBar(getTranslated(context, 'MYTRANSACTION')!, context),
         body: _isNetworkAvail
             ? _isLoading
                 ? shimmer()
@@ -67,7 +67,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                 if (_isNetworkAvail) {
                   getTransaction();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   setState(() {});
                 }
               });
@@ -80,7 +80,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -126,7 +126,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
             _isLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
 
         setState(() {
           _isLoading = false;
@@ -171,9 +171,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
   listItem(int index) {
     Color back;
-    if (tranList[index].status.toLowerCase().contains("success")) {
+    if (tranList[index].status!.toLowerCase().contains("success")) {
       back = Colors.green;
-    } else if (tranList[index].status.toLowerCase().contains("failure"))
+    } else if (tranList[index].status!.toLowerCase().contains("failure"))
       back = Colors.red;
     else
       back = Colors.orange;
@@ -191,17 +191,17 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                          getTranslated(context, 'AMOUNT') +
+                          getTranslated(context, 'AMOUNT')! +
                               " : " +
-                              CUR_CURRENCY +
+                              CUR_CURRENCY! +
                               " " +
-                              tranList[index].amt,
+                              tranList[index].amt!,
                           style: TextStyle(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                         ),
                         Spacer(),
-                        Text(tranList[index].date),
+                        Text(tranList[index].date!),
                       ],
                     ),
                     Divider(),
@@ -211,9 +211,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Expanded(
-                            child: Text(getTranslated(context, 'ORDER_ID_LBL') +
+                            child: Text(getTranslated(context, 'ORDER_ID_LBL')! +
                                 " : " +
-                                tranList[index].orderId),
+                                tranList[index].orderId!),
                           ),
                           Container(
                             margin: EdgeInsets.only(left: 8),
@@ -224,7 +224,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                 borderRadius: new BorderRadius.all(
                                     const Radius.circular(4.0))),
                             child: Text(
-                              (tranList[index].status),
+                              tranList[index].status!,
                               style: TextStyle(color: colors.white),
                             ),
                           )
@@ -232,25 +232,25 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                       ),
                     ),
                     tranList[index].type != null &&
-                            tranList[index].type.isNotEmpty
-                        ? Text(getTranslated(context, 'PAYMENT_METHOD_LBL') +
+                            tranList[index].type!.isNotEmpty
+                        ? Text(getTranslated(context, 'PAYMENT_METHOD_LBL')! +
                             " : " +
-                            tranList[index].type)
+                            tranList[index].type!)
                         : Container(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: tranList[index].msg != null &&
-                              tranList[index].msg.isNotEmpty
-                          ? Text(getTranslated(context, 'MSG') +
+                              tranList[index].msg!.isNotEmpty
+                          ? Text(getTranslated(context, 'MSG')! +
                               " : " +
-                              tranList[index].msg)
+                              tranList[index].msg!)
                           : Container(),
                     ),
                     tranList[index].txnID != null &&
-                            tranList[index].txnID.isNotEmpty
-                        ? Text(getTranslated(context, 'Txn_id') +
+                            tranList[index].txnID!.isNotEmpty
+                        ? Text(getTranslated(context, 'Txn_id')! +
                             " : " +
-                            tranList[index].txnID)
+                            tranList[index].txnID!)
                         : Container(),
                   ]))),
     );

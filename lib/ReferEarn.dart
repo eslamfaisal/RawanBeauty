@@ -23,7 +23,7 @@ class _ReferEarnState extends State<ReferEarn> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: getAppBar(getTranslated(context, 'REFEREARN'), context),
+      appBar: getAppBar(getTranslated(context, 'REFEREARN')!, context),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -37,27 +37,27 @@ class _ReferEarnState extends State<ReferEarn> {
                 Padding(
                   padding: const EdgeInsets.only(top: 28.0),
                   child: Text(
-                    getTranslated(context, 'REFEREARN'),
+                    getTranslated(context, 'REFEREARN')!,
                     style: Theme.of(context)
                         .textTheme
-                        .headline5
+                        .headline5!
                         .copyWith(color: colors.fontColor),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    getTranslated(context, 'REFER_TEXT'),
+                    getTranslated(context, 'REFER_TEXT')!,
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 28.0),
                   child: Text(
-                    getTranslated(context, 'YOUR_CODE'),
+                    getTranslated(context, 'YOUR_CODE')!,
                     style: Theme.of(context)
                         .textTheme
-                        .headline5
+                        .headline5!
                         .copyWith(color: colors.fontColor),
                   ),
                 ),
@@ -74,10 +74,10 @@ class _ReferEarnState extends State<ReferEarn> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          REFER_CODE,
+                          REFER_CODE!,
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1
+                              .subtitle1!
                               .copyWith(color: colors.fontColor),
                         ),
                       )),
@@ -90,9 +90,9 @@ class _ReferEarnState extends State<ReferEarn> {
                           color: colors.lightWhite,
                           borderRadius:
                               new BorderRadius.all(const Radius.circular(4.0))),
-                      child: Text(getTranslated(context, 'TAP_TO_COPY'),
+                      child: Text(getTranslated(context, 'TAP_TO_COPY')!,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.button.copyWith(
+                          style: Theme.of(context).textTheme.button!.copyWith(
                                 color: colors.fontColor,
                               ))),
                   onPressed: () {

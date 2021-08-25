@@ -19,7 +19,7 @@ setPrefrence(String key, String value) async {
   await prefs.setString(key, value);
 }
 
-Future<String> getPrefrence(String key) async {
+Future<String?> getPrefrence(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString(key);
 }
@@ -143,19 +143,19 @@ noIntImage() {
 
 noIntText(BuildContext context) {
   return Container(
-      child: Text(getTranslated(context, 'NO_INTERNET'),
+      child: Text(getTranslated(context, 'NO_INTERNET')!,
           style: Theme.of(context)
               .textTheme
-              .headline5
+              .headline5!
               .copyWith(color: colors.primary, fontWeight: FontWeight.normal)));
 }
 
 noIntDec(BuildContext context) {
   return Container(
     padding: EdgeInsetsDirectional.only(top: 30.0, start: 30.0, end: 30.0),
-    child: Text(getTranslated(context, 'NO_INTERNET_DISC'),
+    child: Text(getTranslated(context, 'NO_INTERNET_DISC')!,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6.copyWith(
+        style: Theme.of(context).textTheme.headline6!.copyWith(
               color: colors.lightBlack2,
               fontWeight: FontWeight.normal,
             )),
@@ -206,16 +206,16 @@ Future<void> clearUserSession() async {
 
 Future<void> saveUserDetail(
     String userId,
-    String name,
-    String email,
-    String mobile,
-    String city,
-    String area,
-    String address,
-    String pincode,
-    String latitude,
-    String longitude,
-    String image) async {
+    String? name,
+    String? email,
+    String? mobile,
+    String? city,
+    String? area,
+    String? address,
+    String? pincode,
+    String? latitude,
+    String? longitude,
+    String? image) async {
   final waitList = <Future<void>>[];
   SharedPreferences prefs = await SharedPreferences.getInstance();
   waitList.add(prefs.setString(ID, userId));
@@ -233,7 +233,7 @@ Future<void> saveUserDetail(
   await Future.wait(waitList);
 }
 
-String validateUserName(String value, String msg1, String msg2) {
+String? validateUserName(String value, String? msg1, String? msg2) {
   if (value.isEmpty) {
     return msg1;
   }
@@ -243,7 +243,7 @@ String validateUserName(String value, String msg1, String msg2) {
   return null;
 }
 
-String validateMob(String value, String msg1, String msg2) {
+String? validateMob(String value, String? msg1, String? msg2) {
   if (value.isEmpty) {
     return msg1;
   }
@@ -253,7 +253,7 @@ String validateMob(String value, String msg1, String msg2) {
   return null;
 }
 
-String validateCountryCode(String value, String msg1, String msg2) {
+String? validateCountryCode(String value, String msg1, String msg2) {
   if (value.isEmpty) {
     return msg1;
   }
@@ -263,7 +263,7 @@ String validateCountryCode(String value, String msg1, String msg2) {
   return null;
 }
 
-String validatePass(String value, String msg1, String msg2) {
+String? validatePass(String value, String? msg1, String? msg2) {
   if (value.length == 0)
     return msg1;
   else if (value.length <= 5)
@@ -272,28 +272,28 @@ String validatePass(String value, String msg1, String msg2) {
     return null;
 }
 
-String validateAltMob(String value, String msg) {
+String? validateAltMob(String value, String? msg) {
   if (value.isNotEmpty) if (value.length < 9) {
     return msg;
   }
   return null;
 }
 
-String validateField(String value, String msg) {
+String? validateField(String value, String? msg) {
   if (value.length == 0)
     return msg;
   else
     return null;
 }
 
-String validatePincode(String value, String msg1) {
+String? validatePincode(String value, String? msg1) {
   if (value.length == 0)
     return msg1;
   else
     return null;
 }
 
-String validateEmail(String value, String msg1, String msg2) {
+String? validateEmail(String value, String? msg1, String? msg2) {
   if (value.length == 0) {
     return msg1;
   } else if (!RegExp(
@@ -312,7 +312,7 @@ Widget getProgress() {
 }
 
 Widget getNoItem(BuildContext context) {
-  return Center(child: Text(getTranslated(context, 'noItem')));
+  return Center(child: Text(getTranslated(context, 'noItem')!));
 }
 
 Widget shimmer() {
@@ -320,8 +320,8 @@ Widget shimmer() {
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
     child: Shimmer.fromColors(
-      baseColor: Colors.grey[300],
-      highlightColor: Colors.grey[100],
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
       child: SingleChildScrollView(
         child: Column(
           children: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -422,8 +422,8 @@ Locale _locale(String languageCode) {
   }
 }
 
-String getTranslated(BuildContext context, String key) {
-  return DemoLocalization.of(context).translate(key);
+String? getTranslated(BuildContext context, String key) {
+  return DemoLocalization.of(context)!.translate(key);
 }
 
 String getToken() {

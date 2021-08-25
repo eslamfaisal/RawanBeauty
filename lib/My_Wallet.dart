@@ -31,14 +31,14 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   bool _isNetworkAvail = true;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   ScrollController controller = new ScrollController();
   List<TransactionModel> tempList = [];
-  TextEditingController amtC, msgC;
-  List<String> paymentMethodList = [];
+  TextEditingController? amtC, msgC;
+  List<String?> paymentMethodList = [];
   List<String> paymentIconList = [
     'assets/images/paypal.svg',
     'assets/images/rozerpay.svg',
@@ -48,8 +48,8 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
     'assets/images/paytm.svg',
   ];
   List<RadioModel> payModel = [];
-  bool paypal, razorpay, paumoney, paystack, flutterwave, stripe, paytm;
-  String razorpayId,
+  bool? paypal, razorpay, paumoney, paystack, flutterwave, stripe, paytm;
+  String? razorpayId,
       paystackId,
       stripeId,
       stripeSecret,
@@ -59,11 +59,11 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
       paytmMerId,
       paytmMerKey;
 
-  int selectedMethod;
-  String payMethod;
-  StateSetter dialogState;
+  int? selectedMethod;
+  String? payMethod;
+  StateSetter? dialogState;
   bool _isProgress = false;
-  Razorpay _razorpay;
+  late Razorpay _razorpay;
   List<TransactionModel> tranList = [];
   int offset = 0;
   int total = 0;
@@ -92,10 +92,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -114,7 +114,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: getAppBar(getTranslated(context, 'MYWALLET'), context),
+        appBar: getAppBar(getTranslated(context, 'MYWALLET')!, context),
         body: _isNetworkAvail
             ? _isLoading
                 ? shimmer()
@@ -129,20 +129,20 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
 
   Widget paymentItem(int index) {
 
-    if (index == 0 && paypal ||
-        index == 1 && razorpay ||
-        index == 2 && paystack ||
-        index == 3 && flutterwave ||
-        index == 4 && stripe ||
-        index == 5 && paytm) {
+    if (index == 0 && paypal! ||
+        index == 1 && razorpay! ||
+        index == 2 && paystack! ||
+        index == 3 && flutterwave! ||
+        index == 4 && stripe! ||
+        index == 5 && paytm!) {
 
 
       return InkWell(
         onTap: () {
           if (mounted)
-            dialogState(() {
+            dialogState!(() {
               selectedMethod = index;
-              payMethod = paymentMethodList[selectedMethod];
+              payMethod = paymentMethodList[selectedMethod!];
               payModel.forEach((element) => element.isSelected = false);
               payModel[index].isSelected = true;
             });
@@ -153,7 +153,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
       return Container();
   }
 
-  Future<Null> sendRequest(String txnId, String payMethod) async {
+  Future<Null> sendRequest(String? txnId, String payMethod) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       String orderId =
@@ -161,12 +161,12 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
       try {
         var parameter = {
           USER_ID: CUR_USERID,
-          AMOUNT: amtC.text.toString(),
+          AMOUNT: amtC!.text.toString(),
           TRANS_TYPE: WALLET,
           TYPE: CREDIT,
-          MSG: (msgC.text == '' || msgC.text.isEmpty)
+          MSG: (msgC!.text == '' || msgC!.text.isEmpty)
               ? "Added through wallet"
-              : msgC.text,
+              : msgC!.text,
           TXNID: txnId,
           ORDER_ID: orderId,
           STATUS: "Success",
@@ -191,7 +191,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
           });
         setSnackbar(msg);
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
 
         setState(() {
           _isProgress = false;
@@ -227,10 +227,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                     Padding(
                         padding: EdgeInsets.fromLTRB(20.0, 20.0, 0, 2.0),
                         child: Text(
-                          getTranslated(context, 'ADD_MONEY'),
+                          getTranslated(context, 'ADD_MONEY')!,
                           style: Theme.of(this.context)
                               .textTheme
-                              .subtitle1
+                              .subtitle1!
                               .copyWith(color: colors.fontColor),
                         )),
                     Divider(color: colors.lightBlack),
@@ -248,7 +248,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     validator: (val) => validateField(
-                                        val,
+                                        val!,
                                         getTranslated(
                                             context, 'FIELD_REQUIRED')),
                                     autovalidateMode:
@@ -258,7 +258,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                                           getTranslated(context, "AMOUNT"),
                                       hintStyle: Theme.of(this.context)
                                           .textTheme
-                                          .subtitle1
+                                          .subtitle1!
                                           .copyWith(
                                               color: colors.lightBlack,
                                               fontWeight: FontWeight.normal),
@@ -275,7 +275,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                                       hintText: getTranslated(context, 'MSG'),
                                       hintStyle: Theme.of(this.context)
                                           .textTheme
-                                          .subtitle1
+                                          .subtitle1!
                                           .copyWith(
                                               color: colors.lightBlack,
                                               fontWeight: FontWeight.normal),
@@ -286,7 +286,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(20.0, 10, 20.0, 5),
                                 child: Text(
-                                  getTranslated(context, 'SELECT_PAYMENT'),
+                                  getTranslated(context, 'SELECT_PAYMENT')!,
                                   style: Theme.of(context).textTheme.subtitle2,
                                 ),
                               ),
@@ -296,10 +296,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20.0),
                                       child: Text(
-                                        getTranslated(context, 'payWarning'),
+                                        getTranslated(context, 'payWarning')!,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .caption
+                                            .caption!
                                             .copyWith(color: Colors.red),
                                       ),
                                     )
@@ -320,10 +320,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
               actions: <Widget>[
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'CANCEL'),
+                      getTranslated(context, 'CANCEL')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.lightBlack,
                               fontWeight: FontWeight.bold),
@@ -333,38 +333,38 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                     }),
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'SEND'),
+                      getTranslated(context, 'SEND')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
-                      final form = _formkey.currentState;
-                      if (form.validate() && amtC.text != '0') {
+                      final form = _formkey.currentState!;
+                      if (form.validate() && amtC!.text != '0') {
                         form.save();
                         if (payMethod == null) {
-                          dialogState(() {
+                          dialogState!(() {
                             payWarn = true;
                           });
                         } else {
-                           if (payMethod.trim() ==
-                              getTranslated(context, 'RAZORPAY_LBL').trim())
-                            razorpayPayment(double.parse(amtC.text));
-                          else if (payMethod.trim() ==
-                              getTranslated(context, 'PAYSTACK_LBL').trim())
-                            paystackPayment(context, int.parse(amtC.text));
+                           if (payMethod!.trim() ==
+                              getTranslated(context, 'RAZORPAY_LBL')!.trim())
+                            razorpayPayment(double.parse(amtC!.text));
+                          else if (payMethod!.trim() ==
+                              getTranslated(context, 'PAYSTACK_LBL')!.trim())
+                            paystackPayment(context, int.parse(amtC!.text));
                           else if (payMethod ==
                               getTranslated(context, 'PAYTM_LBL'))
-                            paytmPayment(double.parse(amtC.text));
+                            paytmPayment(double.parse(amtC!.text));
                           else if (payMethod ==
                               getTranslated(context, 'PAYPAL_LBL')) {
-                            paypalPayment((amtC.text).toString());
+                            paypalPayment((amtC!.text).toString());
                           } else if (payMethod ==
                               getTranslated(context, 'FLUTTERWAVE_LBL'))
-                            flutterwavePayment(amtC.text);
+                            flutterwavePayment(amtC!.text);
                           Navigator.pop(context);
                         }
                       }
@@ -398,9 +398,9 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg = getdata["message"];
+      String? msg = getdata["message"];
       if (!error) {
-        String data = getdata["data"];
+        String? data = getdata["data"];
 
         Navigator.push(
             context,
@@ -410,10 +410,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                       from: "wallet",
                     )));
       } else {
-        setSnackbar(msg);
+        setSnackbar(msg!);
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
     }
   }
 
@@ -438,7 +438,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["link"];
             Navigator.push(
@@ -447,11 +447,11 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                     builder: (BuildContext context) => PaypalWebview(
                           url: data,
                           from: "wallet",
-                          amt: amtC.text.toString(),
-                          msg: msgC.text,
+                          amt: amtC!.text.toString(),
+                          msg: msgC!.text,
                         )));
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           setState(() {
             _isProgress = false;
@@ -461,7 +461,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
         setState(() {
           _isProgress = false;
         });
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -472,7 +472,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   }
 
   void paytmPayment(double price) async {
-    String payment_response;
+    String? payment_response;
     setState(() {
       _isProgress = true;
     });
@@ -497,12 +497,12 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
         headers: headers,
       );
       var getdata = json.decode(response.body);
-      String txnToken;
+      String? txnToken;
       setState(() {
         txnToken = getdata["txn_token"];
       });
 
-      var paytmResponse = Paytm.payWithPaytm(paytmMerId, orderId, txnToken,
+      var paytmResponse = Paytm.payWithPaytm(paytmMerId!, orderId, txnToken!,
           price.toString(), callBackUrl, payTesting);
 
       paytmResponse.then((value) {
@@ -519,7 +519,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
             }
           }
 
-          setSnackbar(payment_response);
+          setSnackbar(payment_response!);
         });
       });
     } catch (e) {
@@ -533,7 +533,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
         _isProgress = true;
       });
 
-    String email = await getPrefrence(EMAIL);
+    String? email = await getPrefrence(EMAIL);
 
     Charge charge = Charge()
       ..amount = price
@@ -578,7 +578,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    setSnackbar(response.message);
+    setSnackbar(response.message!);
     if (mounted)
       setState(() {
         _isProgress = false;
@@ -586,12 +586,12 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    print("EXTERNAL_WALLET: " + response.walletName);
+    print("EXTERNAL_WALLET: " + response.walletName!);
   }
 
   razorpayPayment(double price) async {
-    String contact = await getPrefrence(MOBILE);
-    String email = await getPrefrence(EMAIL);
+    String? contact = await getPrefrence(MOBILE);
+    String? email = await getPrefrence(EMAIL);
 
     double amt = price * 100;
 
@@ -611,13 +611,13 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
       try {
         _razorpay.open(options);
       } catch (e) {
-        debugPrint(e);
+        // debugPrint(e);
       }
     } else {
       if (email == '')
-        setSnackbar(getTranslated(context, 'emailWarning'));
+        setSnackbar(getTranslated(context, 'emailWarning')!);
       else if (contact == '')
-        setSnackbar(getTranslated(context, 'phoneWarning'));
+        setSnackbar(getTranslated(context, 'phoneWarning')!);
     }
   }
 
@@ -643,26 +643,26 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            getTranslated(context, 'AMOUNT') +
+                            getTranslated(context, 'AMOUNT')! +
                                 " : " +
-                                CUR_CURRENCY +
+                                CUR_CURRENCY! +
                                 " " +
-                                tranList[index].amt,
+                                tranList[index].amt!,
                             style: TextStyle(
                                 color: colors.fontColor,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Text(tranList[index].date),
+                        Text(tranList[index].date!),
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text(getTranslated(context, 'ID_LBL') +
+                        Text(getTranslated(context, 'ID_LBL')! +
                             " : " +
-                            tranList[index].id),
+                            tranList[index].id!),
                         Spacer(),
                         Container(
                           margin: EdgeInsets.only(left: 8),
@@ -673,17 +673,17 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                               borderRadius: new BorderRadius.all(
                                   const Radius.circular(4.0))),
                           child: Text(
-                            (tranList[index].type),
+                            tranList[index].type!,
                             style: TextStyle(color: colors.white),
                           ),
                         )
                       ],
                     ),
                     tranList[index].msg != null &&
-                            tranList[index].msg.isNotEmpty
-                        ? Text(getTranslated(context, 'MSG') +
+                            tranList[index].msg!.isNotEmpty
+                        ? Text(getTranslated(context, 'MSG')! +
                             " : " +
-                            tranList[index].msg)
+                            tranList[index].msg!)
                         : Container(),
                   ]))),
     );
@@ -691,7 +691,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -714,7 +714,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                 if (_isNetworkAvail) {
                   getTransaction();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   setState(() {});
                 }
               });
@@ -771,7 +771,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
             _isLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
 
         setState(() {
           _isLoading = false;
@@ -827,7 +827,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
             _isLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
 
         setState(() {
           _isLoading = false;
@@ -856,7 +856,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     _razorpay.clear();
     super.dispose();
   }
@@ -914,14 +914,14 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
             stripe = payment["stripe_payment_method"] == "1" ? true : false;
             paytm = payment["paytm_payment_method"] == "1" ? true : false;
 
-            if (razorpay) razorpayId = payment["razorpay_key_id"];
-            if (paystack) {
+            if (razorpay!) razorpayId = payment["razorpay_key_id"];
+            if (paystack!) {
               paystackId = payment["paystack_key_id"];
 
-              paystackPlugin.initialize(publicKey: paystackId);
+              paystackPlugin.initialize(publicKey: paystackId!);
             }
 
-            if (paytm) {
+            if (paytm!) {
               paytmMerId = payment['paytm_merchant_id'];
               paytmMerKey = payment['paytm_merchant_key'];
               payTesting =
@@ -940,9 +940,9 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
           setState(() {
             _isLoading = false;
           });
-        if (dialogState != null) dialogState(() {});
+        if (dialogState != null) dialogState!(() {});
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -976,10 +976,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                             color: colors.fontColor,
                           ),
                           Text(
-                            " " + getTranslated(context, 'CURBAL_LBL'),
+                            " " + getTranslated(context, 'CURBAL_LBL')!,
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle2
+                                .subtitle2!
                                 .copyWith(
                                     color: colors.fontColor,
                                     fontWeight: FontWeight.bold),
@@ -987,10 +987,10 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
                         ],
                       ),
                       Text(
-                          CUR_CURRENCY +
+                          CUR_CURRENCY! +
                               " " +
-                              double.parse(CUR_BALANCE).toStringAsFixed(2),
-                          style: Theme.of(context).textTheme.headline6.copyWith(
+                              double.parse(CUR_BALANCE!).toStringAsFixed(2),
+                          style: Theme.of(context).textTheme.headline6!.copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold)),
                       SimBtn(

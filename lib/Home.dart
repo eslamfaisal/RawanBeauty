@@ -62,13 +62,13 @@ GlobalKey bottomNavigationKey = GlobalKey();
 int count = 1;
 
 class StateHome extends State<Home> {
-  List<Widget> fragments;
-  DateTime currentBackPressTime;
-  HomePage home;
-  String profile;
+  late List<Widget> fragments;
+  DateTime? currentBackPressTime;
+  late HomePage home;
+  String? profile;
   int curDrwSel = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-  var isDarkTheme;
+  late var isDarkTheme;
 
   @override
   void initState() {
@@ -111,14 +111,14 @@ class StateHome extends State<Home> {
     if (curSelected != 0) {
       curSelected = 0;
       final CurvedNavigationBarState navBarState =
-          bottomNavigationKey.currentState;
+          bottomNavigationKey.currentState as CurvedNavigationBarState;
       navBarState.setPage(0);
 
       return Future.value(false);
     } else if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
       currentBackPressTime = now;
-      setSnackbar(getTranslated(context, 'EXIT_WR'));
+      setSnackbar(getTranslated(context, 'EXIT_WR')!);
 
       return Future.value(false);
     }
@@ -138,7 +138,7 @@ class StateHome extends State<Home> {
   }
 
   _getAppbar() {
-    String title = curSelected == 1
+    String? title = curSelected == 1
         ? getTranslated(context, 'FAVORITE')
         : getTranslated(context, 'NOTIFICATION');
 
@@ -181,7 +181,7 @@ class StateHome extends State<Home> {
                     ),
                   ),
                   (CUR_CART_COUNT != null &&
-                          CUR_CART_COUNT.isNotEmpty &&
+                          CUR_CART_COUNT!.isNotEmpty &&
                           CUR_CART_COUNT != "0")
                       ? new Positioned(
                           top: 0.0,
@@ -195,7 +195,7 @@ class StateHome extends State<Home> {
                                 child: Padding(
                                   padding: EdgeInsets.all(3),
                                   child: new Text(
-                                    CUR_CART_COUNT,
+                                    CUR_CART_COUNT!,
                                     style: TextStyle(
                                         fontSize: 7,
                                         fontWeight: FontWeight.bold),
@@ -284,18 +284,18 @@ class StateHome extends State<Home> {
 
   void initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-      final Uri deepLink = dynamicLink?.link;
+        onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+      final Uri? deepLink = dynamicLink?.link;
 
       if (deepLink != null) {
         if (deepLink.queryParameters.length > 0) {
-          int index = int.parse(deepLink.queryParameters['index']);
+          int index = int.parse(deepLink.queryParameters['index']!);
 
-          int secPos = int.parse(deepLink.queryParameters['secPos']);
+          int secPos = int.parse(deepLink.queryParameters['secPos']!);
 
-          String id = deepLink.queryParameters['id'];
+          String? id = deepLink.queryParameters['id'];
 
-          String list = deepLink.queryParameters['list'];
+          String? list = deepLink.queryParameters['list'];
 
           getProduct(id, index, secPos, list == "true" ? true : false);
         }
@@ -304,16 +304,16 @@ class StateHome extends State<Home> {
       print(e.message);
     });
 
-    final PendingDynamicLinkData data =
+    final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
+    final Uri? deepLink = data?.link;
     if (deepLink != null) {
       if (deepLink.queryParameters.length > 0) {
-        int index = int.parse(deepLink.queryParameters['index']);
+        int index = int.parse(deepLink.queryParameters['index']!);
 
-        int secPos = int.parse(deepLink.queryParameters['secPos']);
+        int secPos = int.parse(deepLink.queryParameters['secPos']!);
 
-        String id = deepLink.queryParameters['id'];
+        String? id = deepLink.queryParameters['id'];
 
         // String list = deepLink.queryParameters['list'];
 
@@ -322,7 +322,7 @@ class StateHome extends State<Home> {
     }
   }
 
-  Future<void> getProduct(String id, int index, int secPos, bool list) async {
+  Future<void> getProduct(String? id, int index, int secPos, bool list) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       try {
@@ -337,7 +337,7 @@ class StateHome extends State<Home> {
 
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -348,20 +348,20 @@ class StateHome extends State<Home> {
 
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProductDetail(
-                    index: list ? int.parse(id) : index,
+                    index: list ? int.parse(id!) : index,
                     updateHome: updateHome,
                     updateParent: updateParent,
                     model: list
                         ? items[0]
-                        : sectionList[secPos].productList[index],
+                        : sectionList[secPos].productList![index],
                     secPos: secPos,
                     list: list,
                   )));
         } else {
-          if (msg != "Products Not Found !") setSnackbar(msg);
+          if (msg != "Products Not Found !") setSnackbar(msg!);
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       {
@@ -379,7 +379,7 @@ class StateHome extends State<Home> {
 }
 
 class HomePage extends StatefulWidget {
-  Function updateHome;
+  Function? updateHome;
 
   HomePage(this.updateHome);
 
@@ -397,13 +397,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
   final _controller = PageController();
   int _curSlider = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool useMobileLayout;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  bool? useMobileLayout;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool menuOpen = false;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  var isDarkTheme;
+  late var isDarkTheme;
 
   @override
   void initState() {
@@ -413,27 +413,27 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
       ),
     ));
-    WidgetsBinding.instance.addPostFrameCallback((_) => _animateSlider());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _animateSlider());
   }
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -508,7 +508,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                   getSetting();
                   getOfferImages();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -520,13 +520,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget homeShimmer() {
-    double width = deviceWidth;
+    double width = deviceWidth!;
     double height = width / 2;
     return Container(
       width: double.infinity,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[300],
-        highlightColor: Colors.grey[100],
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
         child: SingleChildScrollView(
             child: Column(
           children: [
@@ -605,7 +605,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _slider() {
-    double height = deviceWidth / 2.2;
+    double height = deviceWidth! / 2.2;
 
     return homeSliderList.isNotEmpty
         ? Stack(
@@ -701,8 +701,8 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         ));
   }
 
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
+  List<T?> map<T>(List list, Function handler) {
+    List<T?> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
     }
@@ -714,7 +714,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
     Future.delayed(Duration(seconds: 30)).then((_) {
       if (mounted) {
         int nextPage = _controller.hasClients
-            ? _controller.page.round() + 1
+            ? _controller.page!.round() + 1
             : _controller.initialPage;
 
         if (nextPage == homeSliderList.length) {
@@ -750,7 +750,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
               ),
               isDense: true,
               hintText: getTranslated(context, 'searchHint'),
-              hintStyle: Theme.of(context).textTheme.bodyText2.copyWith(
+              hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
                     color: colors.fontColor,
                   ),
               suffixIcon: Padding(
@@ -789,17 +789,17 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            getTranslated(context, 'category'),
+            getTranslated(context, 'category')!,
             style: Theme.of(context).textTheme.subtitle1,
           ),
           InkWell(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                getTranslated(context, 'seeAll'),
+                getTranslated(context, 'seeAll')!,
                 style: Theme.of(context)
                     .textTheme
-                    .caption
+                    .caption!
                     .copyWith(color: colors.primary),
               ),
             ),
@@ -833,7 +833,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             child: GestureDetector(
               onTap: () async {
                 if (catList[index].subList == null ||
-                    catList[index].subList.length == 0) {
+                    catList[index].subList!.length == 0) {
                   await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -867,7 +867,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                       child: new FadeInImage(
                         fadeInDuration: Duration(milliseconds: 150),
                         image: NetworkImage(
-                          catList[index].image,
+                          catList[index].image!,
                         ),
                         height: 50.0,
                         width: 50.0,
@@ -879,8 +879,8 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   Container(
                     child: Text(
-                      catList[index].name,
-                      style: Theme.of(context).textTheme.caption.copyWith(
+                      catList[index].name!,
+                      style: Theme.of(context).textTheme.caption!.copyWith(
                           color: colors.fontColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 10),
@@ -917,15 +917,15 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
       setState(() {
         _isCatLoading = true;
       });
-    return callApi();
+    return callApi().then((value) => value as Null);
   }
 
   _singleSection(int index) {
-    return sectionList[index].productList.length > 0
+    return sectionList[index].productList!.length > 0
         ? Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              _getHeading(sectionList[index].title, index),
+              _getHeading(sectionList[index].title!, index),
               _getSection(index),
               offerImages.length > index ? _getOfferImage(index) : Container(),
             ],
@@ -949,10 +949,10 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                getTranslated(context, 'seeAll'),
+                getTranslated(context, 'seeAll')!,
                 style: Theme.of(context)
                     .textTheme
-                    .caption
+                    .caption!
                     .copyWith(color: colors.primary),
               ),
             ),
@@ -978,7 +978,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
     return InkWell(
       child: FadeInImage(
           fadeInDuration: Duration(milliseconds: 150),
-          image: NetworkImage(offerImages[index].image),
+          image: NetworkImage(offerImages[index].image!),
           width: double.maxFinite,
           // errorWidget: (context, url, e) => placeHolder(50),
           placeholder: AssetImage(
@@ -986,7 +986,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           )),
       onTap: () {
         if (offerImages[index].type == "products") {
-          Product item = offerImages[index].list;
+          Product? item = offerImages[index].list;
 
           Navigator.push(
             context,
@@ -1004,7 +1004,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           );
         } else if (offerImages[index].type == "categories") {
           Product item = offerImages[index].list;
-          if (item.subList == null || item.subList.length == 0) {
+          if (item.subList == null || item.subList!.length == 0) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -1040,15 +1040,15 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             childAspectRatio: 0.8,
             physics: NeverScrollableScrollPhysics(),
             children: List.generate(
-              sectionList[i].productList.length < 4
-                  ? sectionList[i].productList.length
+              sectionList[i].productList!.length < 4
+                  ? sectionList[i].productList!.length
                   : 4,
               (index) {
                 return productItem(i, index, index % 2 == 0 ? true : false);
               },
             ))
         : sectionList[i].style == STYLE1
-            ? sectionList[i].productList.length > 0
+            ? sectionList[i].productList!.length > 0
                 ? Row(
                     children: [
                       Flexible(
@@ -1067,13 +1067,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             Container(
                                 height: orient == Orientation.portrait
-                                    ? deviceHeight * 0.2
-                                    : deviceHeight * 0.5,
+                                    ? deviceHeight! * 0.2
+                                    : deviceHeight! * 0.5,
                                 child: productItem(i, 1, false)),
                             Container(
                                 height: orient == Orientation.portrait
-                                    ? deviceHeight * 0.2
-                                    : deviceHeight * 0.5,
+                                    ? deviceHeight! * 0.2
+                                    : deviceHeight! * 0.5,
                                 child: productItem(i, 2, false)),
                           ],
                         ),
@@ -1092,13 +1092,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             Container(
                                 height: orient == Orientation.portrait
-                                    ? deviceHeight * 0.2
-                                    : deviceHeight * 0.5,
+                                    ? deviceHeight! * 0.2
+                                    : deviceHeight! * 0.5,
                                 child: productItem(i, 0, true)),
                             Container(
                                 height: orient == Orientation.portrait
-                                    ? deviceHeight * 0.2
-                                    : deviceHeight * 0.5,
+                                    ? deviceHeight! * 0.2
+                                    : deviceHeight! * 0.5,
                                 child: productItem(i, 1, true)),
                           ],
                         ),
@@ -1108,7 +1108,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                           fit: FlexFit.loose,
                           child: Container(
                               height: orient == Orientation.portrait
-                                  ? deviceHeight * 0.4
+                                  ? deviceHeight! * 0.4
                                   : deviceHeight,
                               child: productItem(i, 2, false))),
                     ],
@@ -1122,13 +1122,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                               fit: FlexFit.loose,
                               child: Container(
                                   height: orient == Orientation.portrait
-                                      ? deviceHeight * 0.3
-                                      : deviceHeight * 0.6,
+                                      ? deviceHeight! * 0.3
+                                      : deviceHeight! * 0.6,
                                   child: productItem(i, 0, false))),
                           Container(
                             height: orient == Orientation.portrait
-                                ? deviceHeight * 0.2
-                                : deviceHeight * 0.5,
+                                ? deviceHeight! * 0.2
+                                : deviceHeight! * 0.5,
                             child: Row(
                               children: [
                                 Flexible(
@@ -1157,13 +1157,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                                   fit: FlexFit.loose,
                                   child: Container(
                                       height: orient == Orientation.portrait
-                                          ? deviceHeight * 0.3
-                                          : deviceHeight * 0.6,
+                                          ? deviceHeight! * 0.3
+                                          : deviceHeight! * 0.6,
                                       child: productItem(i, 0, false))),
                               Container(
                                 height: orient == Orientation.portrait
-                                    ? deviceHeight * 0.2
-                                    : deviceHeight * 0.5,
+                                    ? deviceHeight! * 0.2
+                                    : deviceHeight! * 0.5,
                                 child: Row(
                                   children: [
                                     Flexible(
@@ -1188,8 +1188,8 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                             mainAxisSpacing: 0,
                             crossAxisSpacing: 0,
                             children: List.generate(
-                              sectionList[i].productList.length < 4
-                                  ? sectionList[i].productList.length
+                              sectionList[i].productList!.length < 4
+                                  ? sectionList[i].productList!.length
                                   : 4,
                               (index) {
                                 return productItem(
@@ -1199,26 +1199,26 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget productItem(int secPos, int index, bool pad) {
-    if (sectionList[secPos].productList.length > index) {
-      String offPer;
+    if (sectionList[secPos].productList!.length > index) {
+      String? offPer;
       double price = double.parse(
-          sectionList[secPos].productList[index].prVarientList[0].disPrice);
+          sectionList[secPos].productList![index].prVarientList![0].disPrice!);
       if (price == 0) {
         price = double.parse(
-            sectionList[secPos].productList[index].prVarientList[0].price);
+            sectionList[secPos].productList![index].prVarientList![0].price!);
       } else {
         double off = double.parse(
-                sectionList[secPos].productList[index].prVarientList[0].price) -
+                sectionList[secPos].productList![index].prVarientList![0].price!) -
             price;
         offPer = ((off * 100) /
                 double.parse(sectionList[secPos]
-                    .productList[index]
-                    .prVarientList[0]
-                    .price))
+                    .productList![index]
+                    .prVarientList![0]
+                    .price!))
             .toStringAsFixed(2);
       }
 
-      double width = deviceWidth * 0.5;
+      double width = deviceWidth! * 0.5;
 
       return Card(
         elevation: 0.2,
@@ -1236,11 +1236,11 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                         topRight: Radius.circular(5)),
                     child: Hero(
                       tag:
-                          "${sectionList[secPos].productList[index].id}$secPos$index",
+                          "${sectionList[secPos].productList![index].id}$secPos$index",
                       child: FadeInImage(
                         fadeInDuration: Duration(milliseconds: 150),
                         image: NetworkImage(
-                            sectionList[secPos].productList[index].image),
+                            sectionList[secPos].productList![index].image!),
                         height: double.maxFinite,
                         width: double.maxFinite,
                         fit: extendImg ? BoxFit.fill : BoxFit.contain,
@@ -1253,44 +1253,44 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                 padding: const EdgeInsetsDirectional.only(
                     start: 5.0, top: 5, bottom: 5),
                 child: Text(
-                  sectionList[secPos].productList[index].name,
+                  sectionList[secPos].productList![index].name!,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(" " + CUR_CURRENCY + " " + price.toString(),
+              Text(" " + CUR_CURRENCY! + " " + price.toString(),
                   style: TextStyle(
                       color: colors.fontColor, fontWeight: FontWeight.bold)),
               Padding(
                 padding: const EdgeInsetsDirectional.only(
                     start: 5.0, bottom: 5, top: 3),
                 child: double.parse(sectionList[secPos]
-                            .productList[index]
-                            .prVarientList[0]
-                            .disPrice) !=
+                            .productList![index]
+                            .prVarientList![0]
+                            .disPrice!) !=
                         0
                     ? Row(
                         children: <Widget>[
                           Text(
                             double.parse(sectionList[secPos]
-                                        .productList[index]
-                                        .prVarientList[0]
-                                        .disPrice) !=
+                                        .productList![index]
+                                        .prVarientList![0]
+                                        .disPrice!) !=
                                     0
-                                ? CUR_CURRENCY +
+                                ? CUR_CURRENCY! +
                                     "" +
                                     sectionList[secPos]
-                                        .productList[index]
-                                        .prVarientList[0]
-                                        .price
+                                        .productList![index]
+                                        .prVarientList![0]
+                                        .price!
                                 : "",
                             style: Theme.of(context)
                                 .textTheme
-                                .overline
+                                .overline!
                                 .copyWith(
                                     decoration: TextDecoration.lineThrough,
                                     letterSpacing: 0),
@@ -1301,7 +1301,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .overline
+                                    .overline!
                                     .copyWith(
                                         color: colors.primary,
                                         letterSpacing: 0)),
@@ -1315,7 +1315,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
           onTap: () {
-            Product model = sectionList[secPos].productList[index];
+            Product model = sectionList[secPos].productList![index];
             Navigator.push(
               context,
               PageRouteBuilder(
@@ -1377,7 +1377,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -1388,11 +1388,11 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             return _buildImagePageItem(slider);
           }).toList();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
     }
     return null;
   }
@@ -1409,14 +1409,14 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
           catList =
               (data as List).map((data) => new Product.fromCat(data)).toList();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
       if (mounted) if (mounted)
@@ -1424,7 +1424,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           _isCatLoading = false;
         });
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
       if (mounted) if (mounted)
         setState(() {
           _isCatLoading = false;
@@ -1437,7 +1437,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
     try {
       var parameter = {PRODUCT_LIMIT: "4", PRODUCT_OFFSET: "0"};
 
-      if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
+      if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
 
       Response response =
           await post(getSectionApi, body: parameter, headers: headers)
@@ -1446,7 +1446,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
           sectionList.clear();
@@ -1454,7 +1454,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
               .map((data) => new SectionModel.fromJson(data))
               .toList();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
       Future.delayed(const Duration(seconds: 1), () {
@@ -1464,7 +1464,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           });
       });
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
       if (mounted)
         setState(() {
           _isCatLoading = false;
@@ -1488,7 +1488,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"]["system_settings"][0];
           cartBtnList = data["cart_btn_on_list"] == "1" ? true : false;
@@ -1497,9 +1497,9 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           MAX_ITEMS = data["max_items_cart"];
           MIN_AMT = data['min_amount'];
           CUR_DEL_CHR = data['delivery_charge'];
-          String isVerion = data['is_version_system_on'];
+          String? isVerion = data['is_version_system_on'];
           extendImg = data["expand_product_images"] == "1" ? true : false;
-          String del = data["area_wise_delivery_charge"];
+          String? del = data["area_wise_delivery_charge"];
           if (del == "0")
             ISFLAT_DEL = true;
           else
@@ -1508,7 +1508,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             CUR_CART_COUNT =
                 getdata["data"]["user_data"][0]["cart_total_items"].toString();
             REFER_CODE = getdata['data']['user_data'][0]['referral_code'];
-            if (REFER_CODE == null || REFER_CODE == '' || REFER_CODE.isEmpty)
+            if (REFER_CODE == null || REFER_CODE == '' || REFER_CODE!.isEmpty)
               generateReferral();
             CUR_BALANCE = getdata["data"]["user_data"][0]["balance"];
           }
@@ -1516,11 +1516,11 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           if (tempData.containsKey(TAG))
             tagList = List<String>.from(getdata["data"][TAG]);
 
-          widget.updateHome();
+          widget.updateHome!();
 
           if (isVerion == "1") {
-            String verionAnd = data['current_version'];
-            String verionIOS = data['current_version_ios'];
+            String? verionAnd = data['current_version'];
+            String? verionIOS = data['current_version_ios'];
 
             PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -1535,11 +1535,11 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
               updateDailog();
           }
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
     }
     return null;
   }
@@ -1553,21 +1553,21 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              title: Text(getTranslated(context, 'UPDATE_APP')),
+              title: Text(getTranslated(context, 'UPDATE_APP')!),
               content: Text(
-                getTranslated(context, 'UPDATE_AVAIL'),
+                getTranslated(context, 'UPDATE_AVAIL')!,
                 style: Theme.of(this.context)
                     .textTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(color: colors.fontColor),
               ),
               actions: <Widget>[
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'NO'),
+                      getTranslated(context, 'NO')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.lightBlack,
                               fontWeight: FontWeight.bold),
@@ -1577,10 +1577,10 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
                     }),
                 new TextButton(
                     child: Text(
-                      getTranslated(context, 'YES'),
+                      getTranslated(context, 'YES')!,
                       style: Theme.of(this.context)
                           .textTheme
-                          .subtitle2
+                          .subtitle2!
                           .copyWith(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
@@ -1660,14 +1660,14 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
           offerImages.clear();
           offerImages =
               (data as List).map((data) => new Model.fromSlider(data)).toList();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
       Future.delayed(const Duration(seconds: 1), () {
@@ -1677,7 +1677,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           });
       });
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
       if (mounted)
         setState(() {
           _isCatLoading = false;
@@ -1687,13 +1687,13 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildImagePageItem(Model slider) {
-    double height = deviceWidth / 2.2;
+    double height = deviceWidth! / 2.2;
 
     return GestureDetector(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(7.0),
         child: CachedNetworkImage(
-          imageUrl: (slider.image),
+          imageUrl: slider.image!,
           height: height,
           width: double.maxFinite,
           fit: BoxFit.fill,
@@ -1706,7 +1706,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
       ),
       onTap: () async {
         if (homeSliderList[_curSlider].type == "products") {
-          Product item = homeSliderList[_curSlider].list;
+          Product? item = homeSliderList[_curSlider].list;
 
           Navigator.push(
             context,
@@ -1724,7 +1724,7 @@ class StateHomePage extends State<HomePage> with TickerProviderStateMixin {
           );
         } else if (homeSliderList[_curSlider].type == "categories") {
           Product item = homeSliderList[_curSlider].list;
-          if (item.subList == null || item.subList.length == 0) {
+          if (item.subList == null || item.subList!.length == 0) {
             Navigator.push(
                 context,
                 MaterialPageRoute(

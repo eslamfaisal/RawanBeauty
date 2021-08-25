@@ -14,9 +14,9 @@ import 'Model/User.dart';
 import 'Product_Preview.dart';
 
 class ReviewList extends StatefulWidget {
-  final String id;
+  final String? id;
 
-  const ReviewList({Key key, this.id}) : super(key: key);
+  const ReviewList({Key? key, this.id}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -56,7 +56,7 @@ class StateRate extends State<ReviewList> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: getAppBar(getTranslated(context, 'CUSTOMER_REVIEW_LBL'), context),
+      appBar: getAppBar(getTranslated(context, 'CUSTOMER_REVIEW_LBL')!, context),
       body: _review(),
     );
   }
@@ -84,19 +84,19 @@ class StateRate extends State<ReviewList> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              reviewList[index].username,
+                              reviewList[index].username!,
                               style: TextStyle(fontWeight: FontWeight.w400),
                             ),
                             Spacer(),
                             Text(
-                              reviewList[index].date,
+                              reviewList[index].date!,
                               style: TextStyle(
                                   color: colors.lightBlack, fontSize: 11),
                             )
                           ],
                         ),
                         RatingBarIndicator(
-                          rating: double.parse(reviewList[index].rating),
+                          rating: double.parse(reviewList[index].rating!),
                           itemBuilder: (context, index) => Icon(
                             Icons.star,
                             color: colors.primary,
@@ -106,7 +106,7 @@ class StateRate extends State<ReviewList> {
                           direction: Axis.horizontal,
                         ),
                         reviewList[index].comment != null &&
-                                reviewList[index].comment.isNotEmpty
+                                reviewList[index].comment!.isNotEmpty
                             ? Text(reviewList[index].comment ?? '')
                             : Container(),
                         reviewImage(index)
@@ -119,9 +119,9 @@ class StateRate extends State<ReviewList> {
 
   reviewImage(int i) {
     return Container(
-      height: reviewList[i].imgList.length > 0 ? 50 : 0,
+      height: reviewList[i].imgList!.length > 0 ? 50 : 0,
       child: ListView.builder(
-        itemCount: reviewList[i].imgList.length,
+        itemCount: reviewList[i].imgList!.length,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) {
@@ -149,7 +149,7 @@ class StateRate extends State<ReviewList> {
                 child: new ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
                   child: new FadeInImage(
-                    image: NetworkImage(reviewList[i].imgList[index]),
+                    image: NetworkImage(reviewList[i].imgList![index]),
                     height: 50.0,
                     width: 50.0,
                     placeholder: placeHolder(50),
@@ -180,7 +180,7 @@ class StateRate extends State<ReviewList> {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           total = int.parse(getdata["total"]);
 
@@ -195,7 +195,7 @@ class StateRate extends State<ReviewList> {
             offset = offset + perPage;
           }
         } else {
-          if (msg != "No ratings found !") setSnackbar(msg);
+          if (msg != "No ratings found !") setSnackbar(msg!);
           isLoadingmore = false;
         }
         if (mounted) if (mounted)
@@ -203,7 +203,7 @@ class StateRate extends State<ReviewList> {
            
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
            

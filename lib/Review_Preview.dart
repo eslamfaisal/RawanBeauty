@@ -11,11 +11,11 @@ import 'Model/Section_Model.dart';
 import 'Model/User.dart';
 
 class ReviewPreview extends StatefulWidget {
-  final int index;
-  final Product model;
+  final int? index;
+  final Product? model;
 
   const ReviewPreview({
-    Key key,
+    Key? key,
     this.index,
     this.model,
   }) : super(key: key);
@@ -25,7 +25,7 @@ class ReviewPreview extends StatefulWidget {
 }
 
 class StatePreview extends State<ReviewPreview> {
-  int curPos;
+  int? curPos;
   bool flag = true;
   @override
   void initState() {
@@ -41,7 +41,7 @@ class StatePreview extends State<ReviewPreview> {
   @override
   Widget build(BuildContext context) {
     User model = widget
-        .model.reviewList[0].productRating[revImgList[curPos].index];
+        .model!.reviewList![0].productRating![revImgList[curPos!].index!];
 
     return Scaffold(
         body: Hero(
@@ -57,7 +57,7 @@ class StatePreview extends State<ReviewPreview> {
               return PhotoViewGalleryPageOptions(
                   initialScale: PhotoViewComputedScale.contained * 0.9,
                   minScale: PhotoViewComputedScale.contained * 0.9,
-                  imageProvider: NetworkImage(revImgList[index].img));
+                  imageProvider: NetworkImage(revImgList[index].img!));
             },
             itemCount: revImgList.length,
             loadingBuilder: (context, event) => Center(
@@ -67,12 +67,12 @@ class StatePreview extends State<ReviewPreview> {
                 child: CircularProgressIndicator(
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                      : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
                 ),
               ),
             ),
             backgroundDecoration: BoxDecoration(color: colors.white),
-            pageController: PageController(initialPage: widget.index),
+            pageController: PageController(initialPage: widget.index!),
             onPageChanged: (index) {
               if (mounted)
                 setState(() {
@@ -113,7 +113,7 @@ class StatePreview extends State<ReviewPreview> {
                crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 RatingBarIndicator(
-                  rating: double.parse(model.rating),
+                  rating: double.parse(model.rating!),
                   itemBuilder: (context, index) => Icon(
                     Icons.star,
                     color: colors.primary,
@@ -122,7 +122,7 @@ class StatePreview extends State<ReviewPreview> {
                   itemSize: 12.0,
                   direction: Axis.horizontal,
                 ),
-                model.comment != null && model.comment.isNotEmpty
+                model.comment != null && model.comment!.isNotEmpty
                     ? Container(
                          width: MediaQuery.of(context).size.width - 20,
                     

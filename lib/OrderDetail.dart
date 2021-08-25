@@ -25,10 +25,10 @@ import 'Helper/String.dart';
 import 'Model/User.dart';
 
 class OrderDetail extends StatefulWidget {
-  final OrderModel model;
-  final Function updateHome;
+  final OrderModel? model;
+  final Function? updateHome;
 
-  const OrderDetail({Key key, this.model, this.updateHome}) : super(key: key);
+  const OrderDetail({Key? key, this.model, this.updateHome}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -40,18 +40,18 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   ScrollController controller = new ScrollController();
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   List<User> tempList = [];
-  bool _isCancleable, _isReturnable;
+  bool _isCancleable = false, _isReturnable = false;
   bool _isProgress = false;
   int offset = 0;
   int total = 0;
   List<User> reviewList = [];
   bool isLoadingmore = true;
   bool _isReturnClick = true;
-  String proId, image;
+  String? proId, image;
 
   @override
   void initState() {
@@ -59,10 +59,10 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -72,13 +72,13 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -104,7 +104,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -122,7 +122,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
   _getAppbar() {
     return AppBar(
       title: Text(
-        getTranslated(context, 'ORDER_DETAIL'),
+        getTranslated(context, 'ORDER_DETAIL')!,
         style: TextStyle(
           color: colors.fontColor,
         ),
@@ -174,7 +174,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                     ),
                   ),
                   (CUR_CART_COUNT != null &&
-                          CUR_CART_COUNT.isNotEmpty &&
+                          CUR_CART_COUNT!.isNotEmpty &&
                           CUR_CART_COUNT != "0")
                       ? new Positioned(
                           top: 0.0,
@@ -188,7 +188,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                 child: Padding(
                                   padding: EdgeInsets.all(3),
                                   child: new Text(
-                                    CUR_CART_COUNT,
+                                    CUR_CART_COUNT!,
                                     style: TextStyle(
                                         fontSize: 7,
                                         fontWeight: FontWeight.bold),
@@ -211,47 +211,47 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
 
-    OrderModel model = widget.model;
-    String pDate, prDate, sDate, dDate, cDate, rDate;
+    OrderModel model = widget.model!;
+    String? pDate, prDate, sDate, dDate, cDate, rDate;
 
-    if (model.listStatus.contains(PLACED)) {
-      pDate = model.listDate[model.listStatus.indexOf(PLACED)];
+    if (model.listStatus!.contains(PLACED)) {
+      pDate = model.listDate![model.listStatus!.indexOf(PLACED)];
 
       if (pDate != null) {
         List d = pDate.split(" ");
         pDate = d[0] + "\n" + d[1];
       }
     }
-    if (model.listStatus.contains(PROCESSED)) {
-      prDate = model.listDate[model.listStatus.indexOf(PROCESSED)];
+    if (model.listStatus!.contains(PROCESSED)) {
+      prDate = model.listDate![model.listStatus!.indexOf(PROCESSED)];
       if (prDate != null) {
         List d = prDate.split(" ");
         prDate = d[0] + "\n" + d[1];
       }
     }
-    if (model.listStatus.contains(SHIPED)) {
-      sDate = model.listDate[model.listStatus.indexOf(SHIPED)];
+    if (model.listStatus!.contains(SHIPED)) {
+      sDate = model.listDate![model.listStatus!.indexOf(SHIPED)];
       if (sDate != null) {
         List d = sDate.split(" ");
         sDate = d[0] + "\n" + d[1];
       }
     }
-    if (model.listStatus.contains(DELIVERD)) {
-      dDate = model.listDate[model.listStatus.indexOf(DELIVERD)];
+    if (model.listStatus!.contains(DELIVERD)) {
+      dDate = model.listDate![model.listStatus!.indexOf(DELIVERD)];
       if (dDate != null) {
         List d = dDate.split(" ");
         dDate = d[0] + "\n" + d[1];
       }
     }
-    if (model.listStatus.contains(CANCLED)) {
-      cDate = model.listDate[model.listStatus.indexOf(CANCLED)];
+    if (model.listStatus!.contains(CANCLED)) {
+      cDate = model.listDate![model.listStatus!.indexOf(CANCLED)];
       if (cDate != null) {
         List d = cDate.split(" ");
         cDate = d[0] + "\n" + d[1];
       }
     }
-    if (model.listStatus.contains(RETURNED)) {
-      rDate = model.listDate[model.listStatus.indexOf(RETURNED)];
+    if (model.listStatus!.contains(RETURNED)) {
+      rDate = model.listDate![model.listStatus!.indexOf(RETURNED)];
       if (rDate != null) {
         List d = rDate.split(" ");
         rDate = d[0] + "\n" + d[1];
@@ -284,17 +284,17 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                           padding: EdgeInsets.all(12.0),
                                           child: Text(
                                             getTranslated(
-                                                    context, 'ORDER_ID_LBL') +
+                                                    context, 'ORDER_ID_LBL')! +
                                                 " - " +
-                                                model.id,
+                                                model.id!,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2
+                                                .subtitle2!
                                                 .copyWith(
                                                     color: colors.lightBlack2),
                                           )))),
                               model.otp != null &&
-                                      model.otp.isNotEmpty &&
+                                      model.otp!.isNotEmpty &&
                                       model.otp != "0"
                                   ? Container(
                                       width: deviceWidth,
@@ -303,32 +303,32 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                           child: Padding(
                                               padding: EdgeInsets.all(12.0),
                                               child: Text(
-                                                getTranslated(context, 'OTP') +
+                                                getTranslated(context, 'OTP')! +
                                                     " - " +
-                                                    model.otp,
+                                                    model.otp!,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .subtitle2
+                                                    .subtitle2!
                                                     .copyWith(
                                                         color:
                                                             colors.lightBlack2),
                                               ))))
                                   : Container(),
-                              model.delDate != null && model.delDate.isNotEmpty
+                              model.delDate != null && model.delDate!.isNotEmpty
                                   ? Card(
                                       elevation: 0,
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Text(
                                           getTranslated(
-                                                  context, 'PREFER_DATE_TIME') +
+                                                  context, 'PREFER_DATE_TIME')! +
                                               ": " +
-                                              model.delDate +
+                                              model.delDate! +
                                               " - " +
-                                              model.delTime,
+                                              model.delTime!,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2
+                                              .subtitle2!
                                               .copyWith(
                                                   color: colors.lightBlack2),
                                         ),
@@ -336,10 +336,10 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                   : Container(),
                               ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: model.itemList.length,
+                                itemCount: model.itemList!.length,
                                 physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, i) {
-                                  OrderItem orderItem = model.itemList[i];
+                                  OrderItem orderItem = model.itemList![i];
                                   proId = orderItem.id;
                                   return productItem(orderItem, model);
                                 },
@@ -352,16 +352,16 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-                    (!widget.model.itemList[0].listStatus.contains(DELIVERD) &&
-                            (!widget.model.itemList[0].listStatus
+                    (!widget.model!.itemList![0].listStatus!.contains(DELIVERD) &&
+                            (!widget.model!.itemList![0].listStatus!
                                 .contains(RETURNED)) &&
                             _isCancleable &&
-                            widget.model.itemList[0].isAlrCancelled == "0")
+                            widget.model!.itemList![0].isAlrCancelled == "0")
                         ? cancelable()
-                        : (widget.model.itemList[0].listStatus
+                        : (widget.model!.itemList![0].listStatus!
                                     .contains(DELIVERD) &&
                                 _isReturnable &&
-                                widget.model.itemList[0].isAlrReturned == "0")
+                                widget.model!.itemList![0].isAlrReturned == "0")
                             ? returnable()
                             : Container(),
                   ],
@@ -392,15 +392,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   _isReturnClick = false;
                   _isProgress = true;
                 });
-                cancelOrder(RETURNED, updateOrderApi, widget.model.id);
+                cancelOrder(RETURNED, updateOrderApi, widget.model!.id);
               }
             : null,
         child: Center(
             child: Text(
-          getTranslated(context, 'RETURN_ORDER'),
+          getTranslated(context, 'RETURN_ORDER')!,
           style: Theme.of(context)
               .textTheme
-              .button
+              .button!
               .copyWith(fontWeight: FontWeight.bold, color: colors.white),
         )),
       ),
@@ -426,15 +426,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   _isReturnClick = false;
                   _isProgress = true;
                 });
-                cancelOrder(CANCLED, updateOrderApi, widget.model.id);
+                cancelOrder(CANCLED, updateOrderApi, widget.model!.id);
               }
             : null,
         child: Center(
             child: Text(
-          getTranslated(context, 'CANCEL_ORDER'),
+          getTranslated(context, 'CANCEL_ORDER')!,
           style: Theme.of(context)
               .textTheme
-              .button
+              .button!
               .copyWith(fontWeight: FontWeight.bold, color: colors.white),
         )),
       ),
@@ -450,8 +450,8 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
                   padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                  child: Text(getTranslated(context, 'PRICE_DETAIL'),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                  child: Text(getTranslated(context, 'PRICE_DETAIL')!,
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: colors.fontColor,
                           fontWeight: FontWeight.bold))),
               Divider(
@@ -462,15 +462,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(getTranslated(context, 'PRICE_LBL') + " " + ":",
+                    Text(getTranslated(context, 'PRICE_LBL')! + " " + ":",
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2)),
-                    Text(CUR_CURRENCY + " " + widget.model.subTotal,
+                    Text(CUR_CURRENCY! + " " + widget.model!.subTotal!,
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2))
                   ],
                 ),
@@ -480,15 +480,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(getTranslated(context, 'DELIVERY_CHARGE') + " " + ":",
+                    Text(getTranslated(context, 'DELIVERY_CHARGE')! + " " + ":",
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2)),
-                    Text("+ " + CUR_CURRENCY + " " + widget.model.delCharge,
+                    Text("+ " + CUR_CURRENCY! + " " + widget.model!.delCharge!,
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2))
                   ],
                 ),
@@ -499,17 +499,17 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        getTranslated(context, 'PROMO_CODE_DIS_LBL') +
+                        getTranslated(context, 'PROMO_CODE_DIS_LBL')! +
                             " " +
                             ":",
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2)),
-                    Text("- " + CUR_CURRENCY + " " + widget.model.promoDis,
+                    Text("- " + CUR_CURRENCY! + " " + widget.model!.promoDis!,
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2))
                   ],
                 ),
@@ -519,15 +519,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(getTranslated(context, 'WALLET_BAL') + " " + ":",
+                    Text(getTranslated(context, 'WALLET_BAL')! + " " + ":",
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2)),
-                    Text("- " + CUR_CURRENCY + " " + widget.model.walBal,
+                    Text("- " + CUR_CURRENCY! + " " + widget.model!.walBal!,
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2))
                   ],
                 ),
@@ -537,15 +537,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(getTranslated(context, 'PAYABLE') + " " + ":",
+                    Text(getTranslated(context, 'PAYABLE')! + " " + ":",
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2)),
-                    Text(CUR_CURRENCY + " " + widget.model.payable,
+                    Text(CUR_CURRENCY! + " " + widget.model!.payable!,
                         style: Theme.of(context)
                             .textTheme
-                            .button
+                            .button!
                             .copyWith(color: colors.lightBlack2))
                   ],
                 ),
@@ -556,12 +556,12 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(getTranslated(context, 'TOTAL_PRICE') + " " + ":",
-                        style: Theme.of(context).textTheme.button.copyWith(
+                    Text(getTranslated(context, 'TOTAL_PRICE')! + " " + ":",
+                        style: Theme.of(context).textTheme.button!.copyWith(
                             color: colors.lightBlack,
                             fontWeight: FontWeight.bold)),
-                    Text(CUR_CURRENCY + " " + widget.model.total,
-                        style: Theme.of(context).textTheme.button.copyWith(
+                    Text(CUR_CURRENCY! + " " + widget.model!.total!,
+                        style: Theme.of(context).textTheme.button!.copyWith(
                             color: colors.lightBlack,
                             fontWeight: FontWeight.bold))
                   ],
@@ -579,8 +579,8 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
                   padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                  child: Text(getTranslated(context, 'SHIPPING_DETAIL'),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                  child: Text(getTranslated(context, 'SHIPPING_DETAIL')!,
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: colors.fontColor,
                           fontWeight: FontWeight.bold))),
               Divider(
@@ -589,15 +589,15 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
               Padding(
                   padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
                   child: Text(
-                    widget.model.name + ",",
+                    widget.model!.name! + ",",
                   )),
               Padding(
                   padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                  child: Text(widget.model.address,
+                  child: Text(widget.model!.address!,
                       style: TextStyle(color: colors.lightBlack2))),
               Padding(
                   padding: EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                  child: Text(widget.model.mobile,
+                  child: Text(widget.model!.mobile!,
                       style: TextStyle(
                         color: colors.lightBlack2,
                       ))),
@@ -605,30 +605,30 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
   }
 
   productItem(OrderItem orderItem, OrderModel model) {
-    String pDate, prDate, sDate, dDate, cDate, rDate;
+    String? pDate, prDate, sDate, dDate, cDate, rDate;
 
-    if (orderItem.listStatus.contains(PLACED)) {
-      pDate = orderItem.listDate[orderItem.listStatus.indexOf(PLACED)];
+    if (orderItem.listStatus!.contains(PLACED)) {
+      pDate = orderItem.listDate![orderItem.listStatus!.indexOf(PLACED)];
     }
-    if (orderItem.listStatus.contains(PROCESSED)) {
-      prDate = orderItem.listDate[orderItem.listStatus.indexOf(PROCESSED)];
+    if (orderItem.listStatus!.contains(PROCESSED)) {
+      prDate = orderItem.listDate![orderItem.listStatus!.indexOf(PROCESSED)];
     }
-    if (orderItem.listStatus.contains(SHIPED)) {
-      sDate = orderItem.listDate[orderItem.listStatus.indexOf(SHIPED)];
+    if (orderItem.listStatus!.contains(SHIPED)) {
+      sDate = orderItem.listDate![orderItem.listStatus!.indexOf(SHIPED)];
     }
-    if (orderItem.listStatus.contains(DELIVERD)) {
-      dDate = orderItem.listDate[orderItem.listStatus.indexOf(DELIVERD)];
+    if (orderItem.listStatus!.contains(DELIVERD)) {
+      dDate = orderItem.listDate![orderItem.listStatus!.indexOf(DELIVERD)];
     }
-    if (orderItem.listStatus.contains(CANCLED)) {
-      cDate = orderItem.listDate[orderItem.listStatus.indexOf(CANCLED)];
+    if (orderItem.listStatus!.contains(CANCLED)) {
+      cDate = orderItem.listDate![orderItem.listStatus!.indexOf(CANCLED)];
     }
-    if (orderItem.listStatus.contains(RETURNED)) {
-      rDate = orderItem.listDate[orderItem.listStatus.indexOf(RETURNED)];
+    if (orderItem.listStatus!.contains(RETURNED)) {
+      rDate = orderItem.listDate![orderItem.listStatus!.indexOf(RETURNED)];
     }
-    List att, val;
-    if (orderItem.attr_name.isNotEmpty) {
-      att = orderItem.attr_name.split(',');
-      val = orderItem.varient_values.split(',');
+    List att=[], val=[];
+    if (orderItem.attr_name!.isNotEmpty) {
+      att = orderItem.attr_name!.split(',');
+      val = orderItem.varient_values!.split(',');
     }
     return Card(
         elevation: 0,
@@ -642,7 +642,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(7.0),
                         child: FadeInImage(
                           fadeInDuration: Duration(milliseconds: 150),
-                          image: NetworkImage(orderItem.image),
+                          image: NetworkImage(orderItem.image!),
                           height: 90.0,
                           width: 90.0,
                           fit: BoxFit.cover,
@@ -655,17 +655,17 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              orderItem.name,
+                              orderItem.name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .subtitle1!
                                   .copyWith(
                                       color: colors.lightBlack,
                                       fontWeight: FontWeight.normal),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            orderItem.attr_name.isNotEmpty
+                            orderItem.attr_name!.isNotEmpty
                                 ? ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
@@ -678,7 +678,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2
+                                                .subtitle2!
                                                 .copyWith(
                                                     color: colors.lightBlack2),
                                           ),
@@ -690,7 +690,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                             val[index],
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2
+                                                .subtitle2!
                                                 .copyWith(
                                                     color: colors.lightBlack),
                                           ),
@@ -701,28 +701,28 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
 
                             Row(children: [
                               Text(
-                                getTranslated(context, 'QUANTITY_LBL') + ":",
+                                getTranslated(context, 'QUANTITY_LBL')! + ":",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle2
+                                    .subtitle2!
                                     .copyWith(color: colors.lightBlack2),
                               ),
                               Padding(
                                 padding: EdgeInsetsDirectional.only(start: 5.0),
                                 child: Text(
-                                  orderItem.qty,
+                                  orderItem.qty!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(color: colors.lightBlack),
                                 ),
                               )
                             ]),
                             Text(
-                              CUR_CURRENCY + " " + orderItem.price,
+                              CUR_CURRENCY! + " " + orderItem.price!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .subtitle1!
                                   .copyWith(color: colors.fontColor),
                             ),
 
@@ -754,9 +754,9 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                         ),
                       )
                     : Container(),
-                model.itemList.length > 1
-                    ? (!orderItem.listStatus.contains(DELIVERD) &&
-                            (!orderItem.listStatus.contains(RETURNED)) &&
+                model.itemList!.length > 1
+                    ? (!orderItem.listStatus!.contains(DELIVERD) &&
+                            (!orderItem.listStatus!.contains(RETURNED)) &&
                             orderItem.isCancle == "1" &&
                             orderItem.isAlrCancelled == "0")
                         ? Column(
@@ -777,7 +777,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .button
+                                              .button!
                                               .copyWith(
                                                 color: colors.fontColor,
                                               ))),
@@ -795,7 +795,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                               ),
                             ],
                           )
-                        : (orderItem.listStatus.contains(DELIVERD) &&
+                        : (orderItem.listStatus!.contains(DELIVERD) &&
                                 orderItem.isReturn == "1" &&
                                 orderItem.isAlrReturned == "0")
                             ? Column(
@@ -817,7 +817,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                                               textAlign: TextAlign.center,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .button
+                                                  .button!
                                                   .copyWith(
                                                     color: colors.fontColor,
                                                   ))),
@@ -845,10 +845,10 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                         child: ListTile(
                           dense: true,
                           title: Text(
-                            getTranslated(context, 'WRITE_REVIEW_LBL'),
+                            getTranslated(context, 'WRITE_REVIEW_LBL')!,
                             style: Theme.of(context)
                                 .textTheme
-                                .subtitle2
+                                .subtitle2!
                                 .copyWith(color: colors.lightBlack),
                           ),
                           trailing: RatingBarIndicator(
@@ -892,7 +892,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                getTranslated(context, 'ORDER_NPLACED'),
+                getTranslated(context, 'ORDER_NPLACED')!,
                 style: TextStyle(fontSize: 8),
               ),
               Text(
@@ -906,7 +906,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
     );
   }
 
-  getProcessed(String prDate, String cDate) {
+  getProcessed(String? prDate, String? cDate) {
   
     return cDate == null
         ? Row(
@@ -934,7 +934,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      getTranslated(context, 'ORDER_PROCESSED'),
+                      getTranslated(context, 'ORDER_PROCESSED')!,
                       style: TextStyle(fontSize: 8),
                     ),
                     Text(
@@ -974,7 +974,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          getTranslated(context, 'ORDER_PROCESSED'),
+                          getTranslated(context, 'ORDER_PROCESSED')!,
                           style: TextStyle(fontSize: 8),
                         ),
                         Text(
@@ -988,7 +988,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
               );
   }
 
-  getShipped(String sDate, String cDate) {
+  getShipped(String? sDate, String? cDate) {
 
     return cDate == null
         ? Row(
@@ -1016,7 +1016,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      getTranslated(context, 'ORDER_SHIPPED'),
+                      getTranslated(context, 'ORDER_SHIPPED')!,
                       style: TextStyle(fontSize: 8),
                       textAlign: TextAlign.center,
                     ),
@@ -1056,7 +1056,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          getTranslated(context, 'ORDER_SHIPPED'),
+                          getTranslated(context, 'ORDER_SHIPPED')!,
                           style: TextStyle(fontSize: 8),
                           textAlign: TextAlign.center,
                         ),
@@ -1071,7 +1071,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
               );
   }
 
-  getDelivered(String dDate, String cDate) {
+  getDelivered(String? dDate, String? cDate) {
     return cDate == null
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1098,7 +1098,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      getTranslated(context, 'ORDER_DELIVERED'),
+                      getTranslated(context, 'ORDER_DELIVERED')!,
                       style: TextStyle(fontSize: 8),
                       textAlign: TextAlign.center,
                     ),
@@ -1115,7 +1115,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
         : Container();
   }
 
-  getCanceled(String cDate) {
+  getCanceled(String? cDate) {
 
     return cDate != null
         ? Row(
@@ -1143,7 +1143,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      getTranslated(context, 'ORDER_CANCLED'),
+                      getTranslated(context, 'ORDER_CANCLED')!,
                       style: TextStyle(fontSize: 8),
                     ),
                     Text(
@@ -1159,8 +1159,8 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
         : Container();
   }
 
-  getReturned(OrderItem item, String rDate, OrderModel model) {
-    return item.listStatus.contains(RETURNED)
+  getReturned(OrderItem item, String? rDate, OrderModel model) {
+    return item.listStatus!.contains(RETURNED)
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -1186,7 +1186,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        getTranslated(context, 'ORDER_RETURNED'),
+                        getTranslated(context, 'ORDER_RETURNED')!,
                         style: TextStyle(fontSize: 8),
                       ),
                       Text(
@@ -1201,7 +1201,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
         : Container();
   }
 
-  Future<void> cancelOrder(String status, Uri api, String id) async {
+  Future<void> cancelOrder(String status, Uri api, String? id) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       try {
@@ -1225,7 +1225,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
           });
         setSnackbar(msg);
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -1265,10 +1265,10 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
               color: colors.primary,
             ),
             title: Text(
-              getTranslated(context, 'DWNLD_INVOICE'),
+              getTranslated(context, 'DWNLD_INVOICE')!,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle2
+                  .subtitle2!
                   .copyWith(color: colors.lightBlack),
             ),
           ),
@@ -1287,16 +1287,16 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                 targetPath = target.path.toString();
               } else {
                 Directory downloadsDirectory =
-                    await DownloadsPathProvider.downloadsDirectory;
+                    await (DownloadsPathProvider.downloadsDirectory as FutureOr<Directory>);
                 targetPath = downloadsDirectory.path.toString();
               }
 
-              var targetFileName = "Invoice_${widget.model.id}";
+              var targetFileName = "Invoice_${widget.model!.id}";
               var generatedPdfFile,filePath;
               try {
                 generatedPdfFile =
                     await FlutterHtmlToPdf.convertFromHtmlContent(
-                        widget.model.invoice, targetPath, targetFileName);
+                        widget.model!.invoice!, targetPath, targetFileName);
                 filePath=generatedPdfFile.path;
               } catch (Exception) {
 
@@ -1315,7 +1315,7 @@ class StateOrder extends State<OrderDetail> with TickerProviderStateMixin {
                   style: TextStyle(color: colors.black),
                 ),
                 action: SnackBarAction(
-                    label: getTranslated(context, 'VIEW'),
+                    label: getTranslated(context, 'VIEW')!,
                     onPressed: () async {
                       final result = await OpenFile.open(filePath);
                     }),

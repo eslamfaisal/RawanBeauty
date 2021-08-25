@@ -18,7 +18,7 @@ import 'Model/Model.dart';
 
 class Payment extends StatefulWidget {
   final Function update;
-  final String msg;
+  final String? msg;
 
   Payment(this.update, this.msg);
 
@@ -29,20 +29,20 @@ class Payment extends StatefulWidget {
 }
 
 List<Model> timeSlotList = [];
-String allowDay;
+String? allowDay;
 bool codAllowed = true;
 
 class StatePayment extends State<Payment> with TickerProviderStateMixin {
   bool _isLoading = true;
-  String startingDate;
+  String? startingDate;
 
-  bool cod,
-      paypal,
-      razorpay,
-      paumoney,
-      paystack,
-      flutterwave,
-      stripe,
+  bool cod = false,
+      paypal= false,
+      razorpay= false,
+      paumoney= false,
+      paystack= false,
+      flutterwave= false,
+      stripe= false,
       paytm = true;
   List<RadioModel> timeModel = [];
   List<RadioModel> payModel = [];
@@ -50,13 +50,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  List<String> paymentMethodList = [];
+  List<String?> paymentMethodList = [];
   List<String> paymentIconList = [
     'assets/images/cod.svg',
   ];
 
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   final plugin = PaystackPlugin();
 
@@ -72,15 +72,15 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
       ];
     });
     if (widget.msg != '')
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => setSnackbar(widget.msg));
+      WidgetsBinding.instance!
+          .addPostFrameCallback((_) => setSnackbar(widget.msg!));
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -90,13 +90,13 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -119,7 +119,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                 if (_isNetworkAvail) {
                   _getdateTime();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -134,7 +134,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: getAppBar(getTranslated(context, 'PAYMENT_METHOD_LBL'), context),
+      appBar: getAppBar(getTranslated(context, 'PAYMENT_METHOD_LBL')!, context),
       body: _isNetworkAvail
           ? _isLoading
               ? getProgress()
@@ -245,7 +245,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
                                               getTranslated(
-                                                  context, 'PREFERED_TIME'),
+                                                  context, 'PREFERED_TIME')!,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .subtitle1,
@@ -260,7 +260,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                                 shrinkWrap: true,
                                                 scrollDirection:
                                                     Axis.horizontal,
-                                                itemCount: int.parse(allowDay),
+                                                itemCount: int.parse(allowDay!),
                                                 itemBuilder: (context, index) {
                                                   return dateCell(index);
                                                 }),
@@ -290,7 +290,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
                                               getTranslated(
-                                                  context, 'SELECT_PAYMENT'),
+                                                  context, 'SELECT_PAYMENT')!,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .subtitle1,
@@ -362,7 +362,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
   }
 
   dateCell(int index) {
-    DateTime today = DateTime.parse(startingDate);
+    DateTime today = DateTime.parse(startingDate!);
     return InkWell(
       child: Container(
         decoration: BoxDecoration(
@@ -414,7 +414,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
           if (timeSlotList.length > 0) {
             for (int i = 0; i < timeSlotList.length; i++) {
               DateTime cur = DateTime.now();
-              String time = timeSlotList[i].lastTime;
+              String time = timeSlotList[i].lastTime!;
               DateTime last = DateTime(
                   cur.year,
                   cur.month,
@@ -478,16 +478,16 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
             if (timeSlotList.length > 0) {
               for (int i = 0; i < timeSlotList.length; i++) {
                 if (selectedDate != null) {
-                  DateTime today = DateTime.parse(startingDate);
+                  DateTime today = DateTime.parse(startingDate!);
 
-                  DateTime date = today.add(Duration(days: selectedDate));
+                  DateTime date = today.add(Duration(days: selectedDate!));
 
                   DateTime cur = DateTime.now();
                   DateTime tdDate = DateTime(cur.year, cur.month, cur.day);
 
                   if (date == tdDate) {
                     DateTime cur = DateTime.now();
-                    String time = timeSlotList[i].lastTime;
+                    String time = timeSlotList[i].lastTime!;
                     DateTime last = DateTime(
                         cur.year,
                         cur.month,
@@ -538,7 +538,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
             if (paystack) {
               paystackId = payment["paystack_key_id"];
 
-              plugin.initialize(publicKey: paystackId);
+              plugin.initialize(publicKey: paystackId!);
             }
 
             if (paytm) {
@@ -579,7 +579,7 @@ class StatePayment extends State<Payment> with TickerProviderStateMixin {
         if (mounted)
           setState(() {
             selectedTime = index;
-            selTime = timeSlotList[selectedTime].name;
+            selTime = timeSlotList[selectedTime!].name;
             timeModel.forEach((element) => element.isSelected = false);
             timeModel[index].isSelected = true;
           });

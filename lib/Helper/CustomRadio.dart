@@ -18,7 +18,7 @@ class RadioItem extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _item.addItem.isDefault == "1"
+            _item.addItem!.isDefault == "1"
                 ? Container(
                     padding: EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
@@ -26,10 +26,10 @@ class RadioItem extends StatelessWidget {
                         borderRadius: new BorderRadius.only(
                             bottomRight: Radius.circular(10.0))),
                     child: Text(
-                      getTranslated(context, 'DEFAULT_LBL'),
+                      getTranslated(context, 'DEFAULT_LBL')!,
                       style: Theme.of(context)
                           .textTheme
-                          .caption
+                          .caption!
                           .copyWith(color: colors.fontColor),
                     ),
                   )
@@ -43,13 +43,13 @@ class RadioItem extends StatelessWidget {
                           height: 20.0,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _item.isSelected
+                              color: _item.isSelected!
                                   ? colors.primary
                                   : colors.white,
                               border: Border.all(color: colors.grad2Color)),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
-                            child: _item.isSelected
+                            child: _item.isSelected!
                                 ? Icon(
                                     Icons.check,
                                     size: 15.0,
@@ -69,30 +69,30 @@ class RadioItem extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          new Text(_item.name),
-                          new Text(_item.add),
+                          new Text(_item.name!),
+                          new Text(_item.add!),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Row(
                               children: [
                                 InkWell(
                                   child: Text(
-                                    getTranslated(context, 'EDIT'),
+                                    getTranslated(context, 'EDIT')!,
                                     style: TextStyle(
                                         color: colors.fontColor,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   onTap: () {
-                                    _item.onEditSelected();
+                                    _item.onEditSelected!();
                                   },
                                 ),
-                                _item.addItem.isDefault == "0"
+                                _item.addItem!.isDefault == "0"
                                     ? Padding(
                                         padding: EdgeInsetsDirectional.only(
                                             start: 20),
                                         child: InkWell(
                                           onTap: () {
-                                            _item.onSetDefault();
+                                            _item.onSetDefault!();
                                           },
                                           child: Container(
                                             padding: EdgeInsets.symmetric(
@@ -105,7 +105,7 @@ class RadioItem extends StatelessWidget {
                                                             4.0))),
                                             child: Text(
                                               getTranslated(
-                                                  context, 'SET_DEFAULT'),
+                                                  context, 'SET_DEFAULT')!,
                                               style: TextStyle(
                                                   color: colors.fontColor,
                                                   fontSize: 10),
@@ -130,7 +130,7 @@ class RadioItem extends StatelessWidget {
           alignment: Alignment.topRight,
           child: InkWell(
             onTap: () {
-              _item.onDeleteSelected();
+              _item.onDeleteSelected!();
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -148,13 +148,13 @@ class RadioItem extends StatelessWidget {
 }
 
 class RadioModel {
-  bool isSelected;
-  final String add;
-  final String name;
-  final User addItem;
-  final VoidCallback onEditSelected;
-  final VoidCallback onDeleteSelected;
-  final VoidCallback onSetDefault;
+  bool? isSelected;
+  final String? add;
+  final String? name;
+  final User? addItem;
+  final VoidCallback? onEditSelected;
+  final VoidCallback? onDeleteSelected;
+  final VoidCallback? onSetDefault;
   final show;
 
   RadioModel({

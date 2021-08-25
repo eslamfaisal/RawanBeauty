@@ -7,9 +7,9 @@ import 'Product_Detail.dart';
 
 class ReviewGallary extends StatefulWidget {
 
- final Product model;
+ final Product? model;
 
-  const ReviewGallary({Key key, this.model}) : super(key: key);
+  const ReviewGallary({Key? key, this.model}) : super(key: key);
 
 
   @override
@@ -20,7 +20,7 @@ class _ReviewImageState extends State<ReviewGallary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(getTranslated(context, 'REVIEW_BY_CUST'), context),
+      appBar: getAppBar(getTranslated(context, 'REVIEW_BY_CUST')!, context),
       body: GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,
@@ -33,7 +33,7 @@ class _ReviewImageState extends State<ReviewGallary> {
             (index) {
               return InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(revImgList[index].img),
+                  image: NetworkImage(revImgList[index].img!),
                   placeholder: AssetImage(
                     "assets/images/sliderph.png",
                   ),

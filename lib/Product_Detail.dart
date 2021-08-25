@@ -33,15 +33,15 @@ import 'Product_Preview.dart';
 import 'Review_Gallary.dart';
 
 class ProductDetail extends StatefulWidget {
-  final Product model;
+  final Product? model;
 
-  final Function updateHome;
-  final Function updateParent;
-  final int secPos, index;
-  final bool list;
+  final Function? updateHome;
+  final Function? updateParent;
+  final int? secPos, index;
+  final bool? list;
 
   const ProductDetail(
-      {Key key,
+      {Key? key,
       this.model,
       this.updateParent,
       this.updateHome,
@@ -54,7 +54,7 @@ class ProductDetail extends StatefulWidget {
   State<StatefulWidget> createState() => StateItem();
 }
 
-List<String> sliderList = [];
+List<String?> sliderList = [];
 List<User> reviewList = [];
 List<imgModel> revImgList = [];
 int offset = 0;
@@ -64,61 +64,61 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   int _curSlider = 0;
   final _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<int> _selectedIndex = [];
-  ChoiceChip choiceChip, tagChip;
-  int _oldSelVarient = 0;
+  List<int?> _selectedIndex = [];
+  ChoiceChip? choiceChip, tagChip;
+  int? _oldSelVarient = 0;
   bool _isProgress = false, _isLoading = true;
 
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
 
   int notificationoffset = 0;
-  ScrollController notificationcontroller;
+  ScrollController? notificationcontroller;
   bool notificationisloadmore = true,
       notificationisgettingdata = false,
       notificationisnodata = false;
   List<Product> productList = [];
 
   var isDarkTheme;
-  ShortDynamicLink shortenedLink;
-  String shareLink;
+  late ShortDynamicLink shortenedLink;
+  String? shareLink;
 
   @override
   void initState() {
     super.initState();
     sliderList.clear();
-    sliderList.add(widget.model.image);
-    if (widget.model.videType != null &&
-        widget.model.video != null &&
-        widget.model.video.isNotEmpty &&
-        widget.model.video != "") sliderList.add(widget.model.image);
-    if(widget.model.otherImage!=null && widget.model.otherImage.length>0)
-    sliderList.addAll(widget.model.otherImage);
+    sliderList.add(widget.model!.image);
+    if (widget.model!.videType != null &&
+        widget.model!.video != null &&
+        widget.model!.video!.isNotEmpty &&
+        widget.model!.video != "") sliderList.add(widget.model!.image);
+    if(widget.model!.otherImage!=null && widget.model!.otherImage!.length>0)
+    sliderList.addAll(widget.model!.otherImage!);
 
-    for (int i = 0; i < widget.model.prVarientList.length; i++) {
-      for (int j = 0; j < widget.model.prVarientList[i].images.length; j++) {
-        sliderList.add(widget.model.prVarientList[i].images[j]);
+    for (int i = 0; i < widget.model!.prVarientList!.length; i++) {
+      for (int j = 0; j < widget.model!.prVarientList![i].images!.length; j++) {
+        sliderList.add(widget.model!.prVarientList![i].images![j]);
       }
     }
 
     revImgList.clear();
-    if (widget.model.reviewList.length > 0)
+    if (widget.model!.reviewList!.length > 0)
       for (int i = 0;
-          i < widget.model.reviewList[0].productRating.length;
+          i < widget.model!.reviewList![0].productRating!.length;
           i++) {
         for (int j = 0;
-            j < widget.model.reviewList[0].productRating[i].imgList.length;
+            j < widget.model!.reviewList![0].productRating![i].imgList!.length;
             j++) {
           imgModel m = imgModel.fromJson(
-              i, widget.model.reviewList[0].productRating[i].imgList[j]);
+              i, widget.model!.reviewList![0].productRating![i].imgList![j]);
           revImgList.add(m);
         }
       }
 
     getShare();
 
-    _oldSelVarient = widget.model.selVarient;
+    _oldSelVarient = widget.model!.selVarient;
 
     reviewList.clear();
     offset = 0;
@@ -129,16 +129,16 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     getProduct();
 
     notificationcontroller = ScrollController(keepScrollOffset: true);
-    notificationcontroller.addListener(_transactionscrollListener);
+    notificationcontroller!.addListener(_transactionscrollListener);
 
     buttonController = new AnimationController(
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -147,9 +147,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _transactionscrollListener() {
-    if (notificationcontroller.offset >=
-            notificationcontroller.position.maxScrollExtent &&
-        !notificationcontroller.position.outOfRange) {
+    if (notificationcontroller!.offset >=
+            notificationcontroller!.position.maxScrollExtent &&
+        !notificationcontroller!.position.outOfRange) {
       if (mounted)
         setState(() {
           getProduct();
@@ -159,8 +159,8 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
-    notificationcontroller.dispose();
+    buttonController!.dispose();
+    notificationcontroller!.dispose();
     super.dispose();
   }
 
@@ -170,21 +170,21 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     if (Platform.isIOS)
       documentDirectory = (await getApplicationDocumentsDirectory()).path;
     else
-      documentDirectory = (await getExternalStorageDirectory()).path;
+      documentDirectory = (await getExternalStorageDirectory())!.path;
 
-    final response1 = await get(Uri.parse(widget.model.image));
+    final response1 = await get(Uri.parse(widget.model!.image!));
     final bytes1 = response1.bodyBytes;
 
-    final File imageFile = File('$documentDirectory/${widget.model.name}.png');
+    final File imageFile = File('$documentDirectory/${widget.model!.name}.png');
     imageFile.writeAsBytesSync(bytes1);
-    Share.shareFiles(['$documentDirectory/${widget.model.name}.png'],
+    Share.shareFiles(['$documentDirectory/${widget.model!.name}.png'],
         text:
-            "${widget.model.name}\n${shortenedLink.shortUrl.toString()}\n$shareLink");
+            "${widget.model!.name}\n${shortenedLink.shortUrl.toString()}\n$shareLink");
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -210,7 +210,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -242,8 +242,8 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     );
   }
 
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
+  List<T?> map<T>(List list, Function handler) {
+    List<T?> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
     }
@@ -265,11 +265,11 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 pos: _curSlider,
                 secPos: widget.secPos,
                 index: widget.index,
-                id: widget.model.id,
+                id: widget.model!.id,
                 imgList: sliderList,
                 list: widget.list,
-                video: widget.model.video,
-                videoType: widget.model.videType,
+                video: widget.model!.video,
+                videoType: widget.model!.videType,
                 from: true,
               ),
             ));
@@ -277,9 +277,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       child: Stack(
         children: <Widget>[
           Hero(
-              tag: widget.list
-                  ? "${widget.index}${widget.model.id}"
-                  : "${sectionList[widget.secPos].productList[widget.index].id}${widget.secPos}${widget.index}",
+              tag: widget.list!
+                  ? "${widget.index}${widget.model!.id}"
+                  : "${sectionList[widget.secPos!].productList![widget.index!].id}${widget.secPos}${widget.index}",
               child: Container(
                 height: height,
                 width: double.infinity,
@@ -298,7 +298,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     return Stack(
                       children: [
                         FadeInImage(
-                          image: NetworkImage(sliderList[index]),
+                          image: NetworkImage(sliderList[index]!),
                           placeholder: AssetImage(
                             "assets/images/sliderph.png",
                           ),
@@ -324,7 +324,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     "${_curSlider + 1}/${sliderList.length}",
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .caption!
                         .copyWith(color: colors.primary),
                   ),
                   decoration: BoxDecoration(
@@ -381,7 +381,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                           //  decoration: shadow(),
                           child: Card(
                               elevation: 0,
-                              child: widget.model.isFavLoading
+                              child: widget.model!.isFavLoading!
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
@@ -399,7 +399,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                           child: Padding(
                                             padding: const EdgeInsets.all(5.0),
                                             child: Icon(
-                                              widget.model.isFav == "0"
+                                              widget.model!.isFav == "0"
                                                   ? Icons.favorite_border
                                                   : Icons.favorite,
                                               color: colors.primary,
@@ -408,7 +408,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                           ),
                                           onTap: () {
                                             if (CUR_USERID != null) {
-                                              widget.model.isFav == "0"
+                                              widget.model!.isFav == "0"
                                                   ? _setFav()
                                                   : _removeFav();
                                             } else {
@@ -451,7 +451,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                 ),
                               ),
                               (CUR_CART_COUNT != null &&
-                                      CUR_CART_COUNT.isNotEmpty &&
+                                      CUR_CART_COUNT!.isNotEmpty &&
                                       CUR_CART_COUNT != "0")
                                   ? new Positioned(
                                       top: 0.0,
@@ -466,7 +466,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                             child: Padding(
                                               padding: EdgeInsets.all(3),
                                               child: new Text(
-                                                CUR_CART_COUNT,
+                                                CUR_CART_COUNT!,
                                                 style: TextStyle(
                                                     fontSize: 7,
                                                     fontWeight:
@@ -490,7 +490,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   indicatorImage() {
-    String indicator = widget.model.indicator;
+    String? indicator = widget.model!.indicator;
     return Positioned.fill(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -515,7 +515,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RatingBarIndicator(
-            rating: double.parse(widget.model.rating),
+            rating: double.parse(widget.model!.rating!),
             itemBuilder: (context, index) => Icon(
               Icons.star,
               color: colors.primary,
@@ -525,17 +525,17 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             direction: Axis.horizontal,
           ),
           Text(
-            " " + widget.model.rating,
+            " " + widget.model!.rating!,
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .caption!
                 .copyWith(color: colors.lightBlack),
           ),
           Text(
-            " | " + widget.model.noOfRating + " Ratings",
+            " | " + widget.model!.noOfRating! + " Ratings",
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .caption!
                 .copyWith(color: colors.lightBlack),
           )
         ],
@@ -544,14 +544,14 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _price(pos) {
-    double price = double.parse(widget.model.prVarientList[pos].disPrice);
-    if (price == 0) price = double.parse(widget.model.prVarientList[pos].price);
+    double price = double.parse(widget.model!.prVarientList![pos].disPrice!);
+    if (price == 0) price = double.parse(widget.model!.prVarientList![pos].price!);
 
     return Row(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text(CUR_CURRENCY + " " + price.toString(),
+          child: Text(CUR_CURRENCY! + " " + price.toString(),
               style: Theme.of(context).textTheme.headline6),
         ),
       ],
@@ -559,27 +559,27 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _offPrice(pos) {
-    double price = double.parse(widget.model.prVarientList[pos].disPrice);
+    double price = double.parse(widget.model!.prVarientList![pos].disPrice!);
 
     if (price != 0) {
-      double off = (double.parse(widget.model.prVarientList[pos].price) -
-              double.parse(widget.model.prVarientList[pos].disPrice))
+      double off = (double.parse(widget.model!.prVarientList![pos].price!) -
+              double.parse(widget.model!.prVarientList![pos].disPrice!))
           .toDouble();
-      off = off * 100 / double.parse(widget.model.prVarientList[pos].price);
+      off = off * 100 / double.parse(widget.model!.prVarientList![pos].price!);
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(
           children: <Widget>[
             Text(
-              CUR_CURRENCY + " " + widget.model.prVarientList[pos].price,
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
+              CUR_CURRENCY! + " " + widget.model!.prVarientList![pos].price!,
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
                   decoration: TextDecoration.lineThrough, letterSpacing: 0),
             ),
             Text(" | " + off.toStringAsFixed(2) + "% off",
                 style: Theme.of(context)
                     .textTheme
-                    .overline
+                    .overline!
                     .copyWith(color: colors.primary, letterSpacing: 0)),
           ],
         ),
@@ -593,20 +593,20 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
       child: Text(
-        widget.model.name,
+        widget.model!.name!,
         style: Theme.of(context)
             .textTheme
-            .subtitle1
+            .subtitle1!
             .copyWith(color: colors.lightBlack),
       ),
     );
   }
 
   _desc() {
-    return widget.model.desc.isNotEmpty
+    return widget.model!.desc!.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Html(data: widget.model.desc),
+            child: Html(data: widget.model!.desc),
           )
         : Container();
   }
@@ -623,8 +623,8 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     ));
   }
 
-  _getVarient(int pos) {
-    if (widget.model.type == "variable_product") {
+  _getVarient(int? pos) {
+    if (widget.model!.type == "variable_product") {
       /*   List<String> attr_name =
           widget.model.prVarientList[pos].attr_name.split(',');
       List<String> attr_value =
@@ -650,17 +650,17 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           ),
         ],
       );*/
-      List att, val;
-      if (widget.model.prVarientList[widget.model.selVarient].attr_name !=
+      List att=[], val=[];
+      if (widget.model!.prVarientList![widget.model!.selVarient!].attr_name !=
           null) {
-        att = widget.model.prVarientList[widget.model.selVarient].attr_name
+        att = widget.model!.prVarientList![widget.model!.selVarient!].attr_name!
             .split(',');
-        val = widget.model.prVarientList[widget.model.selVarient].varient_value
+        val = widget.model!.prVarientList![widget.model!.selVarient!].varient_value!
             .split(',');
       }
-      return widget.model.prVarientList[widget.model.selVarient].attr_name !=
+      return widget.model!.prVarientList![widget.model!.selVarient!].attr_name !=
                   null &&
-              widget.model.prVarientList[widget.model.selVarient].attr_name
+              widget.model!.prVarientList![widget.model!.selVarient!].attr_name!
                   .isNotEmpty
           ? GestureDetector(
               child: ListTile(
@@ -683,7 +683,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(color: colors.lightBlack),
                                 ),
                               ),
@@ -693,7 +693,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                   val[index],
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(
                                           color: colors.lightBlack,
                                           fontWeight: FontWeight.bold),
@@ -730,15 +730,15 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _desc(),
-                    widget.model.desc.isNotEmpty ? Divider() : Container(),
+                    widget.model!.desc!.isNotEmpty ? Divider() : Container(),
                     _attr(),
-                    widget.model.attributeList.isNotEmpty
+                    widget.model!.attributeList!.isNotEmpty
                         ? Divider()
                         : Container(),
                     _madeIn(),
                     _warrenty(),
                     _gaurantee(),
-                    _otherDetail(widget.model.selVarient),
+                    _otherDetail(widget.model!.selVarient),
                     _cancleable(),
                   ],
                 )
@@ -750,40 +750,40 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   void _chooseVarient() {
-    bool available;
+    bool? available;
 
     //selList--selected list
     //sinList---single attribute list for compare
     _selectedIndex.clear();
-    if (widget.model.stockType == "0" || widget.model.stockType == "1") {
-      if (widget.model.availability == "1") {
+    if (widget.model!.stockType == "0" || widget.model!.stockType == "1") {
+      if (widget.model!.availability == "1") {
         available = true;
 
-        _oldSelVarient = widget.model.selVarient;
+        _oldSelVarient = widget.model!.selVarient;
       } else {
         available = false;
       }
-    } else if (widget.model.stockType == "null") {
+    } else if (widget.model!.stockType == "null") {
       available = true;
 
-      _oldSelVarient = widget.model.selVarient;
-    } else if (widget.model.stockType == "2") {
-      if (widget.model.prVarientList[widget.model.selVarient].availability ==
+      _oldSelVarient = widget.model!.selVarient;
+    } else if (widget.model!.stockType == "2") {
+      if (widget.model!.prVarientList![widget.model!.selVarient!].availability ==
           "1") {
         available = true;
 
-        _oldSelVarient = widget.model.selVarient;
+        _oldSelVarient = widget.model!.selVarient;
       } else {
         available = false;
       }
     }
 
     List<String> selList = widget
-        .model.prVarientList[widget.model.selVarient].attribute_value_ids
+        .model!.prVarientList![widget.model!.selVarient!].attribute_value_ids!
         .split(",");
 
-    for (int i = 0; i < widget.model.attributeList.length; i++) {
-      List<String> sinList = widget.model.attributeList[i].id.split(',');
+    for (int i = 0; i < widget.model!.attributeList!.length; i++) {
+      List<String> sinList = widget.model!.attributeList![i].id!.split(',');
 
       for (int j = 0; j < sinList.length; j++) {
         if (selList.contains(sinList[j])) {
@@ -812,7 +812,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
-                      getTranslated(context, 'selectVarient'),
+                      getTranslated(context, 'selectVarient')!,
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
@@ -823,16 +823,16 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.model.attributeList.length,
+                    itemCount: widget.model!.attributeList!.length,
                     itemBuilder: (context, index) {
                       List<Widget> chips = [];
                       List<String> att =
-                          widget.model.attributeList[index].value.split(',');
+                          widget.model!.attributeList![index].value!.split(',');
                       List<String> attId =
-                          widget.model.attributeList[index].id.split(',');
-                      int varSelected;
+                          widget.model!.attributeList![index].id!.split(',');
+                      int? varSelected;
 
-                      List<String> wholeAtt = widget.model.attrIds.split(',');
+                      List<String> wholeAtt = widget.model!.attrIds!.split(',');
 
                       for (int i = 0; i < att.length; i++) {
                         if (_selectedIndex[index] != null) if (wholeAtt
@@ -863,26 +863,26 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                         for (int i = 0;
                                             i <
                                                 widget
-                                                    .model.attributeList.length;
+                                                    .model!.attributeList!.length;
                                             i++) {
                                           List<String> attId = widget
-                                              .model.attributeList[i].id
+                                              .model!.attributeList![i].id!
                                               .split(',');
 
                                           if (_selectedIndex[i] != null)
                                             selectedId.add(int.parse(
-                                                attId[_selectedIndex[i]]));
+                                                attId[_selectedIndex[i]!]));
                                         }
                                         check.clear();
-                                        List<String> sinId;
+                                        late List<String> sinId;
                                         findMatch:
                                         for (int i = 0;
                                             i <
                                                 widget
-                                                    .model.prVarientList.length;
+                                                    .model!.prVarientList!.length;
                                             i++) {
-                                          sinId = widget.model.prVarientList[i]
-                                              .attribute_value_ids
+                                          sinId = widget.model!.prVarientList![i]
+                                              .attribute_value_ids!
                                               .split(",");
 
                                           for (int j = 0;
@@ -909,9 +909,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
 
                                         if (selectedId.length == sinId.length &&
                                             check.length == selectedId.length) {
-                                          if (widget.model.stockType == "0" ||
-                                              widget.model.stockType == "1") {
-                                            if (widget.model.availability ==
+                                          if (widget.model!.stockType == "0" ||
+                                              widget.model!.stockType == "1") {
+                                            if (widget.model!.availability ==
                                                 "1") {
                                               available = true;
 
@@ -919,16 +919,16 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                             } else {
                                               available = false;
                                             }
-                                          } else if (widget.model.stockType ==
+                                          } else if (widget.model!.stockType ==
                                               "null") {
                                             available = true;
 
                                             _oldSelVarient = varSelected;
-                                          } else if (widget.model.stockType ==
+                                          } else if (widget.model!.stockType ==
                                               "2") {
                                             if (widget
-                                                    .model
-                                                    .prVarientList[varSelected]
+                                                    .model!
+                                                    .prVarientList![varSelected!]
                                                     .availability ==
                                                 "1") {
                                               available = true;
@@ -942,22 +942,22 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                           available = false;
                                         }
                                         if (widget
-                                                .model
-                                                .prVarientList[_oldSelVarient]
-                                                .images
+                                                .model!
+                                                .prVarientList![_oldSelVarient!]
+                                                .images!
                                                 .length >
                                             0) {
                                           int oldVarTotal = 0;
-                                          if (_oldSelVarient > 0)
+                                          if (_oldSelVarient! > 0)
                                             for (int i = 0;
-                                                i < _oldSelVarient;
+                                                i < _oldSelVarient!;
                                                 i++) {
                                               oldVarTotal = oldVarTotal +
-                                                  widget.model.prVarientList[i]
-                                                      .images.length;
+                                                  widget.model!.prVarientList![i]
+                                                      .images!.length;
                                             }
                                           int p =
-                                              widget.model.otherImage.length +
+                                              widget.model!.otherImage!.length +
                                                   1 +
                                                   oldVarTotal;
 
@@ -977,10 +977,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                       }
 
                       String value = _selectedIndex[index] != null &&
-                              _selectedIndex[index] <= att.length
-                          ? att[_selectedIndex[index]]
-                          : getTranslated(context, 'VAR_SEL').substring(
-                              2, getTranslated(context, 'VAR_SEL').length);
+                              _selectedIndex[index]! <= att.length
+                          ? att[_selectedIndex[index]!]
+                          : getTranslated(context, 'VAR_SEL')!.substring(
+                              2, getTranslated(context, 'VAR_SEL')!.length);
                       return chips.length > 0
                           ? Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -988,7 +988,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    widget.model.attributeList[index].name +
+                                    widget.model!.attributeList![index].name! +
                                         " : " +
                                         value,
                                     style:
@@ -1024,7 +1024,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                         alignment: FractionalOffset.center,
                         height: 55,
                         decoration: BoxDecoration(
-                          gradient: available
+                          gradient: available!
                               ? LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -1037,14 +1037,14 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                       1
                                     ])
                               : null,
-                          color: available ? null : colors.disableColor,
+                          color: available! ? null : colors.disableColor,
                         ),
-                        child: Text(getTranslated(context, 'APPLY'),
+                        child: Text(getTranslated(context, 'APPLY')!,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.button.copyWith(
+                            style: Theme.of(context).textTheme.button!.copyWith(
                                   color: colors.white,
                                 ))),
-                    onPressed: available ? applyVarient : null,
+                    onPressed: available! ? applyVarient : null,
                   )
                 ],
               ),
@@ -1057,7 +1057,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     Navigator.of(context).pop();
     if (mounted)
       setState(() {
-        widget.model.selVarient = _oldSelVarient;
+        widget.model!.selVarient = _oldSelVarient;
       });
   }
 
@@ -1071,20 +1071,20 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               _isProgress = true;
             });
 
-          Product model = widget.model;
+          Product model = widget.model!;
           String qty =
-              ((int.parse(model.prVarientList[model.selVarient].cartCount)) +
-                      (int.parse(model.qtyStepSize)))
+              ((int.parse(model.prVarientList![model.selVarient!].cartCount!)) +
+                      (int.parse(model.qtyStepSize!)))
                   .toString();
 
-          if (int.parse(qty) < model.minOrderQuntity) {
+          if (int.parse(qty) < model.minOrderQuntity!) {
             qty = model.minOrderQuntity.toString();
             setSnackbar('Minimum order quantity is $qty');
           }
 
           var parameter = {
             USER_ID: CUR_USERID,
-            PRODUCT_VARIENT_ID: model.prVarientList[model.selVarient].id,
+            PRODUCT_VARIENT_ID: model.prVarientList![model.selVarient!].id,
             QTY: qty,
           };
 
@@ -1095,7 +1095,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
             CUR_CART_COUNT = data['cart_count'];
@@ -1107,17 +1107,17 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 ),
               );
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
 
-          widget.updateParent();
-          widget.updateHome();
+          widget.updateParent!();
+          widget.updateHome!();
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'));
+          setSnackbar(getTranslated(context, 'somethingMSg')!);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -1142,7 +1142,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     if (_isNetworkAvail) {
       try {
         var parameter = {
-          PRODUCT_ID: widget.model.id,
+          PRODUCT_ID: widget.model!.id,
           LIMIT: perPage.toString(),
           OFFSET: offset.toString(),
         };
@@ -1153,7 +1153,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           total = int.parse(getdata["total"]);
 
@@ -1165,7 +1165,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             offset = offset + perPage;
           }
         } else {
-          if (msg != "No ratings found !") setSnackbar(msg);
+          if (msg != "No ratings found !") setSnackbar(msg!);
           isLoadingmore = false;
         }
         if (mounted) if (mounted)
@@ -1173,7 +1173,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             _isLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             _isLoading = false;
@@ -1247,10 +1247,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       try {
         if (mounted)
           setState(() {
-            widget.model.isFavLoading = true;
+            widget.model!.isFavLoading = true;
           });
 
-        var parameter = {USER_ID: CUR_USERID, PRODUCT_ID: widget.model.id};
+        var parameter = {USER_ID: CUR_USERID, PRODUCT_ID: widget.model!.id};
         Response response =
             await post(setFavoriteApi, body: parameter, headers: headers)
                 .timeout(Duration(seconds: timeOut));
@@ -1258,22 +1258,22 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
-          widget.model.isFav = "1";
-          widget.updateParent();
+          widget.model!.isFav = "1";
+          widget.updateParent!();
 
           //  home.updateHomepage();
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
 
         if (mounted)
           setState(() {
-            widget.model.isFavLoading = false;
+            widget.model!.isFavLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -1289,34 +1289,34 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       try {
         if (mounted)
           setState(() {
-            widget.model.isFavLoading = true;
+            widget.model!.isFavLoading = true;
           });
 
-        var parameter = {USER_ID: CUR_USERID, PRODUCT_ID: widget.model.id};
+        var parameter = {USER_ID: CUR_USERID, PRODUCT_ID: widget.model!.id};
         Response response =
             await post(removeFavApi, body: parameter, headers: headers)
                 .timeout(Duration(seconds: timeOut));
 
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
-          widget.model.isFav = "0";
-          widget.updateParent();
+          widget.model!.isFav = "0";
+          widget.updateParent!();
 
           favList.removeWhere((item) =>
-              item.productList[0].prVarientList[0].id ==
-              widget.model.prVarientList[0].id);
+              item.productList![0].prVarientList![0].id ==
+              widget.model!.prVarientList![0].id);
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
 
         if (mounted)
           setState(() {
-            widget.model.isFavLoading = false;
+            widget.model!.isFavLoading = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -1344,22 +1344,22 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                       _slider(),
                       _title(),
                       _rate(),
-                      _price(widget.model.selVarient),
-                      _offPrice(widget.model.selVarient),
+                      _price(widget.model!.selVarient),
+                      _offPrice(widget.model!.selVarient),
                       _shortDesc(),
                       _compareProduct(),
 
-                      widget.model.type == "variable_product"
+                      widget.model!.type == "variable_product"
                           ? Divider()
                           : Container(),
-                      _getVarient(widget.model.selVarient),
+                      _getVarient(widget.model!.selVarient),
                       Divider(),
                       _specification(),
                       Divider(),
 //if you want to remove discount and coupon then just double slash below line
 //                       _discountCoupon(),
-                      if (widget.model.tagList != null &&
-                          widget.model.tagList.isNotEmpty)
+                      if (widget.model!.tagList != null &&
+                          widget.model!.tagList!.isNotEmpty)
                         Divider(),
                       _tags()
                     ],
@@ -1380,7 +1380,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  getTranslated(context, 'VIEW_ALL'),
+                                  getTranslated(context, 'VIEW_ALL')!,
                                   style: TextStyle(color: colors.primary),
                                 ),
                               ),
@@ -1389,7 +1389,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          ReviewList(id: widget.model.id)),
+                                          ReviewList(id: widget.model!.id)),
                                 );
                               },
                             )
@@ -1401,7 +1401,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          getTranslated(context, 'MORE_PRODUCT'),
+                          getTranslated(context, 'MORE_PRODUCT')!,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       )
@@ -1417,13 +1417,13 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     children: List.generate(
                       productList.length,
                       (index) {
-                        Product item;
+                        Product? item;
                         try {
                           item =
                               productList.isEmpty ? null : productList[index];
                           if (notificationisloadmore &&
                               index == (productList.length - 1) &&
-                              notificationcontroller.position.pixels <= 0) {
+                              notificationcontroller!.position.pixels <= 0) {
                             getProduct();
                           }
                         } on Exception catch (_) {}
@@ -1437,7 +1437,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             ),
           ),
         ),
-        widget.model.availability == "1" || widget.model.stockType == "null"
+        widget.model!.availability == "1" || widget.model!.stockType == "null"
             ? Row(
                 children: [
                   Container(
@@ -1448,15 +1448,15 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                         BoxShadow(color: colors.black26, blurRadius: 10)
                       ],
                     ),
-                    width: deviceWidth * 0.5,
+                    width: deviceWidth! * 0.5,
                     child: InkWell(
                       onTap: () {
                         addToCart(false);
                       },
                       child: Center(
                           child: Text(
-                        getTranslated(context, 'ADD_CART'),
-                        style: Theme.of(context).textTheme.button.copyWith(
+                        getTranslated(context, 'ADD_CART')!,
+                        style: Theme.of(context).textTheme.button!.copyWith(
                             fontWeight: FontWeight.bold, color: colors.primary),
                       )),
                     ),
@@ -1473,15 +1473,15 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                         BoxShadow(color: colors.black26, blurRadius: 10)
                       ],
                     ),
-                    width: deviceWidth * 0.5,
+                    width: deviceWidth! * 0.5,
                     child: InkWell(
                       onTap: () {
                         addToCart(true);
                       },
                       child: Center(
                           child: Text(
-                        getTranslated(context, 'BUYNOW'),
-                        style: Theme.of(context).textTheme.button.copyWith(
+                        getTranslated(context, 'BUYNOW')!,
+                        style: Theme.of(context).textTheme.button!.copyWith(
                             fontWeight: FontWeight.bold, color: colors.white),
                       )),
                     ),
@@ -1496,10 +1496,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 ),
                 child: Center(
                     child: Text(
-                  getTranslated(context, 'OUT_OF_STOCK_LBL'),
+                  getTranslated(context, 'OUT_OF_STOCK_LBL')!,
                   style: Theme.of(context)
                       .textTheme
-                      .button
+                      .button!
                       .copyWith(fontWeight: FontWeight.bold, color: Colors.red),
                 )),
               ),
@@ -1508,7 +1508,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _madeIn() {
-    String madeIn = widget.model.madein;
+    String? madeIn = widget.model!.madein;
 
     return madeIn != null && madeIn.isNotEmpty
         ? Padding(
@@ -1517,7 +1517,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               trailing: Text(madeIn),
               dense: true,
               title: Text(
-               getTranslated(context, 'MADE_IN'),
+               getTranslated(context, 'MADE_IN')!,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
@@ -1526,19 +1526,19 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   Widget productItem(int index, bool pad) {
-    String offPer;
-    double price = double.parse(productList[index].prVarientList[0].disPrice);
+    String? offPer;
+    double price = double.parse(productList[index].prVarientList![0].disPrice!);
     if (price == 0) {
-      price = double.parse(productList[index].prVarientList[0].price);
+      price = double.parse(productList[index].prVarientList![0].price!);
     } else {
       double off =
-          double.parse(productList[index].prVarientList[0].price) - price;
+          double.parse(productList[index].prVarientList![0].price!) - price;
       offPer = ((off * 100) /
-              double.parse(productList[index].prVarientList[0].price))
+              double.parse(productList[index].prVarientList![0].price!))
           .toStringAsFixed(2);
     }
 
-    double width = deviceWidth * 0.5;
+    double width = deviceWidth! * 0.5;
 
     return Card(
       elevation: 0.2,
@@ -1557,7 +1557,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   child: Hero(
                     tag: "$index${productList[index].id}",
                     child: FadeInImage(
-                      image: NetworkImage(productList[index].image),
+                      image: NetworkImage(productList[index].image!),
                       height: double.maxFinite,
                       width: double.maxFinite,
                       fit: extendImg ? BoxFit.fill : BoxFit.contain,
@@ -1570,38 +1570,38 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               padding: const EdgeInsetsDirectional.only(
                   start: 5.0, top: 5, bottom: 5),
               child: Text(
-                productList[index].name,
+                productList[index].name!,
                 style: Theme.of(context)
                     .textTheme
-                    .caption
+                    .caption!
                     .copyWith(color: colors.lightBlack),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Text(" " + CUR_CURRENCY + " " + price.toString(),
+            Text(" " + CUR_CURRENCY! + " " + price.toString(),
                 style: TextStyle(
                     color: colors.fontColor, fontWeight: FontWeight.bold)),
             Padding(
               padding: const EdgeInsetsDirectional.only(
                   start: 5.0, bottom: 5, top: 3),
               child:
-                  double.parse(productList[index].prVarientList[0].disPrice) !=
+                  double.parse(productList[index].prVarientList![0].disPrice!) !=
                           0
                       ? Row(
                           children: <Widget>[
                             Text(
                               double.parse(productList[index]
-                                          .prVarientList[0]
-                                          .disPrice) !=
+                                          .prVarientList![0]
+                                          .disPrice!) !=
                                       0
-                                  ? CUR_CURRENCY +
+                                  ? CUR_CURRENCY! +
                                       "" +
-                                      productList[index].prVarientList[0].price
+                                      productList[index].prVarientList![0].price!
                                   : "",
                               style: Theme.of(context)
                                   .textTheme
-                                  .overline
+                                  .overline!
                                   .copyWith(
                                       decoration: TextDecoration.lineThrough,
                                       letterSpacing: 0),
@@ -1609,7 +1609,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                             Text(" | " + "-$offPer%",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .overline
+                                    .overline!
                                     .copyWith(
                                         color: colors.primary,
                                         letterSpacing: 0)),
@@ -1662,19 +1662,19 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        reviewList[index].username,
+                        reviewList[index].username!,
                         style: TextStyle(fontWeight: FontWeight.w400),
                       ),
                       Spacer(),
                       Text(
-                        reviewList[index].date,
+                        reviewList[index].date!,
                         style:
                             TextStyle(color: colors.lightBlack, fontSize: 11),
                       )
                     ],
                   ),
                   RatingBarIndicator(
-                    rating: double.parse(reviewList[index].rating),
+                    rating: double.parse(reviewList[index].rating!),
                     itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: colors.primary,
@@ -1684,7 +1684,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                     direction: Axis.horizontal,
                   ),
                   reviewList[index].comment != null &&
-                          reviewList[index].comment.isNotEmpty
+                          reviewList[index].comment!.isNotEmpty
                       ? Text(reviewList[index].comment ?? '')
                       : Container(),
                   reviewImage(index),
@@ -1708,10 +1708,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             });
 
           var parameter = {
-            CATID: widget.model.categoryId,
+            CATID: widget.model!.categoryId,
             LIMIT: perPage.toString(),
             OFFSET: notificationoffset.toString(),
-            ID: widget.model.id,
+            ID: widget.model!.id,
             IS_SIMILAR: "1"
           };
 
@@ -1768,7 +1768,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
           }
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             notificationisloadmore = false;
@@ -1782,10 +1782,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     }
   }
 
-  _otherDetail(int pos) {
-    String returnable = widget.model.isReturnable;
+  _otherDetail(int? pos) {
+    String? returnable = widget.model!.isReturnable;
     if (returnable == "1")
-      returnable = RETURN_DAYS + " Days";
+      returnable = RETURN_DAYS! + " Days";
     else
       returnable = "No";
     return Padding(
@@ -1794,7 +1794,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         trailing: Text(returnable),
         dense: true,
         title: Text(
-          getTranslated(context, 'RETURNABLE'),
+          getTranslated(context, 'RETURNABLE')!,
        
           style: Theme.of(context).textTheme.subtitle2,
         ),
@@ -1803,9 +1803,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _cancleable() {
-    String cancleable = widget.model.isCancelable;
+    String? cancleable = widget.model!.isCancelable;
     if (cancleable == "1")
-      cancleable = "Till " + widget.model.cancleTill;
+      cancleable = "Till " + widget.model!.cancleTill!;
     else
       cancleable = "No";
     return Padding(
@@ -1814,7 +1814,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         trailing: Text(cancleable),
         dense: true,
         title: Text(
-         getTranslated(context, 'CANCELLABLE') ,
+         getTranslated(context, 'CANCELLABLE')! ,
           style: Theme.of(context).textTheme.subtitle2,
         ),
       ),
@@ -1826,7 +1826,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       child: ListTile(
         dense: true,
         title: Text(
-          getTranslated(context, 'SPECIFICATION'),
+          getTranslated(context, 'SPECIFICATION')!,
           style: TextStyle(color: colors.lightBlack),
         ),
         trailing: Icon(Icons.keyboard_arrow_right),
@@ -1840,12 +1840,12 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
       child: ListTile(
         dense: true,
         title: Text(
-          getTranslated(context, 'DISCOUPON'),
+          getTranslated(context, 'DISCOUPON')!,
           style: TextStyle(color: colors.lightBlack),
         ),
         trailing: Icon(Icons.keyboard_arrow_right),
         subtitle: Text(
-          getTranslated(context, 'COMINGSOON'),
+          getTranslated(context, 'COMINGSOON')!,
           style: TextStyle(color: colors.primary),
         ),
       ),
@@ -1858,20 +1858,20 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
         child: Row(
           children: [
             Text(
-              getTranslated(context, 'CUSTOMER_REVIEW_LBL') + " ($total)",
-              style: Theme.of(context).textTheme.subtitle2.copyWith(
+              getTranslated(context, 'CUSTOMER_REVIEW_LBL')! + " ($total)",
+              style: Theme.of(context).textTheme.subtitle2!.copyWith(
                   color: colors.lightBlack, fontWeight: FontWeight.bold),
             ),
             Spacer(),
             Text(
-              widget.model.rating + "/5 ",
+              widget.model!.rating! + "/5 ",
               style: Theme.of(context)
                   .textTheme
-                  .caption
+                  .caption!
                   .copyWith(color: colors.lightBlack2),
             ),
             RatingBarIndicator(
-              rating: double.parse(widget.model.rating),
+              rating: double.parse(widget.model!.rating!),
               itemBuilder: (context, index) => Icon(
                 Icons.star,
                 color: colors.primary,
@@ -1886,9 +1886,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
 
   reviewImage(int i) {
     return Container(
-      height: reviewList[i].imgList.length > 0 ? 50 : 0,
+      height: reviewList[i].imgList!.length > 0 ? 50 : 0,
       child: ListView.builder(
-        itemCount: reviewList[i].imgList.length,
+        itemCount: reviewList[i].imgList!.length,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) {
@@ -1916,7 +1916,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                 child: new ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
                   child: new FadeInImage(
-                    image: NetworkImage(reviewList[i].imgList[index]),
+                    image: NetworkImage(reviewList[i].imgList![index]),
                     height: 50.0,
                     width: 50.0,
                     placeholder: placeHolder(50),
@@ -1931,11 +1931,11 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _shortDesc() {
-    return widget.model.shortDescription.isNotEmpty
+    return widget.model!.shortDescription!.isNotEmpty
         ? Padding(
             padding: const EdgeInsetsDirectional.only(start: 8, end: 8, top: 8),
             child: Text(
-              widget.model.shortDescription,
+              widget.model!.shortDescription!,
               style: Theme.of(context).textTheme.subtitle2,
             ),
           )
@@ -1943,13 +1943,13 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _attr() {
-    return widget.model.attributeList.isNotEmpty
+    return widget.model!.attributeList!.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.model.attributeList.length,
+              itemCount: widget.model!.attributeList!.length,
               itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -1958,14 +1958,14 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                       Expanded(
                         flex: 1,
                         child: Text(
-                          widget.model.attributeList[i].name,
+                          widget.model!.attributeList![i].name!,
                           style: Theme.of(context).textTheme.subtitle2,
                         ),
                       ),
                       Expanded(
                           flex: 2,
                           child: Text(
-                            widget.model.attributeList[i].value,
+                            widget.model!.attributeList![i].value!,
                             textAlign: TextAlign.right,
                           )),
                     ],
@@ -1981,7 +1981,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: deepLinkUrlPrefix,
       link: Uri.parse(
-          'https://$deepLinkName/?index=${widget.index}&secPos=${widget.secPos}&list=${widget.list}&id=${widget.model.id}'),
+          'https://$deepLinkName/?index=${widget.index}&secPos=${widget.secPos}&list=${widget.list}&id=${widget.model!.id}'),
       androidParameters: AndroidParameters(
         packageName: packageName,
         minimumVersion: 1,
@@ -2006,7 +2006,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _warrenty() {
-    String warranty = widget.model.warranty;
+    String? warranty = widget.model!.warranty;
 
     return warranty != null && warranty.isNotEmpty
         ? Padding(
@@ -2015,7 +2015,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               trailing: Text(warranty),
               dense: true,
               title: Text(
-               getTranslated(context, 'WARRENTY') ,
+               getTranslated(context, 'WARRENTY')! ,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
@@ -2026,10 +2026,10 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   playIcon() {
     return Align(
         alignment: Alignment.center,
-        child: (widget.model.videType != null &&
-                widget.model.video != null &&
-                widget.model.video.isNotEmpty &&
-                widget.model.video != "")
+        child: (widget.model!.videType != null &&
+                widget.model!.video != null &&
+                widget.model!.video!.isNotEmpty &&
+                widget.model!.video != "")
             ? Icon(
                 Icons.play_circle_fill_outlined,
                 color: colors.primary,
@@ -2039,12 +2039,12 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _tags() {
-    if (widget.model.tagList != null) {
+    if (widget.model!.tagList != null) {
       List<Widget> chips = [];
-      for (int i = 0; i < widget.model.tagList.length; i++) {
+      for (int i = 0; i < widget.model!.tagList!.length; i++) {
         tagChip = ChoiceChip(
           selected: false,
-          label: Text(widget.model.tagList[i],
+          label: Text(widget.model!.tagList![i],
               style: TextStyle(color: colors.fontColor,fontSize: 11)),
           backgroundColor: colors.fontColor.withOpacity(0.1),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -2057,7 +2057,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProductList(
-                      name: widget.model.tagList[i],
+                      name: widget.model!.tagList![i],
                       //id: catList[index].id,
                       updateHome: widget.updateHome,
                       tag: true,
@@ -2122,7 +2122,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                         FadeInImage(
                           fadeInDuration: Duration(milliseconds: 150),
                           image: NetworkImage(
-                            revImgList[index].img,
+                            revImgList[index].img!,
                           ),
                           height: 100.0,
                           width: 80.0,
@@ -2137,7 +2137,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
                                 color: colors.black54,
                                 child: Center(
                                     child: Text(
-                                  "+${revImgList.length - 5}",
+                                  "${revImgList.length - 5}",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -2155,7 +2155,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
   }
 
   _gaurantee() {
-    String gaurantee = widget.model.gurantee;
+    String? gaurantee = widget.model!.gurantee;
 
     return gaurantee != null && gaurantee.isNotEmpty
         ? Padding(
@@ -2164,7 +2164,7 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
               trailing: Text(gaurantee),
               dense: true,
               title: Text(
-              getTranslated(context, 'GAURANTEE'),
+              getTranslated(context, 'GAURANTEE')!,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
@@ -2207,11 +2207,11 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
             ),
             label: Text(
               (compareList.length > 0 && compareList.contains(widget.model))
-                  ? getTranslated(context, 'GOTO_COMPARE')
-                  : getTranslated(context, 'COMPARE_PRO'),
+                  ? getTranslated(context, 'GOTO_COMPARE')!
+                  : getTranslated(context, 'COMPARE_PRO')!,
               style: Theme.of(context)
                   .textTheme
-                  .caption
+                  .caption!
                   .copyWith(color: colors.fontColor),
             )),
       ),

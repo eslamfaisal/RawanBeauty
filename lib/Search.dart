@@ -25,9 +25,9 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class Search extends StatefulWidget {
-  final Function updateHome;
+  final Function? updateHome;
 
-  const Search({Key key, this.updateHome}) : super(key: key);
+  const Search({Key? key, this.updateHome}) : super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -42,19 +42,19 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
   bool _isProgress = false;
   List<Product> productList = [];
   List<TextEditingController> _controllerList = [];
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
 
   String query = "";
   int notificationoffset = 0;
-  ScrollController notificationcontroller;
+  ScrollController? notificationcontroller;
   bool notificationisloadmore = true,
       notificationisgettingdata = false,
       notificationisnodata = false;
 
-  AnimationController _animationController;
-  Timer _debounce;
+  late AnimationController _animationController;
+  Timer? _debounce;
   List<Product> history = [];
   bool _hasSpeech = false;
   double level = 0.0;
@@ -66,8 +66,8 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
   String lastWords = '';
   List<LocaleName> _localeNames = [];
   final SpeechToText speech = SpeechToText();
-  StateSetter setStater;
-  ChoiceChip tagChip;
+  late StateSetter setStater;
+  ChoiceChip? tagChip;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
     notificationoffset = 0;
 
     notificationcontroller = ScrollController(keepScrollOffset: true);
-    notificationcontroller.addListener(_transactionscrollListener);
+    notificationcontroller!.addListener(_transactionscrollListener);
 
     _controller.addListener(() {
   
@@ -93,7 +93,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
         notificationisnodata = false;
         buildResult = false;
         if (query.trim().length > 0) {
-          if (_debounce?.isActive ?? false) _debounce.cancel();
+          if (_debounce?.isActive ?? false) _debounce!.cancel();
           _debounce = Timer(const Duration(milliseconds: 500), () {
             if (query.trim().length > 0) {
               notificationisloadmore = true;
@@ -115,10 +115,10 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -127,9 +127,9 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
   }
 
   _transactionscrollListener() {
-    if (notificationcontroller.offset >=
-            notificationcontroller.position.maxScrollExtent &&
-        !notificationcontroller.position.outOfRange) {
+    if (notificationcontroller!.offset >=
+            notificationcontroller!.position.maxScrollExtent &&
+        !notificationcontroller!.position.outOfRange) {
       if (mounted)
         setState(() {
           getProduct();
@@ -139,8 +139,8 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
-    notificationcontroller.dispose();
+    buttonController!.dispose();
+    notificationcontroller!.dispose();
     _controller.dispose();
     for (int i = 0; i < _controllerList.length; i++)
       _controllerList[i].dispose();
@@ -150,7 +150,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -176,7 +176,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -318,16 +318,16 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
       _controllerList.add(new TextEditingController());
 
     _controllerList[index].text =
-        model.prVarientList[model.selVarient].cartCount;
+        model.prVarientList![model.selVarient!].cartCount!;
 
-    double price = double.parse(model.prVarientList[model.selVarient].disPrice);
+    double price = double.parse(model.prVarientList![model.selVarient!].disPrice!);
     if (price == 0)
-      price = double.parse(model.prVarientList[model.selVarient].price);
+      price = double.parse(model.prVarientList![model.selVarient!].price!);
 
-    List att, val;
-    if (model.prVarientList[model.selVarient].attr_name != null) {
-      att = model.prVarientList[model.selVarient].attr_name.split(',');
-      val = model.prVarientList[model.selVarient].varient_value.split(',');
+    List att=[], val=[];
+    if (model.prVarientList![model.selVarient!].attr_name != null) {
+      att = model.prVarientList![model.selVarient!].attr_name!.split(',');
+      val = model.prVarientList![model.selVarient!].varient_value!.split(',');
     }
 
     return Card(
@@ -346,7 +346,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(7.0),
                           child: FadeInImage(
-                            image: NetworkImage(productList[index].image),
+                            image: NetworkImage(productList[index].image!),
                             height: 80.0,
                             width: 80.0,
                             fit: BoxFit.cover,
@@ -362,10 +362,10 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              model.name,
+                              model.name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                     color: colors.lightBlack,
                                   ),
@@ -375,22 +375,22 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                             Row(
                               children: <Widget>[
                                 Text(
-                                    CUR_CURRENCY + " " + price.toString() + " ",
+                                    CUR_CURRENCY! + " " + price.toString() + " ",
                                     style:
                                         Theme.of(context).textTheme.subtitle1),
                                 Text(
                                   double.parse(model
-                                              .prVarientList[model.selVarient]
-                                              .disPrice) !=
+                                              .prVarientList![model.selVarient!]
+                                              .disPrice!) !=
                                           0
-                                      ? CUR_CURRENCY +
+                                      ? CUR_CURRENCY! +
                                           "" +
-                                          model.prVarientList[model.selVarient]
-                                              .price
+                                          model.prVarientList![model.selVarient!]
+                                              .price!
                                       : "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .overline
+                                      .overline!
                                       .copyWith(
                                           decoration:
                                               TextDecoration.lineThrough,
@@ -398,10 +398,10 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                 ),
                               ],
                             ),
-                            model.prVarientList[model.selVarient].attr_name !=
+                            model.prVarientList![model.selVarient!].attr_name !=
                                         null &&
-                                    model.prVarientList[model.selVarient]
-                                        .attr_name.isNotEmpty
+                                    model.prVarientList![model.selVarient!]
+                                        .attr_name!.isNotEmpty
                                 ? ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
@@ -414,7 +414,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2
+                                                .subtitle2!
                                                 .copyWith(
                                                     color: colors.lightBlack),
                                           ),
@@ -426,7 +426,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                             val[index],
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2
+                                                .subtitle2!
                                                 .copyWith(
                                                     color: colors.lightBlack,
                                                     fontWeight:
@@ -446,13 +446,13 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                       size: 12,
                                     ),
                                     Text(
-                                      " " + productList[index].rating,
+                                      " " + productList[index].rating!,
                                       style:
                                           Theme.of(context).textTheme.overline,
                                     ),
                                     Text(
                                       " (" +
-                                          productList[index].noOfRating +
+                                          productList[index].noOfRating! +
                                           ")",
                                       style:
                                           Theme.of(context).textTheme.overline,
@@ -493,10 +493,10 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                                               false &&
                                                           (int.parse(productList[
                                                                       index]
-                                                                  .prVarientList[
+                                                                  .prVarientList![
                                                                       model
-                                                                          .selVarient]
-                                                                  .cartCount)) >
+                                                                          .selVarient!]
+                                                                  .cartCount!)) >
                                                               0)
                                                         removeFromCart(index);
                                                     },
@@ -563,7 +563,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                                               (BuildContext
                                                                   context) {
                                                             return model
-                                                                .itemsCounter
+                                                                .itemsCounter!
                                                                 .map<
                                                                     PopupMenuItem<
                                                                         String>>((String
@@ -605,11 +605,11 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                                                         addToCart(
                                                             index,
                                                             ((int.parse(model
-                                                                        .prVarientList[model
-                                                                            .selVarient]
-                                                                        .cartCount)) +
+                                                                        .prVarientList![model
+                                                                            .selVarient!]
+                                                                        .cartCount!)) +
                                                                     int.parse(model
-                                                                        .qtyStepSize))
+                                                                        .qtyStepSize!))
                                                                 .toString());
                                                     },
                                                   )
@@ -626,8 +626,8 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                 ],
               ),
               productList[index].availability == "0"
-                  ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL'),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                  ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL')!,
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.red, fontWeight: FontWeight.bold))
                   : Container(),
             ],
@@ -669,7 +669,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
               _isProgress = true;
             });
 
-          if (int.parse(qty) < productList[index].minOrderQuntity) {
+          if (int.parse(qty) < productList[index].minOrderQuntity!) {
             qty = productList[index].minOrderQuntity.toString();
             setSnackbar('Minimum order quantity is $qty');
           }
@@ -677,7 +677,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           var parameter = {
             USER_ID: CUR_USERID,
             PRODUCT_VARIENT_ID: productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .id,
             QTY: qty
           };
@@ -688,26 +688,26 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
-            String qty = data['total_quantity'];
+            String? qty = data['total_quantity'];
             CUR_CART_COUNT = data['cart_count'];
 
             productList[index]
-                .prVarientList[productList[index].selVarient]
+                .prVarientList![productList[index].selVarient!]
                 .cartCount = qty.toString();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
-          widget.updateHome();
+          widget.updateHome!();
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'));
+          setSnackbar(getTranslated(context, 'somethingMSg')!);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -735,16 +735,16 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           int qty;
 
           qty = (int.parse(productList[index]
-                  .prVarientList[model.selVarient]
-                  .cartCount) -
-              int.parse(productList[index].qtyStepSize));
+                  .prVarientList![model.selVarient!]
+                  .cartCount!) -
+              int.parse(productList[index].qtyStepSize!));
 
-          if (qty < productList[index].minOrderQuntity) {
+          if (qty < productList[index].minOrderQuntity!) {
             qty = 0;
           }
 
           var parameter = {
-            PRODUCT_VARIENT_ID: model.prVarientList[model.selVarient].id,
+            PRODUCT_VARIENT_ID: model.prVarientList![model.selVarient!].id,
             USER_ID: CUR_USERID,
             QTY: qty.toString()
           };
@@ -756,24 +756,24 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
 
           if (!error) {
             var data = getdata["data"];
-            String qty = data["total_quantity"];
+            String? qty = data["total_quantity"];
             CUR_CART_COUNT = data['cart_count'];
-            model.prVarientList[model.selVarient].cartCount = qty.toString();
+            model.prVarientList![model.selVarient!].cartCount = qty.toString();
 
-            widget.updateHome();
+            widget.updateHome!();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'));
+          setSnackbar(getTranslated(context, 'somethingMSg')!);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -790,8 +790,8 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
   void getAvailVarient(List<Product> tempList) {
     for (int j = 0; j < tempList.length; j++) {
       if (tempList[j].stockType == "2") {
-        for (int i = 0; i < tempList[j].prVarientList.length; i++) {
-          if (tempList[j].prVarientList[i].availability == "1") {
+        for (int i = 0; i < tempList[j].prVarientList!.length; i++) {
+          if (tempList[j].prVarientList![i].availability == "1") {
             tempList[j].selVarient = i;
 
             break;
@@ -838,7 +838,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
             OFFSET: notificationoffset.toString(),
           };
 
-          if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID;
+          if (CUR_USERID != null) parameter[USER_ID] = CUR_USERID!;
 
           Response response =
               await post(getProductApi, headers: headers, body: parameter)
@@ -849,7 +849,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
 
           Map<String, Object> tempData = getdata;
           if (tempData.containsKey(TAG)) {
@@ -857,12 +857,12 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
             if (tempList != null && tempList.length > 0) tagList = tempList;
           }
 
-          String search = getdata['search'];
+          String? search = getdata['search'];
 
           notificationisgettingdata = false;
           if (notificationoffset == 0) notificationisnodata = error;
 
-          if (!error && search.trim() == query.trim()) {
+          if (!error && search!.trim() == query.trim()) {
             if (mounted) {
               new Future.delayed(
                   Duration.zero,
@@ -891,7 +891,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
           }
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             notificationisloadmore = false;
@@ -994,7 +994,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
               (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.hasData) {
-              final entities = snapshot.data;
+              final entities = snapshot.data!;
               List<Product> itemList = [];
               for (int i = 0; i < entities.length; i++) {
                 Product item = Product.history(entities[i]);
@@ -1024,7 +1024,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
       return notificationisnodata
           ? getNoItem(context)
           : NotificationListener<ScrollNotification>(
-              onNotification: (scrollNotification) {},
+              onNotification: (scrollNotification) {} as bool Function(ScrollNotification)?,
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -1035,13 +1035,13 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                         physics: BouncingScrollPhysics(),
                         itemCount: productList.length,
                         itemBuilder: (context, index) {
-                          Product item;
+                          Product? item;
                           try {
                             item =
                                 productList.isEmpty ? null : productList[index];
                             if (notificationisloadmore &&
                                 index == (productList.length - 1) &&
-                                notificationcontroller.position.pixels <= 0) {
+                                notificationcontroller!.position.pixels <= 0) {
                               getProduct();
                             }
                           } on Exception catch (_) {}
@@ -1063,7 +1063,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
     return notificationisnodata
         ? getNoItem(context)
         : NotificationListener<ScrollNotification>(
-            onNotification: (scrollNotification) {},
+            onNotification: (scrollNotification) {} as bool Function(ScrollNotification)?,
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -1240,7 +1240,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                               "I'm listening...",
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                       color: colors.fontColor,
                                       fontWeight: FontWeight.bold),
@@ -1249,7 +1249,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
                               'Not listening',
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(
                                       color: colors.fontColor,
                                       fontWeight: FontWeight.bold),
@@ -1273,39 +1273,39 @@ class _SuggestionList extends StatelessWidget {
       this.notificationcontroller,
       this.getProduct,
       this.clearAll});
-  final List<Product> suggestions;
-  final TextEditingController textController;
+  final List<Product>? suggestions;
+  final TextEditingController? textController;
 
   final notificationcontroller;
-  final SearchDelegate<Product> searchDelegate;
-  final Function updateHome, getProduct, clearAll;
+  final SearchDelegate<Product>? searchDelegate;
+  final Function? updateHome, getProduct, clearAll;
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      itemCount: suggestions.length,
+      itemCount: suggestions!.length,
       shrinkWrap: true,
       controller: notificationcontroller,
       separatorBuilder: (BuildContext context, int index) => Divider(),
       itemBuilder: (BuildContext context, int i) {
-        final Product suggestion = suggestions[i];
+        final Product suggestion = suggestions![i];
 
         return ListTile(
             title: Text(
-              suggestion.name,
-              style: Theme.of(context).textTheme.subtitle2.copyWith(
+              suggestion.name!,
+              style: Theme.of(context).textTheme.subtitle2!.copyWith(
                   color: colors.lightBlack, fontWeight: FontWeight.bold),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            subtitle: textController.text.toString().trim().isEmpty ||
-                    suggestion.history
+            subtitle: textController!.text.toString().trim().isEmpty ||
+                    suggestion.history!
                 ? null
                 : Text(
-                    "In " + suggestion.catName,
+                    "In " + suggestion.catName!,
                     style: TextStyle(color: colors.fontColor),
                   ),
-            leading: textController.text.toString().trim().isEmpty ||
-                    suggestion.history
+            leading: textController!.text.toString().trim().isEmpty ||
+                    suggestion.history!
                 ? Icon(Icons.history)
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(7.0),
@@ -1317,7 +1317,7 @@ class _SuggestionList extends StatelessWidget {
                             fit: BoxFit.cover,
                           )
                         : FadeInImage(
-                            image: NetworkImage(suggestion.image),
+                            image: NetworkImage(suggestion.image!),
                             fadeInDuration: Duration(milliseconds: 10),
                             fit: BoxFit.cover,
                             height: 50,
@@ -1328,24 +1328,24 @@ class _SuggestionList extends StatelessWidget {
               Icons.reply,
             ),
             onTap: () async {
-              if (suggestion.name.startsWith('Search Result for ')) {
+              if (suggestion.name!.startsWith('Search Result for ')) {
                 await setPrefrenceList(
-                    HISTORYLIST, textController.text.toString().trim());
+                    HISTORYLIST, textController!.text.toString().trim());
                 //onSelected(query);
                 //   print("value***start${suggestion.history}**$query");
                 buildResult = true;
-                clearAll();
-                getProduct();
-              } else if (suggestion.history) {
-                clearAll();
+                clearAll!();
+                getProduct!();
+              } else if (suggestion.history!) {
+                clearAll!();
 
                 buildResult = true;
-                textController.text = suggestion.name;
-                textController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: textController.text.length));
+                textController!.text = suggestion.name!;
+                textController!.selection = TextSelection.fromPosition(
+                    TextPosition(offset: textController!.text.length));
               } else {
                 await setPrefrenceList(
-                    HISTORYLIST, textController.text.toString().trim());
+                    HISTORYLIST, textController!.text.toString().trim());
                 buildResult = false;
                 Product model = suggestion;
                 Navigator.push(

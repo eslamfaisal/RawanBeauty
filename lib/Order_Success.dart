@@ -19,7 +19,7 @@ class StateSuccess extends State<OrderSuccess> {
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
 
-      appBar: getAppBar(getTranslated(context,'ORDER_PLACED'), context),
+      appBar: getAppBar(getTranslated(context,'ORDER_PLACED')!, context),
       body: Center(
         child: SingleChildScrollView(
             child: Column(
@@ -29,12 +29,12 @@ class StateSuccess extends State<OrderSuccess> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    getTranslated(context,'ORD_PLC'),
+                    getTranslated(context,'ORD_PLC')!,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
                 Text(
-                  getTranslated(context,'ORD_PLC_SUCC'),
+                  getTranslated(context,'ORD_PLC_SUCC')!,
                   style: TextStyle(color: colors.fontColor),
                 ),
                 Container(
@@ -49,7 +49,7 @@ class StateSuccess extends State<OrderSuccess> {
                   padding: const EdgeInsetsDirectional.only(top: 28.0),
                   child: CupertinoButton(
                     child: Container(
-                        width: deviceWidth * 0.7,
+                        width: deviceWidth! * 0.7,
                         height: 45,
                         alignment: FractionalOffset.center,
                         decoration: new BoxDecoration(
@@ -61,9 +61,9 @@ class StateSuccess extends State<OrderSuccess> {
                           borderRadius:
                           new BorderRadius.all(const Radius.circular(10.0)),
                         ),
-                        child: Text(getTranslated(context, 'CONTINUE_SHOPPING'),
+                        child: Text(getTranslated(context, 'CONTINUE_SHOPPING')!,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headline6.copyWith(
+                            style: Theme.of(context).textTheme.headline6!.copyWith(
                                 color: colors.white, fontWeight: FontWeight.normal))),
                     onPressed: () {
                       Navigator.of(context).pushNamedAndRemoveUntil(

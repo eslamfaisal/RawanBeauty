@@ -11,9 +11,9 @@ import 'Helper/Constant.dart';
 import 'Helper/String.dart';
 
 class Faqs extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const Faqs({Key key, this.title}) : super(key: key);
+  const Faqs({Key? key, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,9 +24,9 @@ class Faqs extends StatefulWidget {
 class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
   bool _isLoading = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String privacy;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  String? privacy;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   List<FaqsModel> faqsList = [];
   List<String> selectedId = [];
@@ -47,10 +47,10 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -60,7 +60,7 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     controller.removeListener(() {});
     super.dispose();
   }
@@ -79,7 +79,7 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -105,7 +105,7 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                    if (mounted) setState(() {});
                 }
               });
@@ -121,7 +121,7 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
     return Scaffold(
 
         key: _scaffoldKey,
-        appBar: getAppBar(widget.title, context),
+        appBar: getAppBar(widget.title!, context),
         body: _isNetworkAvail ? _showForm() : noInternet(context));
   }
 
@@ -161,10 +161,10 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        faqsList[index].question,
+                        faqsList[index].question!,
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1
+                            .subtitle1!
                             .copyWith(color: colors.lightBlack),
                       )),
                   selectedIndex != index || flag
@@ -177,10 +177,10 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0),
                               child: Text(
-                                faqsList[index].answer,
+                                faqsList[index].answer!,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle2
+                                    .subtitle2!
                                     .copyWith(
                                     color: colors.black.withOpacity(0.7)),
                                 maxLines: 1,
@@ -198,10 +198,10 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8.0),
                                 child: Text(
-                                  faqsList[index].answer,
+                                  faqsList[index].answer!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(
                                       color: colors.black.withOpacity(0.7)),
                                 ))),
@@ -222,21 +222,21 @@ class StateFaqs extends State<Faqs> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
             faqsList = (data as List)
                 .map((data) => new FaqsModel.fromJson(data))
                 .toList();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
         }
          if (mounted) setState(() {
           _isLoading = false;
         });
       } on TimeoutException catch (_) {
-        setSnackbar( getTranslated(context,'somethingMSg'));
+        setSnackbar( getTranslated(context,'somethingMSg')!);
       }
     } else {
        if (mounted) setState(() {

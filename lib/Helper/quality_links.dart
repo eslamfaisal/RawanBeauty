@@ -14,7 +14,7 @@ class QualityLinks {
     return getQualitiesAsync();
   }
 
-  Future<SplayTreeMap> getQualitiesAsync() async {
+  Future<SplayTreeMap?> getQualitiesAsync() async {
     try {
       var response = await http
           .get(Uri.parse('https://player.vimeo.com/video/' + videoId + '/config'));

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:eshop/Helper/String.dart';
 import 'package:eshop/Privacy_Policy.dart';
 import 'package:eshop/Verify_Otp.dart';
@@ -18,9 +17,9 @@ import 'Helper/Session.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SendOtp extends StatefulWidget {
-  String title;
+  String? title;
 
-  SendOtp({Key key, this.title}) : super(key: key);
+  SendOtp({Key? key, this.title}) : super(key: key);
 
   @override
   _SendOtpState createState() => new _SendOtpState();
@@ -32,10 +31,10 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
   final mobileController = TextEditingController();
   final ccodeController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String mobile, id, countrycode, countryName, mobileno;
+  String? mobile, id, countrycode = "+2", countryName, mobileno;
   bool _isNetworkAvail = true;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
@@ -46,7 +45,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -60,13 +59,13 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
           setState(() {
             _isNetworkAvail = false;
           });
-        await buttonController.reverse();
+        await buttonController!.reverse();
       });
     }
   }
 
   bool validateAndSave() {
-    final form = _formkey.currentState;
+    final form = _formkey.currentState!;
     form.save();
     if (form.validate()) {
       return true;
@@ -77,7 +76,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
@@ -116,7 +115,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -136,52 +135,52 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
       var getdata = json.decode(response.body);
 
-      bool error = getdata["error"];
-      String msg = getdata["message"];
-      await buttonController.reverse();
+      bool? error = getdata["error"];
+      String? msg = getdata["message"];
+      await buttonController!.reverse();
       if (widget.title == getTranslated(context, 'SEND_OTP_TITLE')) {
-        if (!error) {
-          setSnackbar(msg);
+        if (!error!) {
+          setSnackbar(msg!);
 
-          setPrefrence(MOBILE, mobile);
-          setPrefrence(COUNTRY_CODE, countrycode);
+          setPrefrence(MOBILE, mobile!);
+          setPrefrence(COUNTRY_CODE, countrycode!);
           Future.delayed(Duration(seconds: 1)).then((_) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
                         VerifyOtp(
-                          mobileNumber: mobile,
+                          mobileNumber: mobile!,
                           countryCode: countrycode,
                           title: getTranslated(context, 'SEND_OTP_TITLE'),
                         )));
           });
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
       }
       if (widget.title == getTranslated(context, 'FORGOT_PASS_TITLE')) {
-        if (error) {
-          setPrefrence(MOBILE, mobile);
-          setPrefrence(COUNTRY_CODE, countrycode);
+        if (error!) {
+          setPrefrence(MOBILE, mobile!);
+          setPrefrence(COUNTRY_CODE, countrycode!);
           Future.delayed(Duration(seconds: 1)).then((_) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
                         VerifyOtp(
-                          mobileNumber: mobile,
+                          mobileNumber: mobile!,
                           countryCode: countrycode,
                           title: getTranslated(context, 'FORGOT_PASS_TITLE'),
                         )));
           });
         } else {
-          setSnackbar(getTranslated(context, 'FIRSTSIGNUP_MSG'));
+          setSnackbar(getTranslated(context, 'FIRSTSIGNUP_MSG')!);
         }
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
-      await buttonController.reverse();
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
+      await buttonController!.reverse();
     }
   }
 
@@ -205,12 +204,12 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
           alignment: Alignment.center,
           child: new Text(
             widget.title == getTranslated(context, 'SEND_OTP_TITLE')
-                ? getTranslated(context, 'CREATE_ACC_LBL')
-                : getTranslated(context, 'FORGOT_PASSWORDTITILE'),
+                ? getTranslated(context, 'CREATE_ACC_LBL')!
+                : getTranslated(context, 'FORGOT_PASSWORDTITILE')!,
             style: Theme
                 .of(context)
                 .textTheme
-                .subtitle1
+                .subtitle1!
                 .copyWith(color: colors.fontColor, fontWeight: FontWeight.bold),
           ),
         ));
@@ -223,12 +222,12 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
         child: Align(
           alignment: Alignment.center,
           child: new Text(
-            getTranslated(context, 'SEND_VERIFY_CODE_LBL'),
+            getTranslated(context, 'SEND_VERIFY_CODE_LBL')!,
             textAlign: TextAlign.center,
             style: Theme
                 .of(context)
                 .textTheme
-                .subtitle2
+                .subtitle2!
                 .copyWith(
               color: colors.fontColor,
               fontWeight: FontWeight.normal,
@@ -239,7 +238,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
 
   setCodeWithMono() {
     return Container(
-        width: deviceWidth * 0.7,
+        width: deviceWidth! * 0.7,
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7.0),
@@ -248,10 +247,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: setCountryCode(),
-                ),
+
                 Expanded(
                   flex: 4,
                   child: setMono(),
@@ -260,35 +256,35 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             )));
   }
 
-  setCountryCode() {
-    double width = deviceWidth;
-    double height = deviceHeight * 0.9;
-    return CountryCodePicker(
-        showCountryOnly: false,
-        flagWidth: 20,
-
-        boxDecoration: BoxDecoration(
-          color: colors.lightWhite,
-        ),
-        searchDecoration: InputDecoration(
-          hintText: getTranslated(context, 'COUNTRY_CODE_LBL'),
-          hintStyle: TextStyle(color: colors.fontColor),
-          fillColor: colors.fontColor,
-        ),
-        showOnlyCountryWhenClosed: false,
-        initialSelection: 'IN',
-        dialogSize: Size(width, height),
-        alignLeft: true,
-        textStyle:
-        TextStyle(color: colors.fontColor, fontWeight: FontWeight.bold),
-        onChanged: (CountryCode countryCode) {
-          countrycode = countryCode.toString().replaceFirst("+", "");
-          countryName = countryCode.name;
-        },
-        onInit: (code) {
-          countrycode = code.toString().replaceFirst("+", "");
-        });
-  }
+  // setCountryCode() {
+  //   double width = deviceWidth!;
+  //   double height = deviceHeight! * 0.9;
+  //   return CountryCodePicker(
+  //       showCountryOnly: false,
+  //       flagWidth: 20,
+  //
+  //       boxDecoration: BoxDecoration(
+  //         color: colors.lightWhite,
+  //       ),
+  //       searchDecoration: InputDecoration(
+  //         hintText: getTranslated(context, 'COUNTRY_CODE_LBL'),
+  //         hintStyle: TextStyle(color: colors.fontColor),
+  //         fillColor: colors.fontColor,
+  //       ),
+  //       showOnlyCountryWhenClosed: false,
+  //       initialSelection: 'IN',
+  //       dialogSize: Size(width, height),
+  //       alignLeft: true,
+  //       textStyle:
+  //       TextStyle(color: colors.fontColor, fontWeight: FontWeight.bold),
+  //       onChanged: (CountryCode countryCode) {
+  //         countrycode = countryCode.toString().replaceFirst("+", "");
+  //         countryName = countryCode.name;
+  //       },
+  //       onInit: (code) {
+  //         countrycode = code.toString().replaceFirst("+", "");
+  //       });
+  // }
 
   setMono() {
     return TextFormField(
@@ -297,15 +293,15 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
         style: Theme
             .of(this.context)
             .textTheme
-            .subtitle2
+            .subtitle2!
             .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         validator: (val) =>
             validateMob(
-                val,
+                val!,
                 getTranslated(context, 'MOB_REQUIRED'),
                 getTranslated(context, 'VALID_MOB')),
-        onSaved: (String value) {
+        onSaved: (String? value) {
           mobile = value;
         },
         decoration: InputDecoration(
@@ -313,7 +309,7 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
           hintStyle: Theme
               .of(this.context)
               .textTheme
-              .subtitle2
+              .subtitle2!
               .copyWith(color: colors.fontColor, fontWeight: FontWeight.normal),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
           focusedBorder: OutlineInputBorder(
@@ -345,11 +341,11 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(getTranslated(context, 'CONTINUE_AGREE_LBL'),
+          Text(getTranslated(context, 'CONTINUE_AGREE_LBL')!,
               style: Theme
                   .of(context)
                   .textTheme
-                  .caption
+                  .caption!
                   .copyWith(
                   color: colors.fontColor,
                   fontWeight: FontWeight.normal)),
@@ -368,11 +364,11 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                               )));
                 },
                 child: Text(
-                  getTranslated(context, 'TERMS_SERVICE_LBL'),
+                  getTranslated(context, 'TERMS_SERVICE_LBL')!,
                   style: Theme
                       .of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(
                       color: colors.fontColor,
                       decoration: TextDecoration.underline,
@@ -381,11 +377,11 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
             SizedBox(
               width: 5.0,
             ),
-            Text(getTranslated(context, 'AND_LBL'),
+            Text(getTranslated(context, 'AND_LBL')!,
                 style: Theme
                     .of(context)
                     .textTheme
-                    .caption
+                    .caption!
                     .copyWith(
                     color: colors.fontColor,
                     fontWeight: FontWeight.normal)),
@@ -403,11 +399,11 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
                               )));
                 },
                 child: Text(
-                  getTranslated(context, 'PRIVACY'),
+                  getTranslated(context, 'PRIVACY')!,
                   style: Theme
                       .of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(
                       color: colors.fontColor,
                       decoration: TextDecoration.underline,
@@ -445,10 +441,10 @@ class _SendOtpState extends State<SendOtp> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,

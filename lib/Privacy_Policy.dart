@@ -15,9 +15,9 @@ import 'Helper/Constant.dart';
 import 'Helper/String.dart';
 
 class PrivacyPolicy extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const PrivacyPolicy({Key key, this.title}) : super(key: key);
+  const PrivacyPolicy({Key? key, this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -28,12 +28,12 @@ class PrivacyPolicy extends StatefulWidget {
 class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
   bool _isLoading = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String privacy;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  String? privacy;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   final flutterWebViewPlugin = FlutterWebviewPlugin();
-  StreamSubscription<WebViewStateChanged> _onStateChanged;
+  late StreamSubscription<WebViewStateChanged> _onStateChanged;
 
   @override
   void initState() {
@@ -45,10 +45,10 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -90,14 +90,14 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     _onStateChanged.cancel();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -123,7 +123,7 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -139,16 +139,16 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
     return _isLoading
         ? Scaffold(
             key: _scaffoldKey,
-            appBar: getAppBar(widget.title, context),
+            appBar: getAppBar(widget.title!, context),
             body: getProgress(),
           )
         : privacy != null
             ? WebviewScaffold(
-                appBar: getAppBar(widget.title, context),
+                appBar: getAppBar(widget.title!, context),
                 withJavascript: true,
                 appCacheEnabled: true,
                 scrollBar: false,
-                url: new Uri.dataFromString(privacy,
+                url: new Uri.dataFromString(privacy!,
                         mimeType: 'text/html', encoding: utf8)
                     .toString(),
                 invalidUrlRegex: Platform.isAndroid
@@ -157,7 +157,7 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
               )
             : Scaffold(
                 key: _scaffoldKey,
-                appBar: getAppBar(widget.title, context),
+                appBar: getAppBar(widget.title!, context),
                 body: _isNetworkAvail ? Container() : noInternet(context),
               );
   }
@@ -166,7 +166,7 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       try {
-        String type;
+        String? type;
         if (widget.title == getTranslated(context, 'PRIVACY'))
           type = PRIVACY_POLLICY;
         else if (widget.title == getTranslated(context, 'TERM'))
@@ -183,11 +183,11 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
         if (response.statusCode == 200) {
           var getdata = json.decode(response.body);
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             privacy = getdata["data"][type][0].toString();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
         }
         if (mounted)
@@ -196,7 +196,7 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
           });
       } on TimeoutException catch (_) {
         _isLoading = false;
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)

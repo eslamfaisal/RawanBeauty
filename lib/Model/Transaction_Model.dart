@@ -2,7 +2,7 @@ import 'package:eshop/Helper/String.dart';
 import 'package:intl/intl.dart';
 
 class TransactionModel {
-  String id, amt, status, msg, date, type,txnID,orderId;
+  String? id, amt, status, msg, date, type,txnID,orderId;
 
   TransactionModel(
       {this.id,
@@ -33,7 +33,7 @@ class TransactionModel {
     String date = json[DATE];
 
     date = DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
-    String st = json[STATUS];
+    String? st = json[STATUS];
     /*if (st == "0") {
       st = PENDING;
     } else if (st == "1") {

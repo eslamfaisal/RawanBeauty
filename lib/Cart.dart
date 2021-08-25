@@ -27,7 +27,7 @@ import 'Payment.dart';
 import 'PaypalWebviewActivity.dart';
 
 class Cart extends StatefulWidget {
-  final Function updateHome, updateParent;
+  final Function? updateHome, updateParent;
 
   Cart(this.updateHome, this.updateParent);
 
@@ -38,8 +38,8 @@ class Cart extends StatefulWidget {
 List<User> addressList = [];
 List<SectionModel> cartList = [];
 double totalPrice = 0, oriPrice = 0, delCharge = 0, taxPer = 0;
-int selectedAddress = 0;
-String latitude,
+int? selectedAddress = 0;
+String? latitude,
     longitude,
     selAddress,
     payMethod = '',
@@ -47,11 +47,11 @@ String latitude,
     selTime,
     selDate,
     promocode;
-bool isTimeSlot, isPromoValid = false, isUseWallet = false, isPayLayShow = true;
-int selectedTime, selectedDate, selectedMethod;
+bool isTimeSlot= false, isPromoValid = false, isUseWallet = false, isPayLayShow = true;
+int? selectedTime, selectedDate, selectedMethod;
 double promoAmt = 0;
-double remWalBal, usedBal = 0;
-String razorpayId,
+double remWalBal= 0.0, usedBal = 0;
+String? razorpayId,
     paystackId,
     stripeId,
     stripeSecret,
@@ -70,9 +70,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       new GlobalKey<ScaffoldMessengerState>();
 
   bool _isCartLoad = true, _placeOrder = true;
-  HomePage home;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  HomePage? home;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
 
   List<TextEditingController> _controller = [];
@@ -80,11 +80,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   List<SectionModel> saveLaterList = [];
-  String msg;
+  String? msg;
   bool _isLoading = true;
-  Razorpay _razorpay;
+  late Razorpay _razorpay;
   TextEditingController promoC = new TextEditingController();
-  StateSetter checkoutState;
+  StateSetter? checkoutState;
   final paystackPlugin = PaystackPlugin();
 
   @override
@@ -100,10 +100,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -143,14 +143,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     for (int i = 0; i < _controller.length; i++) _controller[i].dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -176,7 +176,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (BuildContext context) => super.widget));
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -193,7 +193,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: getAppBar(getTranslated(context, 'CART'), context),
+        appBar: getAppBar(getTranslated(context, 'CART')!, context),
         body: _isNetworkAvail
             ? Stack(
                 children: <Widget>[
@@ -207,38 +207,38 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   Widget listItem(int index) {
     int selectedPos = 0;
     for (int i = 0;
-        i < cartList[index].productList[0].prVarientList.length;
+        i < cartList[index].productList![0].prVarientList!.length;
         i++) {
       if (cartList[index].varientId ==
-          cartList[index].productList[0].prVarientList[i].id) selectedPos = i;
+          cartList[index].productList![0].prVarientList![i].id) selectedPos = i;
     }
 
     double price = double.parse(
-        cartList[index].productList[0].prVarientList[selectedPos].disPrice);
+        cartList[index].productList![0].prVarientList![selectedPos].disPrice!);
     if (price == 0)
       price = double.parse(
-          cartList[index].productList[0].prVarientList[selectedPos].price);
+          cartList[index].productList![0].prVarientList![selectedPos].price!);
 
     cartList[index].perItemPrice = price.toString();
     cartList[index].perItemTotal =
-        (price * double.parse(cartList[index].qty)).toString();
+        (price * double.parse(cartList[index].qty!)).toString();
 
     if (_controller.length < index + 1)
       _controller.add(new TextEditingController());
 
-    _controller[index].text = cartList[index].qty;
-    List att, val;
-    if (cartList[index].productList[0].prVarientList[selectedPos].attr_name !=
+    _controller[index].text = cartList[index].qty!;
+    List att = [], val = [];
+    if (cartList[index].productList![0].prVarientList![selectedPos].attr_name !=
         null) {
       att = cartList[index]
-          .productList[0]
-          .prVarientList[selectedPos]
-          .attr_name
+          .productList![0]
+          .prVarientList![selectedPos]
+          .attr_name!
           .split(',');
       val = cartList[index]
-          .productList[0]
-          .prVarientList[selectedPos]
-          .varient_value
+          .productList![0]
+          .prVarientList![selectedPos]
+          .varient_value!
           .split(',');
     }
     return Card(
@@ -248,11 +248,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         child: Row(
           children: <Widget>[
             Hero(
-                tag: "$index${cartList[index].productList[0].id}",
+                tag: "$index${cartList[index].productList![0].id}",
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.0),
                     child: FadeInImage(
-                      image: NetworkImage(cartList[index].productList[0].image),
+                      image: NetworkImage(cartList[index].productList![0].image!),
                       height: 80.0,
                       width: 80.0,
                       fit: BoxFit.cover,
@@ -270,10 +270,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                           child: Padding(
                             padding: const EdgeInsetsDirectional.only(top: 5.0),
                             child: Text(
-                              cartList[index].productList[0].name,
+                              cartList[index].productList![0].name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(color: colors.lightBlack),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -298,14 +298,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       ],
                     ),
                     cartList[index]
-                                    .productList[0]
-                                    .prVarientList[selectedPos]
+                                    .productList![0]
+                                    .prVarientList![selectedPos]
                                     .attr_name !=
                                 null &&
                             cartList[index]
-                                .productList[0]
-                                .prVarientList[selectedPos]
-                                .attr_name
+                                .productList![0]
+                                .prVarientList![selectedPos]
+                                .attr_name!
                                 .isNotEmpty
                         ? ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
@@ -319,7 +319,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle2
+                                        .subtitle2!
                                         .copyWith(
                                           color: colors.lightBlack,
                                         ),
@@ -332,7 +332,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     val[index],
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle2
+                                        .subtitle2!
                                         .copyWith(
                                             color: colors.lightBlack,
                                             fontWeight: FontWeight.bold),
@@ -345,31 +345,31 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       children: <Widget>[
                         Text(
                           double.parse(cartList[index]
-                                      .productList[0]
-                                      .prVarientList[selectedPos]
-                                      .disPrice) !=
+                                      .productList![0]
+                                      .prVarientList![selectedPos]
+                                      .disPrice!) !=
                                   0
-                              ? CUR_CURRENCY +
+                              ? CUR_CURRENCY! +
                                   "" +
                                   cartList[index]
-                                      .productList[0]
-                                      .prVarientList[selectedPos]
-                                      .price
+                                      .productList![0]
+                                      .prVarientList![selectedPos]
+                                      .price!
                               : "",
-                          style: Theme.of(context).textTheme.overline.copyWith(
+                          style: Theme.of(context).textTheme.overline!.copyWith(
                               decoration: TextDecoration.lineThrough,
                               letterSpacing: 0.7),
                         ),
                         Text(
-                          " " + CUR_CURRENCY + " " + price.toString(),
+                          " " + CUR_CURRENCY! + " " + price.toString(),
                           style: TextStyle(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    cartList[index].productList[0].availability == "1" ||
-                            cartList[index].productList[0].stockType == "null"
+                    cartList[index].productList![0].availability == "1" ||
+                            cartList[index].productList![0].stockType == "null"
                         ? Row(
                             children: <Widget>[
                               Row(
@@ -437,8 +437,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                           },
                                           itemBuilder: (BuildContext context) {
                                             return cartList[index]
-                                                .productList[0]
-                                                .itemsCounter
+                                                .productList![0]
+                                                .itemsCounter!
                                                 .map<PopupMenuItem<String>>(
                                                     (String value) {
                                               return new PopupMenuItem(
@@ -469,10 +469,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                       if (_isProgress == false)
                                         addToCart(
                                             index,
-                                            (int.parse(cartList[index].qty) +
+                                            (int.parse(cartList[index].qty!) +
                                                     int.parse(cartList[index]
-                                                        .productList[0]
-                                                        .qtyStepSize))
+                                                        .productList![0]
+                                                        .qtyStepSize!))
                                                 .toString());
                                     },
                                   )
@@ -491,7 +491,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                             const Radius.circular(4.0))),
                                     child: Text(
                                       getTranslated(
-                                          context, 'SAVEFORLATER_BTN'),
+                                          context, 'SAVEFORLATER_BTN')!,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -506,7 +506,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                               "1",
                                               cartList[index].qty,
                                               double.parse(
-                                                  cartList[index].perItemTotal),
+                                                  cartList[index].perItemTotal!),
                                               cartList[index]);
                                         }
                                       : null,
@@ -528,36 +528,36 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   Widget cartItem(int index) {
     int selectedPos = 0;
     for (int i = 0;
-        i < cartList[index].productList[0].prVarientList.length;
+        i < cartList[index].productList![0].prVarientList!.length;
         i++) {
       if (cartList[index].varientId ==
-          cartList[index].productList[0].prVarientList[i].id) selectedPos = i;
+          cartList[index].productList![0].prVarientList![i].id) selectedPos = i;
     }
 
     double price = double.parse(
-        cartList[index].productList[0].prVarientList[selectedPos].disPrice);
+        cartList[index].productList![0].prVarientList![selectedPos].disPrice!);
     if (price == 0)
       price = double.parse(
-          cartList[index].productList[0].prVarientList[selectedPos].price);
+          cartList[index].productList![0].prVarientList![selectedPos].price!);
 
     cartList[index].perItemPrice = price.toString();
     cartList[index].perItemTotal =
-        (price * double.parse(cartList[index].qty)).toString();
+        (price * double.parse(cartList[index].qty!)).toString();
 
-    _controller[index].text = cartList[index].qty;
+    _controller[index].text = cartList[index].qty!;
 
-    List att, val;
-    if (cartList[index].productList[0].prVarientList[selectedPos].attr_name !=
+    List att = [], val = [];
+    if (cartList[index].productList![0].prVarientList![selectedPos].attr_name !=
         null) {
       att = cartList[index]
-          .productList[0]
-          .prVarientList[selectedPos]
-          .attr_name
+          .productList![0]
+          .prVarientList![selectedPos]
+          .attr_name!
           .split(',');
       val = cartList[index]
-          .productList[0]
-          .prVarientList[selectedPos]
-          .varient_value
+          .productList![0]
+          .prVarientList![selectedPos]
+          .varient_value!
           .split(',');
     }
     return Card(
@@ -569,12 +569,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             Row(
               children: <Widget>[
                 Hero(
-                    tag: "$index${cartList[index].productList[0].id}",
+                    tag: "$index${cartList[index].productList![0].id}",
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(7.0),
                         child: FadeInImage(
                           image: NetworkImage(
-                              cartList[index].productList[0].image),
+                              cartList[index].productList![0].image!),
                           height: 80.0,
                           width: 80.0,
                           fit: BoxFit.cover,
@@ -594,10 +594,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 padding:
                                     const EdgeInsetsDirectional.only(top: 5.0),
                                 child: Text(
-                                  cartList[index].productList[0].name,
+                                  cartList[index].productList![0].name!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(color: colors.lightBlack),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -622,14 +622,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                           ],
                         ),
                         cartList[index]
-                                        .productList[0]
-                                        .prVarientList[selectedPos]
+                                        .productList![0]
+                                        .prVarientList![selectedPos]
                                         .attr_name !=
                                     null &&
                                 cartList[index]
-                                    .productList[0]
-                                    .prVarientList[selectedPos]
-                                    .attr_name
+                                    .productList![0]
+                                    .prVarientList![selectedPos]
+                                    .attr_name!
                                     .isNotEmpty
                             ? ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
@@ -643,7 +643,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle2
+                                            .subtitle2!
                                             .copyWith(
                                               color: colors.lightBlack,
                                             ),
@@ -656,7 +656,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         val[index],
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle2
+                                            .subtitle2!
                                             .copyWith(
                                                 color: colors.lightBlack,
                                                 fontWeight: FontWeight.bold),
@@ -675,22 +675,22 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                   Flexible(
                                     child: Text(
                                       double.parse(cartList[index]
-                                                  .productList[0]
-                                                  .prVarientList[selectedPos]
-                                                  .disPrice) !=
+                                                  .productList![0]
+                                                  .prVarientList![selectedPos]
+                                                  .disPrice!) !=
                                               0
-                                          ? CUR_CURRENCY +
+                                          ? CUR_CURRENCY! +
                                               "" +
                                               cartList[index]
-                                                  .productList[0]
-                                                  .prVarientList[selectedPos]
-                                                  .price
+                                                  .productList![0]
+                                                  .prVarientList![selectedPos]
+                                                  .price!
                                           : "",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .overline
+                                          .overline!
                                           .copyWith(
                                               decoration:
                                                   TextDecoration.lineThrough,
@@ -698,7 +698,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    " " + CUR_CURRENCY + " " + price.toString(),
+                                    " " + CUR_CURRENCY! + " " + price.toString(),
                                     style: TextStyle(
                                         color: colors.fontColor,
                                         fontWeight: FontWeight.bold),
@@ -706,9 +706,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            cartList[index].productList[0].availability ==
+                            cartList[index].productList![0].availability ==
                                         "1" ||
-                                    cartList[index].productList[0].stockType ==
+                                    cartList[index].productList![0].stockType ==
                                         "null"
                                 ? Row(
                                     children: <Widget>[
@@ -791,8 +791,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                   itemBuilder:
                                                       (BuildContext context) {
                                                     return cartList[index]
-                                                        .productList[0]
-                                                        .itemsCounter
+                                                        .productList![0]
+                                                        .itemsCounter!
                                                         .map<
                                                                 PopupMenuItem<
                                                                     String>>(
@@ -827,11 +827,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                               addToCartCheckout(
                                                   index,
                                                   (int.parse(cartList[index]
-                                                              .qty) +
+                                                              .qty!) +
                                                           int.parse(cartList[
                                                                   index]
-                                                              .productList[0]
-                                                              .qtyStepSize))
+                                                              .productList![0]
+                                                              .qtyStepSize!))
                                                       .toString());
                                             },
                                           )
@@ -853,24 +853,24 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  getTranslated(context, 'SUBTOTAL'),
+                  getTranslated(context, 'SUBTOTAL')!,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 ),
                 Text(
-                  CUR_CURRENCY + " " + price.toString(),
+                  CUR_CURRENCY! + " " + price.toString(),
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 ),
                 Text(
-                  CUR_CURRENCY + " " + cartList[index].perItemTotal,
+                  CUR_CURRENCY! + " " + cartList[index].perItemTotal!,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 )
               ],
@@ -879,17 +879,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  getTranslated(context, 'TAXPER'),
+                  getTranslated(context, 'TAXPER')!,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 ),
                 Text(
-                  cartList[index].productList[0].tax + "%",
+                  cartList[index].productList![0].tax! + "%",
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 ),
               ],
@@ -898,18 +898,18 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  getTranslated(context, 'TOTAL_LBL'),
-                  style: Theme.of(context).textTheme.caption.copyWith(
+                  getTranslated(context, 'TOTAL_LBL')!,
+                  style: Theme.of(context).textTheme.caption!.copyWith(
                       fontWeight: FontWeight.bold, color: colors.lightBlack2),
                 ),
                 Text(
-                  CUR_CURRENCY +
+                  CUR_CURRENCY! +
                       " " +
-                      (double.parse(cartList[index].perItemTotal))
+                      (double.parse(cartList[index].perItemTotal!))
                           .toStringAsFixed(2)
                           .toString(),
                   //+ " "+cartList[index].productList[0].taxrs,
-                  style: Theme.of(context).textTheme.caption.copyWith(
+                  style: Theme.of(context).textTheme.caption!.copyWith(
                       fontWeight: FontWeight.bold, color: colors.lightBlack2),
                 )
               ],
@@ -923,24 +923,24 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
   Widget saveLaterItem(int index) {
     int selectedPos = 0;
     for (int i = 0;
-        i < saveLaterList[index].productList[0].prVarientList.length;
+        i < saveLaterList[index].productList![0].prVarientList!.length;
         i++) {
       if (saveLaterList[index].varientId ==
-          saveLaterList[index].productList[0].prVarientList[i].id)
+          saveLaterList[index].productList![0].prVarientList![i].id)
         selectedPos = i;
     }
 
     double price = double.parse(saveLaterList[index]
-        .productList[0]
-        .prVarientList[selectedPos]
-        .disPrice);
+        .productList![0]
+        .prVarientList![selectedPos]
+        .disPrice!);
     if (price == 0)
       price = double.parse(
-          saveLaterList[index].productList[0].prVarientList[selectedPos].price);
+          saveLaterList[index].productList![0].prVarientList![selectedPos].price!);
 
     saveLaterList[index].perItemPrice = price.toString();
     saveLaterList[index].perItemTotal =
-        (price * double.parse(saveLaterList[index].qty)).toString();
+        (price * double.parse(saveLaterList[index].qty!)).toString();
 
     return Card(
       elevation: 0.1,
@@ -949,12 +949,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         child: Row(
           children: <Widget>[
             Hero(
-                tag: "$index${saveLaterList[index].productList[0].id}",
+                tag: "$index${saveLaterList[index].productList![0].id}",
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.0),
                     child: FadeInImage(
                       image: NetworkImage(
-                          saveLaterList[index].productList[0].image),
+                          saveLaterList[index].productList![0].image!),
                       height: 80.0,
                       width: 80.0,
                       fit: BoxFit.cover,
@@ -972,10 +972,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                           child: Padding(
                             padding: const EdgeInsetsDirectional.only(top: 5.0),
                             child: Text(
-                              saveLaterList[index].productList[0].name,
+                              saveLaterList[index].productList![0].name!,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2
+                                  .subtitle2!
                                   .copyWith(color: colors.lightBlack),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -1003,31 +1003,31 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       children: <Widget>[
                         Text(
                           double.parse(saveLaterList[index]
-                                      .productList[0]
-                                      .prVarientList[selectedPos]
-                                      .disPrice) !=
+                                      .productList![0]
+                                      .prVarientList![selectedPos]
+                                      .disPrice!) !=
                                   0
-                              ? CUR_CURRENCY +
+                              ? CUR_CURRENCY! +
                                   "" +
                                   saveLaterList[index]
-                                      .productList[0]
-                                      .prVarientList[selectedPos]
-                                      .price
+                                      .productList![0]
+                                      .prVarientList![selectedPos]
+                                      .price!
                               : "",
-                          style: Theme.of(context).textTheme.overline.copyWith(
+                          style: Theme.of(context).textTheme.overline!.copyWith(
                               decoration: TextDecoration.lineThrough,
                               letterSpacing: 0.7),
                         ),
                         Text(
-                          " " + CUR_CURRENCY + " " + price.toString(),
+                          " " + CUR_CURRENCY! + " " + price.toString(),
                           style: TextStyle(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    saveLaterList[index].productList[0].availability == "1" ||
-                            saveLaterList[index].productList[0].stockType ==
+                    saveLaterList[index].productList![0].availability == "1" ||
+                            saveLaterList[index].productList![0].stockType ==
                                 "null"
                         ? Row(
                             children: <Widget>[
@@ -1041,7 +1041,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                       borderRadius: new BorderRadius.all(
                                           const Radius.circular(4.0))),
                                   child: Text(
-                                    getTranslated(context, 'MOVE_TO_CART'),
+                                    getTranslated(context, 'MOVE_TO_CART')!,
                                     style: TextStyle(
                                         color: colors.fontColor, fontSize: 11),
                                   ),
@@ -1053,7 +1053,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                             "0",
                                             saveLaterList[index].qty,
                                             double.parse(saveLaterList[index]
-                                                .perItemTotal),
+                                                .perItemTotal!),
                                             saveLaterList[index]);
                                       }
                                     : null,
@@ -1086,7 +1086,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -1102,7 +1102,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           for (int i = 0; i < cartList.length; i++)
             _controller.add(new TextEditingController());
         } else {
-          if (msg != 'Cart Is Empty !') setSnackbar(msg, _scaffoldKey);
+          if (msg != 'Cart Is Empty !') setSnackbar(msg!, _scaffoldKey);
         }
         if (mounted)
           setState(() {
@@ -1112,7 +1112,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
         _getAddress();
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'), _scaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _scaffoldKey);
       }
     } else {
       if (mounted)
@@ -1133,7 +1133,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -1144,11 +1144,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           for (int i = 0; i < cartList.length; i++)
             _controller.add(new TextEditingController());
         } else {
-          if (msg != 'Cart Is Empty !') setSnackbar(msg, _scaffoldKey);
+          if (msg != 'Cart Is Empty !') setSnackbar(msg!, _scaffoldKey);
         }
         if (mounted) setState(() {});
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'), _scaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _scaffoldKey);
       }
     } else {
       if (mounted)
@@ -1171,8 +1171,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             _isProgress = true;
           });
 
-        if (int.parse(qty) < cartList[index].productList[0].minOrderQuntity) {
-          qty = cartList[index].productList[0].minOrderQuntity.toString();
+        if (int.parse(qty) < cartList[index].productList![0].minOrderQuntity!) {
+          qty = cartList[index].productList![0].minOrderQuntity.toString();
           setSnackbar('Minimum order quantity is $qty', _checkscaffoldKey);
         }
 
@@ -1188,7 +1188,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -1203,14 +1203,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           totalPrice = 0;
 
           if (!ISFLAT_DEL) {
-            if ((oriPrice) < double.parse(addressList[selectedAddress].freeAmt))
+            if ((oriPrice) < double.parse(addressList[selectedAddress!].freeAmt!))
               delCharge =
-                  double.parse(addressList[selectedAddress].deliveryCharge);
+                  double.parse(addressList[selectedAddress!].deliveryCharge!);
             else
               delCharge = 0;
           } else {
-            if (oriPrice < double.parse(MIN_AMT))
-              delCharge = double.parse(CUR_DEL_CHR);
+            if (oriPrice < double.parse(MIN_AMT!))
+              delCharge = double.parse(CUR_DEL_CHR!);
             else
               delCharge = 0;
           }
@@ -1235,16 +1235,16 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               });
           }
         } else {
-          setSnackbar(msg, _scaffoldKey);
+          setSnackbar(msg!, _scaffoldKey);
           if (mounted)
             setState(() {
               _isProgress = false;
             });
         }
 
-        widget.updateHome();
+        widget.updateHome!();
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'), _scaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _scaffoldKey);
         if (mounted)
           setState(() {
             _isProgress = false;
@@ -1267,13 +1267,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     if (_isNetworkAvail) {
       try {
         if (mounted)
-          checkoutState(() {
+          checkoutState!(() {
             _isProgress = true;
           });
         setState(() {});
 
-        if (int.parse(qty) < cartList[index].productList[0].minOrderQuntity) {
-          qty = cartList[index].productList[0].minOrderQuntity.toString();
+        if (int.parse(qty) < cartList[index].productList![0].minOrderQuntity!) {
+          qty = cartList[index].productList![0].minOrderQuntity.toString();
           setSnackbar('Minimum order quantity is $qty', _checkscaffoldKey);
         }
 
@@ -1290,7 +1290,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
@@ -1305,14 +1305,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
             if (!ISFLAT_DEL) {
               if ((oriPrice) <
-                  double.parse(addressList[selectedAddress].freeAmt))
+                  double.parse(addressList[selectedAddress!].freeAmt!))
                 delCharge =
-                    double.parse(addressList[selectedAddress].deliveryCharge);
+                    double.parse(addressList[selectedAddress!].deliveryCharge!);
               else
                 delCharge = 0;
             } else {
-              if ((oriPrice) < double.parse(MIN_AMT))
-                delCharge = double.parse(CUR_DEL_CHR);
+              if ((oriPrice) < double.parse(MIN_AMT!))
+                delCharge = double.parse(CUR_DEL_CHR!);
               else
                 delCharge = 0;
             }
@@ -1322,7 +1322,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               validatePromo(true);
             } else if (isUseWallet) {
               if (mounted)
-                checkoutState(() {
+                checkoutState!(() {
                   remWalBal = 0;
                   payMethod = null;
                   usedBal = 0;
@@ -1333,40 +1333,40 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               setState(() {});
             } else {
               if (mounted)
-                checkoutState(() {
+                checkoutState!(() {
                   _isProgress = false;
                 });
               setState(() {});
             }
           } else {
-            setSnackbar(msg, _checkscaffoldKey);
+            setSnackbar(msg!, _checkscaffoldKey);
             if (mounted)
-              checkoutState(() {
+              checkoutState!(() {
                 _isProgress = false;
               });
             setState(() {});
           }
 
-          widget.updateHome();
+          widget.updateHome!();
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
         if (mounted)
-          checkoutState(() {
+          checkoutState!(() {
             _isProgress = false;
           });
         setState(() {});
       }
     } else {
       if (mounted)
-        checkoutState(() {
+        checkoutState!(() {
           _isNetworkAvail = false;
         });
       setState(() {});
     }
   }
 
-  saveForLater(String id, String save, String qty, double price,
+  saveForLater(String? id, String save, String? qty, double price,
       SectionModel curItem) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
@@ -1390,7 +1390,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -1409,14 +1409,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           totalPrice = 0;
 
           if (!ISFLAT_DEL) {
-            if ((oriPrice) < double.parse(addressList[selectedAddress].freeAmt))
+            if ((oriPrice) < double.parse(addressList[selectedAddress!].freeAmt!))
               delCharge =
-                  double.parse(addressList[selectedAddress].deliveryCharge);
+                  double.parse(addressList[selectedAddress!].deliveryCharge!);
             else
               delCharge = 0;
           } else {
-            if ((oriPrice) < double.parse(MIN_AMT))
-              delCharge = double.parse(CUR_DEL_CHR);
+            if ((oriPrice) < double.parse(MIN_AMT!))
+              delCharge = double.parse(CUR_DEL_CHR!);
             else
               delCharge = 0;
           }
@@ -1441,16 +1441,16 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               });
           }
         } else {
-          setSnackbar(msg, _scaffoldKey);
+          setSnackbar(msg!, _scaffoldKey);
         }
         if (mounted)
           setState(() {
             _isProgress = false;
           });
-        if (widget.updateHome != null) widget.updateHome();
-        if (widget.updateParent != null) widget.updateParent();
+        if (widget.updateHome != null) widget.updateHome!();
+        if (widget.updateParent != null) widget.updateParent!();
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'), _scaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _scaffoldKey);
         if (mounted)
           setState(() {
             _isProgress = false;
@@ -1468,28 +1468,28 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     _isNetworkAvail = await isNetworkAvailable();
 
     if (!remove &&
-        int.parse(cartList[index].qty) ==
-            cartList[index].productList[0].minOrderQuntity) {
+        int.parse(cartList[index].qty!) ==
+            cartList[index].productList![0].minOrderQuntity) {
       setSnackbar('Minimum order quantity is ${cartList[index].qty}',
           _checkscaffoldKey);
     } else {
       if (_isNetworkAvail) {
         try {
           if (mounted)
-            checkoutState(() {
+            checkoutState!(() {
               _isProgress = true;
             });
           setState(() {});
 
-          int qty;
+          int? qty;
           if (remove)
             qty = 0;
           else {
-            qty = (int.parse(cartList[index].qty) -
-                int.parse(cartList[index].productList[0].qtyStepSize));
+            qty = (int.parse(cartList[index].qty!) -
+                int.parse(cartList[index].productList![0].qtyStepSize!));
 
-            if (qty < cartList[index].productList[0].minOrderQuntity) {
-              qty = cartList[index].productList[0].minOrderQuntity;
+            if (qty < cartList[index].productList![0].minOrderQuntity!) {
+              qty = cartList[index].productList![0].minOrderQuntity;
               setSnackbar('Minimum order quantity is $qty', _checkscaffoldKey);
             }
           }
@@ -1508,11 +1508,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             var getdata = json.decode(response.body);
 
             bool error = getdata["error"];
-            String msg = getdata["message"];
+            String? msg = getdata["message"];
             if (!error) {
               var data = getdata["data"];
 
-              String qty = data['total_quantity'];
+              String? qty = data['total_quantity'];
               CUR_CART_COUNT = data['cart_count'];
               if (qty == "0") remove = true;
 
@@ -1527,14 +1527,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
               if (!ISFLAT_DEL) {
                 if ((oriPrice) <
-                    double.parse(addressList[selectedAddress].freeAmt))
+                    double.parse(addressList[selectedAddress!].freeAmt!))
                   delCharge =
-                      double.parse(addressList[selectedAddress].deliveryCharge);
+                      double.parse(addressList[selectedAddress!].deliveryCharge!);
                 else
                   delCharge = 0;
               } else {
-                if ((oriPrice) < double.parse(MIN_AMT))
-                  delCharge = double.parse(CUR_DEL_CHR);
+                if ((oriPrice) < double.parse(MIN_AMT!))
+                  delCharge = double.parse(CUR_DEL_CHR!);
                 else
                   delCharge = 0;
               }
@@ -1547,7 +1547,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 validatePromo(true);
               } else if (isUseWallet) {
                 if (mounted)
-                  checkoutState(() {
+                  checkoutState!(() {
                     remWalBal = 0;
                     payMethod = null;
                     usedBal = 0;
@@ -1558,34 +1558,34 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 setState(() {});
               } else {
                 if (mounted)
-                  checkoutState(() {
+                  checkoutState!(() {
                     _isProgress = false;
                   });
                 setState(() {});
               }
             } else {
-              setSnackbar(msg, _checkscaffoldKey);
+              setSnackbar(msg!, _checkscaffoldKey);
               if (mounted)
-                checkoutState(() {
+                checkoutState!(() {
                   _isProgress = false;
                 });
               setState(() {});
             }
 
-            if (widget.updateHome != null) widget.updateHome();
+            if (widget.updateHome != null) widget.updateHome!();
           }
         } on TimeoutException catch (_) {
           setSnackbar(
-              getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+              getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
           if (mounted)
-            checkoutState(() {
+            checkoutState!(() {
               _isProgress = false;
             });
           setState(() {});
         }
       } else {
         if (mounted)
-          checkoutState(() {
+          checkoutState!(() {
             _isNetworkAvail = false;
           });
         setState(() {});
@@ -1597,8 +1597,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       int index, bool remove, List<SectionModel> cartList, bool move) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (!remove &&
-        int.parse(cartList[index].qty) ==
-            cartList[index].productList[0].minOrderQuntity) {
+        int.parse(cartList[index].qty!) ==
+            cartList[index].productList![0].minOrderQuntity) {
       setSnackbar(
           'Minimum order quantity is ${cartList[index].qty}', _scaffoldKey);
     } else {
@@ -1609,15 +1609,15 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               _isProgress = true;
             });
 
-          int qty;
+          int? qty;
           if (remove)
             qty = 0;
           else {
-            qty = (int.parse(cartList[index].qty) -
-                int.parse(cartList[index].productList[0].qtyStepSize));
+            qty = (int.parse(cartList[index].qty!) -
+                int.parse(cartList[index].productList![0].qtyStepSize!));
 
-            if (qty < cartList[index].productList[0].minOrderQuntity) {
-              qty = cartList[index].productList[0].minOrderQuntity;
+            if (qty < cartList[index].productList![0].minOrderQuntity!) {
+              qty = cartList[index].productList![0].minOrderQuntity;
               setSnackbar('Minimum order quantity is $qty', _checkscaffoldKey);
             }
           }
@@ -1635,11 +1635,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
-            String qty = data['total_quantity'];
+            String? qty = data['total_quantity'];
             CUR_CART_COUNT = data['cart_count'];
             if (move == false) {
               if (qty == "0") remove = true;
@@ -1654,14 +1654,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               oriPrice = double.parse(data[SUB_TOTAL]);
               if (!ISFLAT_DEL) {
                 if ((oriPrice) <
-                    double.parse(addressList[selectedAddress].freeAmt))
+                    double.parse(addressList[selectedAddress!].freeAmt!))
                   delCharge =
-                      double.parse(addressList[selectedAddress].deliveryCharge);
+                      double.parse(addressList[selectedAddress!].deliveryCharge!);
                 else
                   delCharge = 0;
               } else {
-                if ((oriPrice) < double.parse(MIN_AMT))
-                  delCharge = double.parse(CUR_DEL_CHR);
+                if ((oriPrice) < double.parse(MIN_AMT!))
+                  delCharge = double.parse(CUR_DEL_CHR!);
                 else
                   delCharge = 0;
               }
@@ -1696,16 +1696,16 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               }
             }
           } else {
-            setSnackbar(msg, _scaffoldKey);
+            setSnackbar(msg!, _scaffoldKey);
           }
           if (mounted)
             setState(() {
               _isProgress = false;
             });
-          if (widget.updateHome != null) widget.updateHome();
-          if (widget.updateParent != null) widget.updateParent();
+          if (widget.updateHome != null) widget.updateHome!();
+          if (widget.updateParent != null) widget.updateParent!();
         } on TimeoutException catch (_) {
-          setSnackbar(getTranslated(context, 'somethingMSg'), _scaffoldKey);
+          setSnackbar(getTranslated(context, 'somethingMSg')!, _scaffoldKey);
           if (mounted)
             setState(() {
               _isProgress = false;
@@ -1765,7 +1765,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             getTranslated(
-                                                context, 'SAVEFORLATER_BTN'),
+                                                context, 'SAVEFORLATER_BTN')!,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle1,
@@ -1793,7 +1793,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                CUR_CURRENCY +
+                                CUR_CURRENCY! +
                                     " ${oriPrice.toStringAsFixed(2)}",
                                 style: TextStyle(
                                     color: colors.fontColor,
@@ -1818,7 +1818,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                               checkout();
                               if (mounted) setState(() {});
                             } else
-                              setSnackbar(getTranslated(context, 'ADD_ITEM'),
+                              setSnackbar(getTranslated(context, 'ADD_ITEM')!,
                                   _scaffoldKey);
                           }),
                     ]),
@@ -1849,17 +1849,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
   noCartText(BuildContext context) {
     return Container(
-        child: Text(getTranslated(context, 'NO_CART'),
-            style: Theme.of(context).textTheme.headline5.copyWith(
+        child: Text(getTranslated(context, 'NO_CART')!,
+            style: Theme.of(context).textTheme.headline5!.copyWith(
                 color: colors.primary, fontWeight: FontWeight.normal)));
   }
 
   noCartDec(BuildContext context) {
     return Container(
       padding: EdgeInsetsDirectional.only(top: 30.0, start: 30.0, end: 30.0),
-      child: Text(getTranslated(context, 'CART_DESC'),
+      child: Text(getTranslated(context, 'CART_DESC')!,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline6.copyWith(
+          style: Theme.of(context).textTheme.headline6!.copyWith(
                 color: colors.lightBlack2,
                 fontWeight: FontWeight.normal,
               )),
@@ -1871,7 +1871,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       padding: const EdgeInsetsDirectional.only(top: 28.0),
       child: CupertinoButton(
         child: Container(
-            width: deviceWidth * 0.7,
+            width: deviceWidth! * 0.7,
             height: 45,
             alignment: FractionalOffset.center,
             decoration: new BoxDecoration(
@@ -1882,9 +1882,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   stops: [0, 1]),
               borderRadius: new BorderRadius.all(const Radius.circular(50.0)),
             ),
-            child: Text(getTranslated(context, 'SHOP_NOW'),
+            child: Text(getTranslated(context, 'SHOP_NOW')!,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: colors.white, fontWeight: FontWeight.normal))),
         onPressed: () {
           Navigator.of(context).pushNamedAndRemoveUntil(
@@ -1960,7 +1960,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  CUR_CURRENCY +
+                                                  CUR_CURRENCY! +
                                                       " ${totalPrice.toStringAsFixed(2)}",
                                                   style: TextStyle(
                                                       color: colors.fontColor,
@@ -1980,12 +1980,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                 context, 'PLACE_ORDER'),
                                             onBtnSelected: _placeOrder
                                                 ? () {
-                                                    checkoutState(() {
+                                                    checkoutState!(() {
                                                       _placeOrder = false;
                                                     });
 
                                                     if (selAddress == null ||
-                                                        selAddress.isEmpty) {
+                                                        selAddress!.isEmpty) {
                                                       msg = getTranslated(
                                                           context,
                                                           'addressWarning');
@@ -1998,12 +1998,12 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                               home: false,
                                                             ),
                                                           ));
-                                                      checkoutState(() {
+                                                      checkoutState!(() {
                                                         _placeOrder = true;
                                                       });
                                                     } else if (payMethod ==
                                                             null ||
-                                                        payMethod.isEmpty) {
+                                                        payMethod!.isEmpty) {
                                                       msg = getTranslated(
                                                           context,
                                                           'payWarning');
@@ -2015,14 +2015,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                                   Payment(
                                                                       updateCheckout,
                                                                       msg)));
-                                                      checkoutState(() {
+                                                      checkoutState!(() {
                                                         _placeOrder = true;
                                                       });
                                                     } else if (isTimeSlot &&
-                                                        int.parse(allowDay) >
+                                                        int.parse(allowDay!) >
                                                             0 &&
                                                         (selDate == null ||
-                                                            selDate.isEmpty)) {
+                                                            selDate!.isEmpty)) {
                                                       msg = getTranslated(
                                                           context,
                                                           'dateWarning');
@@ -2034,14 +2034,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                                   Payment(
                                                                       updateCheckout,
                                                                       msg)));
-                                                      checkoutState(() {
+                                                      checkoutState!(() {
                                                         _placeOrder = true;
                                                       });
                                                     } else if (isTimeSlot &&
                                                         timeSlotList.length >
                                                             0 &&
                                                         (selTime == null ||
-                                                            selTime.isEmpty)) {
+                                                            selTime!.isEmpty)) {
                                                       msg = getTranslated(
                                                           context,
                                                           'timeWarning');
@@ -2053,7 +2053,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                                   Payment(
                                                                       updateCheckout,
                                                                       msg)));
-                                                      checkoutState(() {
+                                                      checkoutState!(() {
                                                         _placeOrder = true;
                                                       });
                                                     } else if (payMethod ==
@@ -2118,8 +2118,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               selectedAddress = 0;
               selAddress = addressList[0].id;
               if (!ISFLAT_DEL) {
-                if (totalPrice < double.parse(addressList[0].freeAmt))
-                  delCharge = double.parse(addressList[0].deliveryCharge);
+                if (totalPrice < double.parse(addressList[0].freeAmt!))
+                  delCharge = double.parse(addressList[0].deliveryCharge!);
                 else
                   delCharge = 0;
               }
@@ -2129,8 +2129,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   selectedAddress = i;
                   selAddress = addressList[i].id;
                   if (!ISFLAT_DEL) {
-                    if (totalPrice < double.parse(addressList[i].freeAmt))
-                      delCharge = double.parse(addressList[i].deliveryCharge);
+                    if (totalPrice < double.parse(addressList[i].freeAmt!))
+                      delCharge = double.parse(addressList[i].deliveryCharge!);
                     else
                       delCharge = 0;
                   }
@@ -2139,16 +2139,16 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             }
 
             if (ISFLAT_DEL) {
-              if ((oriPrice) < double.parse(MIN_AMT))
-                delCharge = double.parse(CUR_DEL_CHR);
+              if ((oriPrice) < double.parse(MIN_AMT!))
+                delCharge = double.parse(CUR_DEL_CHR!);
               else
                 delCharge = 0;
             }
             totalPrice = totalPrice + delCharge;
           } else {
             if (ISFLAT_DEL) {
-              if ((oriPrice) < double.parse(MIN_AMT))
-                delCharge = double.parse(CUR_DEL_CHR);
+              if ((oriPrice) < double.parse(MIN_AMT!))
+                delCharge = double.parse(CUR_DEL_CHR!);
               else
                 delCharge = 0;
             }
@@ -2160,10 +2160,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             });
           }
 
-          if (checkoutState != null) checkoutState(() {});
+          if (checkoutState != null) checkoutState!(() {});
         } else {
           setSnackbar(
-              getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+              getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
           if (mounted)
             setState(() {
               _isLoading = false;
@@ -2184,25 +2184,25 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     if (mounted)
-      checkoutState(() {
+      checkoutState!(() {
         _isProgress = false;
         _placeOrder = true;
       });
     setState(() {});
-    setSnackbar(response.message, _checkscaffoldKey);
+    setSnackbar(response.message!, _checkscaffoldKey);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    print("EXTERNAL_WALLET: " + response.walletName);
+    print("EXTERNAL_WALLET: " + response.walletName!);
   }
 
   updateCheckout() {
-    if (mounted) checkoutState(() {});
+    if (mounted) checkoutState!(() {});
   }
 
   razorpayPayment() async {
-    String contact = await getPrefrence(MOBILE);
-    String email = await getPrefrence(EMAIL);
+    String? contact = await getPrefrence(MOBILE);
+    String? email = await getPrefrence(EMAIL);
 
     double amt = double.parse(totalPrice.toStringAsFixed(2)) * 100;
 
@@ -2211,7 +2211,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         setState(() {
           _isProgress = true;
         });
-      checkoutState(() {});
+      checkoutState!(() {});
       var options = {
         KEY: razorpayId,
         AMOUNT: amt.toString(),
@@ -2222,19 +2222,19 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       try {
         _razorpay.open(options);
       } catch (e) {
-        debugPrint(e);
+        // debugPrint(e);
       }
     } else {
       if (email == '')
-        setSnackbar(getTranslated(context, 'emailWarning'), _checkscaffoldKey);
+        setSnackbar(getTranslated(context, 'emailWarning')!, _checkscaffoldKey);
       else if (contact == '')
-        setSnackbar(getTranslated(context, 'phoneWarning'), _checkscaffoldKey);
+        setSnackbar(getTranslated(context, 'phoneWarning')!, _checkscaffoldKey);
     }
   }
 
   void paytmPayment() async {
-    String paymentResponse;
-    checkoutState(() {
+    String? paymentResponse;
+    checkoutState!(() {
       _isProgress = true;
     });
 
@@ -2270,14 +2270,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           paymentResponse = txnToken;
         });
         // orderId, mId, txnToken, txnAmount, callback
-        var paytmResponse = Paytm.payWithPaytm(paytmMerId, orderId, txnToken,
+        var paytmResponse = Paytm.payWithPaytm(paytmMerId!, orderId, txnToken,
             totalPrice.toString(), callBackUrl, payTesting);
 
         paytmResponse.then((value) {
           _isProgress = false;
           _placeOrder = true;
           setState(() {});
-          checkoutState(() {
+          checkoutState!(() {
             if (value['error']) {
               paymentResponse = value['errorMessage'];
 
@@ -2299,11 +2299,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               }
             }
 
-            setSnackbar(paymentResponse, _checkscaffoldKey);
+            setSnackbar(paymentResponse!, _checkscaffoldKey);
           });
         });
       } else {
-        checkoutState(() {
+        checkoutState!(() {
           _isProgress = false;
           _placeOrder = true;
         });
@@ -2316,21 +2316,21 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     }
   }
 
-  Future<void> placeOrder(String tranId) async {
+  Future<void> placeOrder(String? tranId) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      checkoutState(() {
+      checkoutState!(() {
         _isProgress = true;
       });
 
-      String mob = await getPrefrence(MOBILE);
-      String varientId, quantity;
+      String? mob = await getPrefrence(MOBILE);
+      String? varientId, quantity;
       for (SectionModel sec in cartList) {
         varientId =
-            varientId != null ? varientId + "," + sec.varientId : sec.varientId;
-        quantity = quantity != null ? quantity + "," + sec.qty : sec.qty;
+            varientId != null ? varientId + "," + sec.varientId! : sec.varientId;
+        quantity = quantity != null ? quantity + "," + sec.qty! : sec.qty;
       }
-      String payVia;
+      String? payVia;
       if (payMethod == getTranslated(context, 'COD_LBL'))
         payVia = "COD";
       else if (payMethod == getTranslated(context, 'PAYPAL_LBL'))
@@ -2391,7 +2391,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
         if (response.statusCode == 200) {
           var getdata = json.decode(response.body);
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             String orderId = getdata["order_id"].toString();
             if (payMethod == getTranslated(context, 'RAZORPAY_LBL')) {
@@ -2417,23 +2417,23 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ModalRoute.withName('/home'));
             }
           } else {
-            setSnackbar(msg, _checkscaffoldKey);
+            setSnackbar(msg!, _checkscaffoldKey);
             if (mounted)
-              checkoutState(() {
+              checkoutState!(() {
                 _isProgress = false;
               });
           }
         }
       } on TimeoutException catch (_) {
         if (mounted)
-          checkoutState(() {
+          checkoutState!(() {
             _isProgress = false;
             _placeOrder = true;
           });
       }
     } else {
       if (mounted)
-        checkoutState(() {
+        checkoutState!(() {
           _isNetworkAvail = false;
         });
     }
@@ -2453,9 +2453,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg = getdata["message"];
+      String? msg = getdata["message"];
       if (!error) {
-        String data = getdata["data"];
+        String? data = getdata["data"];
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -2464,22 +2464,22 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       from: "order",
                       orderId: orderId,
                     )));
-        checkoutState(() {
+        checkoutState!(() {
           _isProgress = false;
         });
       } else {
-        checkoutState(() {
+        checkoutState!(() {
           _isProgress = false;
         });
-        setSnackbar(msg, _checkscaffoldKey);
+        setSnackbar(msg!, _checkscaffoldKey);
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+      setSnackbar(getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
     }
   }
 
-  Future<void> addTransaction(String tranId, String orderID, String status,
-      String msg, bool redirect) async {
+  Future<void> addTransaction(String? tranId, String orderID, String? status,
+      String? msg, bool redirect) async {
     try {
       var parameter = {
         USER_ID: CUR_USERID,
@@ -2497,7 +2497,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       var getdata = json.decode(response.body);
 
       bool error = getdata["error"];
-      String msg1 = getdata["message"];
+      String? msg1 = getdata["message"];
       if (!error) {
         if (redirect) {
           CUR_CART_COUNT = "0";
@@ -2509,10 +2509,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               ModalRoute.withName('/home'));
         }
       } else {
-        setSnackbar(msg1, _checkscaffoldKey);
+        setSnackbar(msg1!, _checkscaffoldKey);
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+      setSnackbar(getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
     }
   }
 
@@ -2521,8 +2521,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       setState(() {
         _isProgress = true;
       });
-    checkoutState(() {});
-    String email = await getPrefrence(EMAIL);
+    checkoutState!(() {});
+    String? email = await getPrefrence(EMAIL);
 
     Charge charge = Charge()
       ..amount = totalPrice.toInt()
@@ -2544,7 +2544,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             _isProgress = false;
             _placeOrder = true;
           });
-        checkoutState(() {});
+        checkoutState!(() {});
       }
     } catch (e) {
       if (mounted) setState(() => _isProgress = false);
@@ -2582,23 +2582,23 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                           Padding(
                             padding:
                                 const EdgeInsetsDirectional.only(bottom: 5.0),
-                            child: Text(addressList[selectedAddress].name),
+                            child: Text(addressList[selectedAddress!].name!),
                           ),
                           Text(
-                            addressList[selectedAddress].address +
+                            addressList[selectedAddress!].address! +
                                 ", " +
-                                addressList[selectedAddress].area +
+                                addressList[selectedAddress!].area! +
                                 ", " +
-                                addressList[selectedAddress].city +
+                                addressList[selectedAddress!].city! +
                                 ", " +
-                                addressList[selectedAddress].state +
+                                addressList[selectedAddress!].state! +
                                 ", " +
-                                addressList[selectedAddress].country +
+                                addressList[selectedAddress!].country! +
                                 ", " +
-                                addressList[selectedAddress].pincode,
+                                addressList[selectedAddress!].pincode!,
                             style: Theme.of(context)
                                 .textTheme
-                                .caption
+                                .caption!
                                 .copyWith(color: colors.lightBlack),
                           ),
                           Padding(
@@ -2606,10 +2606,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                             child: Row(
                               children: [
                                 Text(
-                                  addressList[selectedAddress].mobile,
+                                  addressList[selectedAddress!].mobile!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption
+                                      .caption!
                                       .copyWith(color: colors.lightBlack),
                                 ),
                                 Spacer(),
@@ -2622,7 +2622,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                         borderRadius: new BorderRadius.all(
                                             const Radius.circular(4.0))),
                                     child: Text(
-                                      getTranslated(context, 'CHANGE'),
+                                      getTranslated(context, 'CHANGE')!,
                                       style: TextStyle(
                                           color: colors.fontColor,
                                           fontSize: 10),
@@ -2637,7 +2637,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                   home: false,
                                                 )));
 
-                                    checkoutState(() {});
+                                    checkoutState!(() {});
                                   },
                                 ),
                               ],
@@ -2652,7 +2652,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       padding: const EdgeInsetsDirectional.only(start: 8.0),
                       child: GestureDetector(
                         child: Text(
-                          getTranslated(context, 'ADDADDRESS'),
+                          getTranslated(context, 'ADDADDRESS')!,
                           style: TextStyle(
                               color: colors.fontColor,
                               fontWeight: FontWeight.bold),
@@ -2691,7 +2691,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               MaterialPageRoute(
                   builder: (BuildContext context) =>
                       Payment(updateCheckout, msg)));
-          if (mounted) checkoutState(() {});
+          if (mounted) checkoutState!(() {});
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -2703,8 +2703,8 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 child: Text(
                   //SELECT_PAYMENT,
                   payMethod != null && payMethod != ''
-                      ? payMethod
-                      : getTranslated(context, 'SELECT_PAYMENT'),
+                      ? payMethod!
+                      : getTranslated(context, 'SELECT_PAYMENT')!,
                   style: TextStyle(
                       color: colors.fontColor, fontWeight: FontWeight.bold),
                 ),
@@ -2736,11 +2736,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                getTranslated(context, 'ORDER_SUMMARY') +
+                getTranslated(context, 'ORDER_SUMMARY')! +
                     " (" +
                     cartList.length.toString() +
                     " items)",
-                style: Theme.of(context).textTheme.subtitle2.copyWith(
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(
                     color: colors.lightBlack, fontWeight: FontWeight.bold),
               ),
               Divider(),
@@ -2748,17 +2748,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    getTranslated(context, 'SUBTOTAL'),
+                    getTranslated(context, 'SUBTOTAL')!,
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .caption!
                         .copyWith(color: colors.lightBlack2),
                   ),
                   Text(
-                    CUR_CURRENCY + " " + oriPrice.toString(),
+                    CUR_CURRENCY! + " " + oriPrice.toString(),
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .caption!
                         .copyWith(color: colors.lightBlack2),
                   )
                 ],
@@ -2767,17 +2767,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    getTranslated(context, 'DELIVERY_CHARGE'),
+                    getTranslated(context, 'DELIVERY_CHARGE')!,
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .caption!
                         .copyWith(color: colors.lightBlack2),
                   ),
                   Text(
-                    CUR_CURRENCY + " " + delCharge.toString(),
+                    CUR_CURRENCY! + " " + delCharge.toString(),
                     style: Theme.of(context)
                         .textTheme
-                        .caption
+                        .caption!
                         .copyWith(color: colors.lightBlack2),
                   )
                 ],
@@ -2787,17 +2787,17 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          getTranslated(context, 'PROMO_CODE_DIS_LBL'),
+                          getTranslated(context, 'PROMO_CODE_DIS_LBL')!,
                           style: Theme.of(context)
                               .textTheme
-                              .caption
+                              .caption!
                               .copyWith(color: colors.lightBlack2),
                         ),
                         Text(
-                          CUR_CURRENCY + " " + promoAmt.toString(),
+                          CUR_CURRENCY! + " " + promoAmt.toString(),
                           style: Theme.of(context)
                               .textTheme
-                              .caption
+                              .caption!
                               .copyWith(color: colors.lightBlack2),
                         )
                       ],
@@ -2808,11 +2808,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          getTranslated(context, 'WALLET_BAL'),
+                          getTranslated(context, 'WALLET_BAL')!,
                           style: Theme.of(context).textTheme.caption,
                         ),
                         Text(
-                          CUR_CURRENCY + " " + usedBal.toStringAsFixed(2),
+                          CUR_CURRENCY! + " " + usedBal.toStringAsFixed(2),
                           style: Theme.of(context).textTheme.caption,
                         )
                       ],
@@ -2833,10 +2833,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             Row(
               children: [
                 Text(
-                  getTranslated(context, 'PROMOCODE_LBL'),
+                  getTranslated(context, 'PROMOCODE_LBL')!,
                   style: Theme.of(context)
                       .textTheme
-                      .caption
+                      .caption!
                       .copyWith(color: colors.lightBlack2),
                 ),
                 Spacer(),
@@ -2848,7 +2848,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   onTap: () {
                     if (promoAmt != 0 && isPromoValid) {
                       if (mounted)
-                        checkoutState(() {
+                        checkoutState!(() {
                           totalPrice = totalPrice + promoAmt;
                           promoC.text = '';
                           isPromoValid = false;
@@ -2892,14 +2892,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                             color: colors.lightWhite,
                             borderRadius: new BorderRadius.all(
                                 const Radius.circular(4.0))),
-                        child: Text(getTranslated(context, 'APPLY'),
+                        child: Text(getTranslated(context, 'APPLY')!,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.button.copyWith(
+                            style: Theme.of(context).textTheme.button!.copyWith(
                                   color: colors.fontColor,
                                 ))),
                     onPressed: () {
                       if (promoC.text.trim().isEmpty)
-                        setSnackbar(getTranslated(context, 'ADD_PROMO'),
+                        setSnackbar(getTranslated(context, 'ADD_PROMO')!,
                             _checkscaffoldKey);
                       else if (!isPromoValid) validatePromo(true);
                     },
@@ -2919,7 +2919,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       try {
         _isProgress = true;
         if (check) {
-          if (this.mounted && checkoutState != null) checkoutState(() {});
+          if (this.mounted && checkoutState != null) checkoutState!(() {});
         }
         setState(() {});
         var parameter = {
@@ -2935,7 +2935,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"][0];
 
@@ -2947,13 +2947,13 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             promocode = data["promo_code"];
             isPromoValid = true;
             setSnackbar(
-                getTranslated(context, 'PROMO_SUCCESS'), _checkscaffoldKey);
+                getTranslated(context, 'PROMO_SUCCESS')!, _checkscaffoldKey);
           } else {
             isPromoValid = false;
             promoAmt = 0;
             promocode = null;
             promoC.clear();
-            setSnackbar(msg, _checkscaffoldKey);
+            setSnackbar(msg!, _checkscaffoldKey);
           }
           if (isUseWallet) {
             remWalBal = 0;
@@ -2963,23 +2963,23 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
             isPayLayShow = true;
             _isProgress = false;
             selectedMethod = null;
-            if (mounted && check) checkoutState(() {});
+            if (mounted && check) checkoutState!(() {});
             setState(() {});
           } else {
             _isProgress = false;
-            if (mounted && check) checkoutState(() {});
+            if (mounted && check) checkoutState!(() {});
             setState(() {});
           }
         }
       } on TimeoutException catch (_) {
         _isProgress = false;
-        if (mounted && check) checkoutState(() {});
+        if (mounted && check) checkoutState!(() {});
         setState(() {});
-        setSnackbar(getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
       }
     } else {
       _isNetworkAvail = false;
-      if (mounted && check) checkoutState(() {});
+      if (mounted && check) checkoutState!(() {});
       setState(() {});
     }
   }
@@ -2989,7 +2989,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     if (_isNetworkAvail) {
       try {
         if (mounted)
-          checkoutState(() {
+          checkoutState!(() {
             _isProgress = true;
           });
 
@@ -3005,7 +3005,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["link"];
             Navigator.push(
@@ -3016,21 +3016,21 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                           from: "order",
                         )));
           } else {
-            setSnackbar(msg, _checkscaffoldKey);
+            setSnackbar(msg!, _checkscaffoldKey);
           }
-          checkoutState(() {
+          checkoutState!(() {
             _isProgress = false;
           });
         }
       } on TimeoutException catch (_) {
-        checkoutState(() {
+        checkoutState!(() {
           _isProgress = false;
         });
-        setSnackbar(getTranslated(context, 'somethingMSg'), _checkscaffoldKey);
+        setSnackbar(getTranslated(context, 'somethingMSg')!, _checkscaffoldKey);
       }
     } else {
       if (mounted)
-        checkoutState(() {
+        checkoutState!(() {
           _isNetworkAvail = false;
         });
     }

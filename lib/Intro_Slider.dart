@@ -18,8 +18,8 @@ class _GettingStartedScreenState extends State<IntroSlider>
     with TickerProviderStateMixin {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   List slideList = [];
 
   @override
@@ -55,10 +55,10 @@ class _GettingStartedScreenState extends State<IntroSlider>
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.9,
+      begin: deviceWidth! * 0.9,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -70,7 +70,7 @@ class _GettingStartedScreenState extends State<IntroSlider>
   void dispose() {
     super.dispose();
     _pageController.dispose();
-    buttonController.dispose();
+    buttonController!.dispose();
 
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
@@ -83,8 +83,8 @@ class _GettingStartedScreenState extends State<IntroSlider>
 
 
 
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
+  List<T?> map<T>(List list, Function handler) {
+    List<T?> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
     }
@@ -114,13 +114,13 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 Container(
                     margin: EdgeInsetsDirectional.only(top: 20),
                     child: Text(slideList[index].title,
-                        style: Theme.of(context).textTheme.headline5.copyWith(
+                        style: Theme.of(context).textTheme.headline5!.copyWith(
                             color: colors.fontColor, fontWeight: FontWeight.bold))),
                 Container(
                   padding: EdgeInsetsDirectional.only(top: 30.0, start: 15.0, end: 15.0),
                   child: Text(slideList[index].description,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
                           color: colors.fontColor, fontWeight: FontWeight.normal)),
                 ),
               ],
@@ -137,21 +137,23 @@ class _GettingStartedScreenState extends State<IntroSlider>
         Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: map<Widget>(
-            slideList,
-                (index, url) {
-              return Container(
-                  width: 10.0,
-                  height: 10.0,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentPage == index
-                        ? colors.fontColor
-                        : colors.fontColor.withOpacity((0.5)),
-                  ));
-            },
-          ),
+          children: [
+           ... map(
+              slideList,
+                  (index, url) {
+                return Container(
+                    width: 10.0,
+                    height: 10.0,
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentPage == index
+                          ? colors.fontColor
+                          : colors.fontColor.withOpacity((0.5)),
+                    ));
+              },
+            ).toList()
+          ],
         ),
         Center(
             child: Padding(
@@ -197,8 +199,8 @@ class _GettingStartedScreenState extends State<IntroSlider>
                 );
               },
               child: Row(children: [
-                Text(getTranslated(context, 'SKIP'),
-                    style: Theme.of(context).textTheme.caption.copyWith(
+                Text(getTranslated(context, 'SKIP')!,
+                    style: Theme.of(context).textTheme.caption!.copyWith(
                       color: colors.fontColor,
                     )),
                 Icon(
@@ -239,12 +241,12 @@ class _GettingStartedScreenState extends State<IntroSlider>
 
 class Slide {
   final String imageUrl;
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
 
   Slide({
-    @required this.imageUrl,
-    @required this.title,
-    @required this.description,
+    required this.imageUrl,
+    required this.title,
+    required this.description,
   });
 }

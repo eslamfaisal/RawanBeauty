@@ -31,9 +31,9 @@ int pos = 0;
 
 class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String searchText;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  String? searchText;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   final TextEditingController _controller = TextEditingController();
   bool _isLoading = true;
@@ -42,7 +42,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
   ScrollController scrollController = new ScrollController();
   String _searchText = "", _lastsearch = "";
   bool isLoadingmore = true, isGettingdata = false, isNodata = false;
-  String activeStatus;
+  String? activeStatus;
 
   List<String> statusList = [
     ALL,
@@ -67,10 +67,10 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -114,7 +114,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
@@ -138,7 +138,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -161,7 +161,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                 if (_isNetworkAvail) {
                   getOrder();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                   if (mounted) setState(() {});
                 }
               });
@@ -219,7 +219,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                       Expanded(
                         child: searchList.length == 0
                             ? Center(
-                                child: Text(getTranslated(context, 'noItem')))
+                                child: Text(getTranslated(context, 'noItem')!))
                             : RefreshIndicator(
                                 key: _refreshIndicatorKey,
                                 onRefresh: _refresh,
@@ -230,12 +230,12 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                                   itemCount: searchList.length,
                                   physics: AlwaysScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    OrderItem orderItem;
+                                    OrderItem? orderItem;
                                     try {
                                       if (searchList[index] != null &&
-                                          searchList[index].itemList.length > 0)
+                                          searchList[index].itemList!.length > 0)
                                         orderItem =
-                                            searchList[index].itemList[0];
+                                            searchList[index].itemList![0];
                                       if (isLoadingmore &&
                                           index == (searchList.length - 1) &&
                                           scrollController.position.pixels <=
@@ -376,7 +376,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
             _isLoading = false;
             isLoadingmore = false;
           });
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -403,8 +403,8 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
 
   productItem(int index, OrderItem orderItem) {
     if (orderItem != null) {
-      String sDate = orderItem.listDate.last;
-      String proStatus = orderItem.listStatus.last;
+      String? sDate = orderItem.listDate!.last;
+      String? proStatus = orderItem.listStatus!.last;
       if (proStatus == 'received') {
         proStatus = 'order placed';
       }
@@ -424,7 +424,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(7.0),
                         child: FadeInImage(
                           fadeInDuration: Duration(milliseconds: 150),
-                          image: NetworkImage(orderItem.image),
+                          image: NetworkImage(orderItem.image!),
                           height: 90.0,
                           width: 90.0,
                           fit: BoxFit.cover,
@@ -445,19 +445,19 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                                   "$proStatus on $sDate",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle2
+                                      .subtitle2!
                                       .copyWith(color: colors.lightBlack),
                                 ),
                                 Padding(
                                     padding: const EdgeInsetsDirectional.only(
                                         top: 10.0),
                                     child: Text(
-                                      orderItem.name +
-                                              " ${searchList[index].itemList.length > 1 ? " and more items" : ""} " ??
+                                      orderItem.name! +
+                                              " ${searchList[index].itemList!.length > 1 ? " and more items" : ""} " ??
                                           '',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .subtitle2
+                                          .subtitle2!
                                           .copyWith(
                                               color: colors.lightBlack2,
                                               fontWeight: FontWeight.normal),
@@ -519,7 +519,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
         );
       }),
       title: Text(
-        getTranslated(context, 'MY_ORDERS_LBL'),
+        getTranslated(context, 'MY_ORDERS_LBL')!,
         style: TextStyle(
           color: colors.fontColor,
         ),
@@ -570,7 +570,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                           'Filter By',
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1
+                              .subtitle1!
                               .copyWith(color: colors.fontColor),
                         )),
                     Divider(color: colors.lightBlack),
@@ -601,7 +601,7 @@ class StateMyOrder extends State<MyOrder> with TickerProviderStateMixin {
                       child: Text(capitalize(statusList[index]),
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle2
+                              .subtitle2!
                               .copyWith(color: colors.lightBlack)),
                       onPressed: () {
                         setState(() {

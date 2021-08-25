@@ -2,7 +2,7 @@ import 'package:eshop/Helper/String.dart';
 import 'package:intl/intl.dart';
 
 class User {
-  String username,
+  String? username,
       email,
       mobile,
       address,
@@ -20,10 +20,10 @@ class User {
       deliveryCharge,
       freeAmt;
 
-  List<String> imgList;
-  String id, date, comment, rating;
+  List<String>? imgList;
+  String? id, date, comment, rating;
 
-  String type, altMob, landmark, areaId, cityId, isDefault, state, country;
+  String? type, altMob, landmark, areaId, cityId, isDefault, state, country;
 
   User(
       {this.id,
@@ -125,8 +125,8 @@ class User {
 }
 
 class imgModel{
-  int index;
-  String img;
+  int? index;
+  String? img;
 
   imgModel({this.index,this.img});
   factory imgModel.fromJson(int i,String image) {

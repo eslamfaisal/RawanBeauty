@@ -255,20 +255,20 @@ String ISDARK = "";
 final String PAYPAL_RESPONSE_URL = "$baseUrl" + "app_payment_status";
 final String FLUTTERWAVE_RES_URL = baseUrl + "flutterwave-payment-response";
 
-String CUR_CURRENCY = '';
-String CUR_USERID = '';
-String CUR_USERNAME = '';
-String CUR_CART_COUNT = "";
-String CUR_BALANCE = '';
-String RETURN_DAYS = '';
-String MAX_ITEMS = '';
-String REFER_CODE = '';
-String MIN_AMT = '';
-String CUR_DEL_CHR = '';
+String? CUR_CURRENCY = '';
+String? CUR_USERID = '';
+String? CUR_USERNAME = '';
+String? CUR_CART_COUNT = "";
+String? CUR_BALANCE = '';
+String? RETURN_DAYS = '';
+String? MAX_ITEMS = '';
+String? REFER_CODE = '';
+String? MIN_AMT = '';
+String? CUR_DEL_CHR = '';
 
 bool ISFLAT_DEL = true;
 bool extendImg = true;
 bool cartBtnList = true;
 
-double deviceHeight;
-double deviceWidth;
+double? deviceHeight;
+double? deviceWidth;

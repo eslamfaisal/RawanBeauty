@@ -36,9 +36,9 @@ List<SectionModel> favList = [];
 class StateFav extends State<Favorite> with TickerProviderStateMixin {
   ScrollController controller = new ScrollController();
   List<SectionModel> tempList = [];
-  String msg;
-  Animation buttonSqueezeanimation;
-  AnimationController buttonController;
+  String? msg;
+  Animation? buttonSqueezeanimation;
+  AnimationController? buttonController;
   bool _isNetworkAvail = true;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -60,10 +60,10 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 2000), vsync: this);
 
     buttonSqueezeanimation = new Tween(
-      begin: deviceWidth * 0.7,
+      begin: deviceWidth! * 0.7,
       end: 50.0,
     ).animate(new CurvedAnimation(
-      parent: buttonController,
+      parent: buttonController!,
       curve: new Interval(
         0.0,
         0.150,
@@ -73,13 +73,13 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    buttonController.dispose();
+    buttonController!.dispose();
     super.dispose();
   }
 
   Future<Null> _playAnimation() async {
     try {
-      await buttonController.forward();
+      await buttonController!.forward();
     } on TickerCanceled {}
   }
 
@@ -101,7 +101,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                 if (_isNetworkAvail) {
                   _getFav();
                 } else {
-                  await buttonController.reverse();
+                  await buttonController!.reverse();
                 }
               });
             },
@@ -127,17 +127,17 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
   Widget listItem(int index) {
     int selectedPos = 0;
     for (int i = 0;
-        i < favList[index].productList[0].prVarientList.length;
+        i < favList[index].productList![0].prVarientList!.length;
         i++) {
       if (favList[index].varientId ==
-          favList[index].productList[0].prVarientList[i].id) selectedPos = i;
+          favList[index].productList![0].prVarientList![i].id) selectedPos = i;
     }
 
     double price = double.parse(
-        favList[index].productList[0].prVarientList[selectedPos].disPrice);
+        favList[index].productList![0].prVarientList![selectedPos].disPrice!);
     if (price == 0)
       price = double.parse(
-          favList[index].productList[0].prVarientList[selectedPos].price);
+          favList[index].productList![0].prVarientList![selectedPos].price!);
 
     return Card(
       elevation: 0.1,
@@ -145,11 +145,11 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(4),
         child: Stack(
           children: [
-            favList[index].productList[0].availability == "0"
-                ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL'),
+            favList[index].productList![0].availability == "0"
+                ? Text(getTranslated(context, 'OUT_OF_STOCK_LBL')!,
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1
+                        .subtitle1!
                         .copyWith(color: Colors.red))
                 : Container(),
             Padding(
@@ -158,12 +158,12 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Hero(
-                      tag: "$index${favList[index].productList[0].id}",
+                      tag: "$index${favList[index].productList![0].id}",
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
                           child: FadeInImage(
                             image: NetworkImage(
-                                favList[index].productList[0].image),
+                                favList[index].productList![0].image!),
                             height: 80.0,
                             width: 80.0,
                             fit: BoxFit.cover,
@@ -183,7 +183,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                   padding: const EdgeInsetsDirectional.only(
                                       top: 5.0),
                                   child: Text(
-                                    favList[index].productList[0].name,
+                                    favList[index].productList![0].name!,
                                     style: TextStyle(
                                         color: colors.lightBlack,
                                         fontWeight: FontWeight.bold),
@@ -197,27 +197,27 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                           Row(
                             children: <Widget>[
                               Text(
-                                CUR_CURRENCY + " " + price.toString() + " ",
+                                CUR_CURRENCY! + " " + price.toString() + " ",
                                 style: TextStyle(
                                     color: colors.fontColor,
                                     fontWeight: FontWeight.w600),
                               ),
                               Text(
                                 double.parse(favList[index]
-                                            .productList[0]
-                                            .prVarientList[selectedPos]
-                                            .disPrice) !=
+                                            .productList![0]
+                                            .prVarientList![selectedPos]
+                                            .disPrice!) !=
                                         0
-                                    ? CUR_CURRENCY +
+                                    ? CUR_CURRENCY! +
                                         "" +
                                         favList[index]
-                                            .productList[0]
-                                            .prVarientList[selectedPos]
-                                            .price
+                                            .productList![0]
+                                            .prVarientList![selectedPos]
+                                            .price!
                                     : "",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .overline
+                                    .overline!
                                     .copyWith(
                                         decoration: TextDecoration.lineThrough,
                                         letterSpacing: 0.7),
@@ -231,7 +231,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                 height: 20,
                                 child: PopupMenuButton(
                                   padding: EdgeInsets.zero,
-                                  onSelected: (result) async {
+                                  onSelected: (dynamic result) async {
                                     if (result == 0) {
                                       _removeFav(index);
                                     }
@@ -244,7 +244,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
                                           _isProgress = true;
                                         });
                                       createDynamicLink(index, 0, true,
-                                          favList[index].productList[0].id);
+                                          favList[index].productList![0].id);
                                     }
                                   },
                                   itemBuilder: (BuildContext context) =>
@@ -305,7 +305,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
         ),
         splashColor: colors.primary.withOpacity(0.2),
         onTap: () {
-          Product model = favList[index].productList[0];
+          Product model = favList[index].productList![0];
           Navigator.push(
             context,
             PageRouteBuilder(
@@ -345,7 +345,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
 
           var getdata = json.decode(response.body);
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
 
           if (!error) {
             total = int.parse(getdata["total"]);
@@ -362,7 +362,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
               offset = offset + perPage;
             }
           } else {
-            if (msg != 'No Favourite(s) Product Are Added') setSnackbar(msg);
+            if (msg != 'No Favourite(s) Product Are Added') setSnackbar(msg!);
             isLoadingmore = false;
             msg = getTranslated(context, 'noFav');
           }
@@ -386,7 +386,7 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
           );
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             _isFavLoading = false;
@@ -411,20 +411,20 @@ class StateFav extends State<Favorite> with TickerProviderStateMixin {
             _isProgress = true;
           });
 String qty=(int.parse(favList[index]
-                      .productList[0]
-                      .prVarientList[0]
-                      .cartCount) +
-                  int.parse(favList[index].productList[0].qtyStepSize))
+                      .productList![0]
+                      .prVarientList![0]
+                      .cartCount!) +
+                  int.parse(favList[index].productList![0].qtyStepSize!))
               .toString();
 
 
- if (int.parse(qty) < favList[index].productList[0].minOrderQuntity) {
-            qty = favList[index].productList[0].minOrderQuntity.toString();
+ if (int.parse(qty) < favList[index].productList![0].minOrderQuntity!) {
+            qty = favList[index].productList![0].minOrderQuntity.toString();
             setSnackbar('Minimum order quantity is $qty');
           }
 
         var parameter = {
-          PRODUCT_VARIENT_ID: favList[index].productList[0].prVarientList[0].id,
+          PRODUCT_VARIENT_ID: favList[index].productList![0].prVarientList![0].id,
           USER_ID: CUR_USERID,
           QTY: qty,
         };
@@ -436,18 +436,18 @@ String qty=(int.parse(favList[index]
           var getdata = json.decode(response.body);
 
           bool error = getdata["error"];
-          String msg = getdata["message"];
+          String? msg = getdata["message"];
           if (!error) {
             var data = getdata["data"];
 
-            String qty = data['total_quantity'];
+            String? qty = data['total_quantity'];
             CUR_CART_COUNT = data['cart_count'];
-            favList[index].productList[0].prVarientList[0].cartCount =
+            favList[index].productList![0].prVarientList![0].cartCount =
                 qty.toString();
 
             widget.update();
           } else {
-            setSnackbar(msg);
+            setSnackbar(msg!);
           }
           if (mounted)
             setState(() {
@@ -455,7 +455,7 @@ String qty=(int.parse(favList[index]
             });
         }
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
         if (mounted)
           setState(() {
             _isProgress = false;
@@ -564,18 +564,18 @@ String qty=(int.parse(favList[index]
         var getdata = json.decode(response.body);
 
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           favList.removeWhere((item) =>
-              item.productList[0].prVarientList[0].id ==
-              favList[index].productList[0].prVarientList[0].id);
+              item.productList![0].prVarientList![0].id ==
+              favList[index].productList![0].prVarientList![0].id);
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
 
         if (mounted) setState(() {});
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else {
       if (mounted)
@@ -586,7 +586,7 @@ String qty=(int.parse(favList[index]
   }
 
   Future<void> createDynamicLink(
-      int index, int secPos, bool list, String id) async {
+      int index, int secPos, bool list, String? id) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: deepLinkUrlPrefix,
       link: Uri.parse(
@@ -616,17 +616,17 @@ String qty=(int.parse(favList[index]
     if (Platform.isIOS)
       documentDirectory = (await getApplicationDocumentsDirectory()).path;
     else
-      documentDirectory = (await getExternalStorageDirectory()).path;
+      documentDirectory = (await getExternalStorageDirectory())!.path;
 
-    final response1 = await get(Uri.parse(favList[index].productList[0].image));
+    final response1 = await get(Uri.parse(favList[index].productList![0].image!));
     final bytes1 = response1.bodyBytes;
     final File imageFile =
-        File('$documentDirectory/${favList[index].productList[0].name}.png');
+        File('$documentDirectory/${favList[index].productList![0].name}.png');
     imageFile.writeAsBytesSync(bytes1);
     Share.shareFiles(
-        ['$documentDirectory/${favList[index].productList[0].name}.png'],
+        ['$documentDirectory/${favList[index].productList![0].name}.png'],
         text:
-            "${favList[index].productList[0].name}\n${shortenedLink.shortUrl.toString()}\n$str");
+            "${favList[index].productList![0].name}\n${shortenedLink.shortUrl.toString()}\n$str");
 
     if (mounted)
       setState(() {
@@ -662,7 +662,7 @@ String qty=(int.parse(favList[index]
     return _isFavLoading
         ? shimmer()
         : favList.length == 0
-            ? Center(child: Text(msg ?? getTranslated(context, 'noFav')))
+            ? Center(child: Text(msg ?? getTranslated(context, 'noFav')!))
             : RefreshIndicator(
                 key: _refreshIndicatorKey,
                 onRefresh: _refresh,

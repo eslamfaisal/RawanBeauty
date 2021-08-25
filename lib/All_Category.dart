@@ -15,9 +15,9 @@ import 'ProductList.dart';
 import 'SubCat.dart';
 
 class AllCategory extends StatefulWidget {
-  final Function updateHome;
+  final Function? updateHome;
 
-  const AllCategory({Key key, this.updateHome}) : super(key: key);
+  const AllCategory({Key? key, this.updateHome}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -44,7 +44,7 @@ class StateCat extends State<AllCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: getAppBar(getTranslated(context, 'ALL_CAT'), context),
+        appBar: getAppBar(getTranslated(context, 'ALL_CAT')!, context),
         body: GridView.count(
             controller: controller,
             padding: EdgeInsets.all(20),
@@ -74,7 +74,7 @@ class StateCat extends State<AllCategory> {
       if (response.statusCode == 200) {
         var getdata = json.decode(response.body);
         bool error = getdata["error"];
-        String msg = getdata["message"];
+        String? msg = getdata["message"];
         if (!error) {
           var data = getdata["data"];
 
@@ -97,12 +97,12 @@ class StateCat extends State<AllCategory> {
           }
         } else {
           isLoadingmore = false;
-          setSnackbar(msg);
+          setSnackbar(msg!);
         }
         if (mounted) setState(() {});
       }
     } on TimeoutException catch (_) {
-      setSnackbar(getTranslated(context, 'somethingMSg'));
+      setSnackbar(getTranslated(context, 'somethingMSg')!);
       if (mounted)
         setState(() {
           isLoadingmore = false;
@@ -132,7 +132,7 @@ class StateCat extends State<AllCategory> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(25.0),
                   child: FadeInImage(
-                    image: NetworkImage(catList[index].image),
+                    image: NetworkImage(catList[index].image!),
                     fadeInDuration: Duration(milliseconds: 150),
                     fit: BoxFit.fill,
                     placeholder: placeHolder(50),
@@ -140,20 +140,20 @@ class StateCat extends State<AllCategory> {
             ),
           ),
           Text(
-            catList[index].name + "\n",
+            catList[index].name! + "\n",
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .caption!
                 .copyWith(color: colors.fontColor),
           )
         ],
       ),
       onTap: () {
         if (catList[index].subList == null ||
-            catList[index].subList.length == 0) {
+            catList[index].subList!.length == 0) {
           Navigator.push(
               context,
               MaterialPageRoute(

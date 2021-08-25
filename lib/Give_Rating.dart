@@ -14,9 +14,9 @@ import 'Helper/String.dart';
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class GiveRating extends StatefulWidget {
-  final String productId, name, img;
+  final String? productId, name, img;
 
-  const GiveRating({Key key, this.productId, this.name, this.img})
+  const GiveRating({Key? key, this.productId, this.name, this.img})
       : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class _GiveRatingState extends State<GiveRating> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: getAppBar(getTranslated(context, 'PRODUCT_REVIEW'), context),
+      appBar: getAppBar(getTranslated(context, 'PRODUCT_REVIEW')!, context),
       body:
 
       Stack(
@@ -53,7 +53,7 @@ class _GiveRatingState extends State<GiveRating> {
                                 borderRadius: BorderRadius.circular(7.0),
                                 child: FadeInImage(
                                   fadeInDuration: Duration(milliseconds: 150),
-                                  image: NetworkImage(widget.img),
+                                  image: NetworkImage(widget.img!),
                                   height: 50.0,
                                   width: 50.0,
                                   fit: extendImg ? BoxFit.fill : BoxFit.contain,
@@ -64,10 +64,10 @@ class _GiveRatingState extends State<GiveRating> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  widget.name,
+                                  widget.name!,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle1
+                                      .subtitle1!
                                       .copyWith(
                                           color: colors.lightBlack,
                                           fontWeight: FontWeight.normal),
@@ -86,10 +86,10 @@ class _GiveRatingState extends State<GiveRating> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                getTranslated(context, 'WRITE_REVIEW_LBL'),
+                                getTranslated(context, 'WRITE_REVIEW_LBL')!,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle1
+                                    .subtitle1!
                                     .copyWith(color: colors.fontColor),
                               ),
                               _rating(),
@@ -106,7 +106,7 @@ class _GiveRatingState extends State<GiveRating> {
                                           getTranslated(context, 'REVIEW_HINT_LBL'),
                                       hintStyle: Theme.of(context)
                                           .textTheme
-                                          .subtitle2
+                                          .subtitle2!
                                           .copyWith(
                                               color: colors.lightBlack2
                                                   .withOpacity(0.7)),
@@ -179,7 +179,7 @@ class _GiveRatingState extends State<GiveRating> {
                                         borderRadius: new BorderRadius.all(
                                             const Radius.circular(4.0))),
                                     child: Text(
-                                      getTranslated(context, 'SUBMIT_LBL'),
+                                      getTranslated(context, 'SUBMIT_LBL')!,
                                       style: TextStyle(color: colors.fontColor),
                                     ),
                                   ),
@@ -190,7 +190,7 @@ class _GiveRatingState extends State<GiveRating> {
                                       setRating(curRating, _commentC.text, files);
                                     else
                                       setSnackbar(
-                                          getTranslated(context, 'REVIEW_W'));
+                                          getTranslated(context, 'REVIEW_W')!);
                                   },
                                 ),
                               ),
@@ -217,10 +217,10 @@ class _GiveRatingState extends State<GiveRating> {
   }
 
   _imgFromGallery() async {
-    FilePickerResult result =
+    FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      files = result.paths.map((path) => File(path)).toList();
+      files = result.paths.map((path) => File(path!)).toList();
       if (mounted) setState(() {});
     } else {
       // User canceled the picker
@@ -238,8 +238,8 @@ class _GiveRatingState extends State<GiveRating> {
           });
         var request = http.MultipartRequest("POST", setRatingApi);
         request.headers.addAll(headers);
-        request.fields[USER_ID] = CUR_USERID;
-        request.fields[PRODUCT_ID] = widget.productId;
+        request.fields[USER_ID] = CUR_USERID!;
+        request.fields[PRODUCT_ID] = widget.productId!;
 
         if (files != null) {
           for (int i = 0; i < files.length; i++) {
@@ -255,11 +255,11 @@ class _GiveRatingState extends State<GiveRating> {
         var responseString = String.fromCharCodes(responseData);
         var getdata = json.decode(responseString);
         bool error = getdata["error"];
-        String msg = getdata['message'];
+        String? msg = getdata['message'];
         if (!error) {
-          setSnackbar(msg);
+          setSnackbar(msg!);
         } else {
-          setSnackbar(msg);
+          setSnackbar(msg!);
           initialRate = 0;
         }
 
@@ -270,7 +270,7 @@ class _GiveRatingState extends State<GiveRating> {
             _isProgress = false;
           });
       } on TimeoutException catch (_) {
-        setSnackbar(getTranslated(context, 'somethingMSg'));
+        setSnackbar(getTranslated(context, 'somethingMSg')!);
       }
     } else if (mounted)
       setState(() {
